@@ -1,0 +1,60 @@
+{
+  "header": {
+    "navbar": {
+      "quicklyReserve": "حجز سريع",
+      "rentalMortgage": "رهن وإيجار",
+      "aboutUs": "من نحن",
+      "articles": "مقالاتنا",
+      "contactUs": "اتصل بنا"
+    },
+    "become-seller": "كن بائعًا",
+    "signin": "تسجيل الدخول / إنشاء حساب",
+    "goToAccount": "الذهاب إلى الحساب",
+    "logout": "تسجيل الخروج",
+    "changeTheme": "تغيير الموضوع",
+    "changeLang": "تغيير اللغة:"
+  },
+  "buttons": {
+    "viewAll": "عرض الكل"
+  },
+  "footer": {
+    "phone": "09229167194 - 09154569872",
+    "alwaysWithYou": "دائمًا معكم",
+    "available247": "متواجدون لخدمتكم 24 ساعة في اليوم و7 أيام في الأسبوع!",
+    "teamDescription": "يسعى فريق دلتا ليكون بجانبكم دائمًا من خلال تقديم أفضل الموظفين والخدمات العقارية."
+  },
+  "footerForm": {
+    "nameLabel": "الاسم الكامل:",
+    "titleLabel": "العنوان:",
+    "messageLabel": "رسالتك:",
+    "inputPlaceholder": "أدخل...",
+    "messagePlaceholder": ".....",
+    "sendMessage": "إرسال الرسالة",
+    "sending": "جارٍ الإرسال...",
+    "successTitle": "تم تأكيد الطلب",
+    "successMessage": "تم إرسال طلبك بنجاح",
+    "errorTitle": "خطأ",
+    "errorMessage": "حدثت مشكلة في الطلب",
+    "close": "إغلاق"
+  },
+  "footerInfo": {
+    "platformTitle": "منصة دلتا",
+    "about": "لوريم إيبسوم هو ببساطة نص شكلي في صناعة الطباعة والتنضيد. لوريم إيبسوم هو ببساطة نص شكلي في صناعة الطباعة والتنضيد.",
+    "reservationTitle": "كيفية حجز الإقامة",
+    "reservationGuide": "دليل حجز الإقامة",
+    "registerResidence": "تسجيل الإقامة",
+    "customerServiceTitle": "خدمات العملاء",
+    "faqGuest": "الأسئلة الشائعة للضيف",
+    "faqHost": "الأسئلة الشائعة للمضيف",
+    "howToRegisterResidence": "كيف أسجل الإقامة؟",
+    "privacyPolicy": "سياسة خصوصية المستخدم",
+    "contactTitle": "طرق التواصل مع دلتا",
+    "phone": "09392198743 - 09385412312",
+    "email": "Delta@gmail.com",
+    "address": "جیلان، رشت، ساحة آزادي، بجانب تقاطع عظیمی زاده",
+    "copyright": "جميع الحقوق محفوظة لدلتا."
+  },
+  "modal": {
+    "cancel": "إلغاء"
+  }
+}

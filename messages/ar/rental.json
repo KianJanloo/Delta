@@ -1,0 +1,101 @@
+{
+    "header": {
+        "home": "الرئيسية",
+        "rental": "رهن وإيجار"
+    },
+    "filter": {
+        "destination": "وجهتك",
+        "all": "الكل",
+        "cityPlaceholder": "اختر المحافظة أو المدينة",
+        "latest": "الأحدث",
+        "cheapest": "الأرخص",
+        "popular": "الأكثر شعبية",
+        "sortBy": "ترتيب حسب",
+        "apartment": "شقة",
+        "villa": "فيلا",
+        "rural": "ريفية",
+        "propertyType": "نوع العقار",
+        "mortgageAndRental": "رهن وإيجار",
+        "mortgage": "رهن",
+        "rental": "إيجار",
+        "directPurchase": "شراء مباشر",
+        "transactionType": "نوع المعاملة",
+        "search": "بحث",
+        "hotelPlaceholder": "اسم الفندق ...",
+        "count": "عدد الإعلانات"
+    },
+    "filterCap": {
+        "minMortgage": "الحد الأدنى للرهن",
+        "maxMortgage": "الحد الأقصى للرهن",
+        "minRent": "الحد الأدنى للإيجار",
+        "maxRent": "الحد الأقصى للإيجار",
+        "minArea": "الحد الأدنى للمساحة",
+        "maxArea": "الحد الأقصى للمساحة",
+        "minMortgagePlaceholder": "٠ تومان",
+        "maxMortgagePlaceholder": "٠ تومان",
+        "minRentPlaceholder": "٠ تومان",
+        "maxRentPlaceholder": "٠ تومان",
+        "minAreaPlaceholder": "٠ متر",
+        "maxAreaPlaceholder": "٠ متر"
+    },
+    "single": {
+        "home": "الرئيسية",
+        "rental": "رهن وإيجار",
+        "star": "نجمة",
+        "copied": "تم النسخ",
+        "notCopied": "لم يتم النسخ",
+        "close": "إغلاق",
+        "shareText": "شاهد هذا الإيجار الرائع!",
+        "shareSuccess": "تمت المشاركة بنجاح",
+        "shareError": "خطأ في المشاركة",
+        "noShareSupport": "متصفحك لا يدعم المشاركة",
+        "similarAds": "إعلانات مشابهة",
+        "seeAll": "عرض الكل"
+    },
+    "seller": {
+        "contactInfo": "معلومات الاتصال",
+        "mortgagePrice": "سعر الرهن من",
+        "rentPrice": "سعر الإيجار من",
+        "currency": "ت",
+        "callSeller": "اتصل بـ {phone}",
+        "chatWithSeller": "الدردشة مع البائع"
+    },
+    "tabs": {
+        "description": "وصف العقار",
+        "features": "مميزات العقار",
+        "location": "موقع العقار",
+        "reviews": "تقييمات المستخدمين",
+        "parking": "موقف سيارات",
+        "rooms": "{count} غرفة",
+        "bathroom": "حمام",
+        "yard": "ساحة",
+        "capacity": "السعة",
+        "capacityValue": "{count} أشخاص",
+        "noCapacity": "لا يوجد",
+        "noInfo": "لا توجد معلومات متاحة"
+    },
+    "commentForm": {
+        "name": "الاسم الكامل",
+        "title": "عنوانك",
+        "forComment": "للتعليق",
+        "unknown": "غير معروف",
+        "rating": "تقييمك",
+        "message": "رسالتك",
+        "send": "إرسال التعليق",
+        "sending": "جارٍ الإرسال...",
+        "successTitle": "تمت الموافقة على التعليق",
+        "successMsg": "تم إرسال تعليقك بنجاح",
+        "errorTitle": "خطأ في التعليق",
+        "errorMsg": "حدثت مشكلة ولم يتم إرسال تعليقك",
+        "close": "إغلاق"
+    },
+    "commentItem": {
+        "star": "نجمة",
+        "emptyMessage": "هذه الرسالة فارغة",
+        "userReplies": "ردود المستخدمين",
+        "anonymous": "مجهول",
+        "unknownDate": "تاريخ غير معروف",
+        "noComment": "لم يتم تسجيل أي تعليق",
+        "reply": "إرسال رد"
+    }
+}

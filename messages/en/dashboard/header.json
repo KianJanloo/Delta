@@ -1,0 +1,10 @@
+{
+  "lightMode": "Switch to light mode",
+  "darkMode": "Switch to dark mode",
+  "walletCharge": "Charge wallet",
+  "logout": "Logout",
+  "logoutAccount": "Logout from account",
+  "logoutConfirm": "Are you sure you want to logout?",
+  "userName": "User Name",
+  "userRole": "Buyer"
+}

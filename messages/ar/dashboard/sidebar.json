@@ -1,0 +1,19 @@
+{
+    "brand": "دلتا",
+    "dashboard": "لوحة التحكم",
+    "profile": "معلومات المستخدم",
+    "manageReserves": "إدارة الحجوزات",
+    "favorites": "المفضلة",
+    "payments": "المدفوعات",
+    "notifications": "الإشعارات",
+    "manageHouses": "إدارة العقارات",
+    "myHouses": "عقاراتي",
+    "addHouse": "إضافة عقار",
+    "manageComments": "إدارة التعليقات",
+    "wallet": "المحفظة",
+    "noBalance": "لا يوجد رصيد",
+    "newComments": "تعليقات جديدة",
+    "commentsCount": "٥ تعليقات",
+    "chargeWallet": "شحن المحفظة",
+    "withdraw": "سحب"
+}

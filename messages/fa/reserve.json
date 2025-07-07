@@ -1,0 +1,26 @@
+{
+    "filter": {
+        "destination": "مقصد مورد نظر شما",
+        "all": "همه",
+        "cityPlaceholder": "استان یا شهر را انتخاب کنید",
+        "latest": "جدید ترین ها",
+        "cheapest": "ارزان ترین ها",
+        "popular": "محبوب ترین ها",
+        "sortBy": "مرتب سازی بر اساس",
+        "search": "جستجو",
+        "hotelPlaceholder": "نام هتل مورد نظر .....",
+        "count": "تعداد آگهی",
+        "map": "نقشه"
+    },
+    "content": {
+        "minPrice": "حداقل قیمت",
+        "minPricePlaceholder": "0 تومان",
+        "maxPrice": "حداکثر قیمت",
+        "maxPricePlaceholder": "0 تومان",
+        "noAds": "درحال حاضر هیچ آگهی وجود ندارد"
+    },
+    "header": {
+        "home": "خانه",
+        "reserve": "رزرو"
+    }
+}

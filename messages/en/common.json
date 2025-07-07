@@ -1,0 +1,60 @@
+{
+  "header": {
+    "navbar": {
+      "quicklyReserve": "Quick Reservation",
+      "rentalMortgage": "Rent & Mortgage",
+      "aboutUs": "About Us",
+      "articles": "Our Articles",
+      "contactUs": "Contact Us"
+    },
+    "become-seller": "Become a Seller",
+    "signin": "Sign In / Register",
+    "goToAccount": "Go to Account",
+    "logout": "Logout",
+    "changeTheme": "Change theme:",
+    "changeLang": "Change language:"
+  },
+  "buttons": {
+    "viewAll": "View All"
+  },
+  "footer": {
+    "phone": "09229167194 - 09154569872",
+    "alwaysWithYou": "Always with you",
+    "available247": "We are at your service 24/7!",
+    "teamDescription": "The Delta team strives to be by your side at all times by providing the best service staff and real estate services."
+  },
+  "footerForm": {
+    "nameLabel": "Full Name:",
+    "titleLabel": "Title:",
+    "messageLabel": "Your Message:",
+    "inputPlaceholder": "Enter...",
+    "messagePlaceholder": ".....",
+    "sendMessage": "Send Message",
+    "sending": "Sending...",
+    "successTitle": "Request Confirmed",
+    "successMessage": "Your request was sent successfully",
+    "errorTitle": "Error",
+    "errorMessage": "There was a problem with your request",
+    "close": "Close"
+  },
+  "footerInfo": {
+    "platformTitle": "Delta Platform",
+    "about": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    "reservationTitle": "How to Reserve Accommodation",
+    "reservationGuide": "Accommodation Reservation Guide",
+    "registerResidence": "Register Accommodation",
+    "customerServiceTitle": "Customer Services",
+    "faqGuest": "Guest FAQs",
+    "faqHost": "Host FAQs",
+    "howToRegisterResidence": "How to register accommodation?",
+    "privacyPolicy": "User Privacy Policy",
+    "contactTitle": "Delta Contact",
+    "phone": "09392198743 - 09385412312",
+    "email": "Delta@gmail.com",
+    "address": "Gilan, Rasht, Azadi Square, next to Azimizadeh Crossroad",
+    "copyright": "All rights reserved for Delta."
+  },
+  "modal": {
+    "cancel": "Cancel"
+  }
+}

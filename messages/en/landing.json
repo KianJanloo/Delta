@@ -1,0 +1,110 @@
+{
+  "heroSection": {
+    "infoNumb": "Over 7000+",
+    "info": "Customer satisfaction from those who trusted Delta",
+    "infoLong": "Booking, mortgage, rent, and even buying or selling your property",
+    "infoLong2": "As easy as drinking water — only on Delta ___________",
+    "button": "Book Easily",
+    "button2": "Mortgage and Rent Property",
+    "infoButton": "Property for booking, mortgage, and rent",
+    "infoButton2": "Area for booking, villas, and cabins",
+    "searchButtonSubTitle": "Advanced Search",
+    "searchButtonTitle": "Search",
+    "searchBar": {
+      "firstInput": {
+        "label": "City",
+        "placeholder": "Select city"
+      },
+      "secondInput": {
+        "label": "Transaction Type",
+        "placeholder": "Select type",
+        "options": {
+          "mortgage": "Mortgage",
+          "rental": "Rental",
+          "direct_purchase": "Purchase",
+          "all": "All"
+        }
+      },
+      "thirdInput": {
+        "label": "Min Area",
+        "placeholder": "0 sqm"
+      },
+      "fourthInput": {
+        "label": "Max Area",
+        "placeholder": "0 sqm"
+      }
+    }
+  },
+  "categories": {
+    "title": "Delta Real Estate Categories",
+    "headline": "You can find any property here!",
+    "description": "Click on a category to see all related listings and find your desired property.",
+    "defaultName": "Category"
+  },
+  "destinations": {
+    "title": "Dream Destination",
+    "dreams-title": "Villa rentals in this month's top destinations",
+    "dreams-subtitle": "Here you can explore and check out the most popular destinations selected by users!",
+    "rent-title": "Rent and Lease in Delta",
+    "with-any-budget": "Own a home with any budget",
+    "tabs": {
+      "rental": "Rental",
+      "mortgage": "Mortgage"
+    }
+  },
+  "aboutUs": {
+    "aboutUs": "About Us",
+    "knowDelta": "Get to know Delta better!",
+    "deltaTeam": "The Delta team strives to be by your side at all times by offering the best service tours and online services.",
+    "activeHouses": "+12,000 Active Houses",
+    "activeHousesDesc": "Homes with guaranteed cleanliness and security!",
+    "yearsOfExperience": "+10 Years of Excellence",
+    "yearsOfExperienceDesc": "In hospitality for our dear travelers",
+    "supportHours": "24/7 Support",
+    "supportHoursDesc": "Our support team is with you all day long",
+    "userReviews": "15,000+ User Reviews",
+    "userReviewsDesc": "Satisfaction of travelers who used the Delta platform",
+    "centerCardText": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+  },
+  "specialOffer": {
+    "offersForYou": "Offers for you",
+    "specialOffers": "Special Offers"
+  },
+  "realStateTraveling": {
+    "wantYourOwnHome": "Want your own home!",
+    "buyAndSellTitle": "Buy and Sell Real Estate in Delta"
+  },
+  "newPlaces": {
+    "newestPoints": "Newest Points",
+    "newestRecreationalAreas": "Newest Recreational Areas"
+  },
+  "commentUsers": {
+    "title": "User Comments",
+    "subtitle": "Your satisfaction builds Delta's credibility and value!",
+    "description": "The Delta team strives to be by your side at all times by providing the best service staff and real estate services.",
+    "comment1Text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+    "comment1Author": "Mohammadreza Sadati",
+    "comment1Date": "3 August - 2022",
+    "comment1Time": "12:33",
+    "comment2Text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+    "comment2Author": "Maryam Rezaei",
+    "comment2Date": "27 August - 2022",
+    "comment2Time": "15:20",
+    "comment3Text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+    "comment3Author": "Mohammadreza Sadati",
+    "comment3Date": "3 August - 2022",
+    "comment3Time": "12:33",
+    "comment4Text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+    "comment4Author": "Maryam Rezaei",
+    "comment4Date": "27 August - 2022",
+    "comment4Time": "15:20",
+    "comment5Text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+    "comment5Author": "Amir Kazemi",
+    "comment5Date": "5 December - 2022",
+    "comment5Time": "11:25",
+    "comment6Text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
+    "comment6Author": "Ali Ahmadi",
+    "comment6Date": "19 January - 2023",
+    "comment6Time": "18:05"
+  }
+}

@@ -1,0 +1,101 @@
+{
+    "header": {
+        "home": "خانه",
+        "rental": "رهن و اجاره"
+    },
+    "filter": {
+        "destination": "مقصد مورد نظر شما",
+        "all": "همه",
+        "cityPlaceholder": "استان یا شهر را انتخاب کنید",
+        "latest": "جدید ترین ها",
+        "cheapest": "ارزان ترین ها",
+        "popular": "محبوب ترین ها",
+        "sortBy": "مرتب سازی بر اساس",
+        "apartment": "آپارتمان",
+        "villa": "ویلا",
+        "rural": "روستایی",
+        "propertyType": "نوع ملک",
+        "mortgageAndRental": "رهن و اجاره",
+        "mortgage": "رهن",
+        "rental": "اجاره",
+        "directPurchase": "خرید",
+        "transactionType": "نوع معامله",
+        "search": "جستجو",
+        "hotelPlaceholder": "نام هتل مورد نظر .....",
+        "count": "تعداد آگهی"
+    },
+    "filterCap": {
+        "minMortgage": "حداقل رهن",
+        "maxMortgage": "حداکثر رهن",
+        "minRent": "حداقل اجاره",
+        "maxRent": "حداکثر اجاره",
+        "minArea": "حداقل متراژ",
+        "maxArea": "حداکثر متراژ",
+        "minMortgagePlaceholder": "0 تومن",
+        "maxMortgagePlaceholder": "0 تومن",
+        "minRentPlaceholder": "0 تومن",
+        "maxRentPlaceholder": "0 تومن",
+        "minAreaPlaceholder": "0 متر",
+        "maxAreaPlaceholder": "0 متر"
+    },
+    "single": {
+        "home": "خانه",
+        "rental": "رهن و اجاره",
+        "star": "ستاره",
+        "copied": "کپی شد",
+        "notCopied": "کپی نشد",
+        "close": "بستن",
+        "shareText": "یه رزرو عالی ببین!",
+        "shareSuccess": "اشتراک گذاری با موفقیت انجام شد",
+        "shareError": "خطا در اشتراک گذاری",
+        "noShareSupport": "مرورگر شما از اشتراک‌گذاری پشتیبانی نمی‌کند",
+        "similarAds": "آگهی های مشابه",
+        "seeAll": "مشاهده همه"
+    },
+    "seller": {
+        "contactInfo": "اطلاعات تماس",
+        "mortgagePrice": "قیمت رهن از",
+        "rentPrice": "قیمت اجاره از",
+        "currency": "ت",
+        "callSeller": "تماس با {phone}",
+        "chatWithSeller": "گفتگو با فروشنده"
+    },
+    "tabs": {
+        "description": "توضیحات ملک",
+        "features": "امکانات ملک",
+        "location": "موقعیت ملک",
+        "reviews": "نظرات کاربران",
+        "parking": "پارکینگ",
+        "rooms": "{count} خوابه",
+        "bathroom": "سرویس بهداشتی",
+        "yard": "حیاط",
+        "capacity": "ظرفیت",
+        "capacityValue": "{count} نفر",
+        "noCapacity": "ندارد",
+        "noInfo": "هیچ اطلاعاتی موجود نیست"
+    },
+    "commentForm": {
+        "name": "نام و نام خانوادگی",
+        "title": "عنوان شما",
+        "forComment": "برای نظر",
+        "unknown": "نامعلوم",
+        "rating": "امتیاز شما",
+        "message": "پیام شما",
+        "send": "ارسال نظر",
+        "sending": "در حال ارسال...",
+        "successTitle": "تایید نظر",
+        "successMsg": "نظر شما با موفقیت ارسال شد",
+        "errorTitle": "مشکل نظر",
+        "errorMsg": "مشکلی پیدا شد و نظر شما لغو شد",
+        "close": "بستن"
+    },
+    "commentItem": {
+        "star": "ستاره",
+        "emptyMessage": "این پیام خالی می باشد",
+        "userReplies": "پاسخ کاربران",
+        "anonymous": "ناشناس",
+        "unknownDate": "تاریخ نامشخص",
+        "noComment": "نظری ثبت نشده است",
+        "reply": "ثبت پاسخ"
+    }
+}

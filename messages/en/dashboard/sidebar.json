@@ -1,0 +1,19 @@
+{
+    "brand": "Delta",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "manageReserves": "Manage Reservations",
+    "favorites": "Favorites",
+    "payments": "Payments",
+    "notifications": "Notifications",
+    "manageHouses": "Manage Properties",
+    "myHouses": "My Properties",
+    "addHouse": "Add Property",
+    "manageComments": "Manage Comments",
+    "wallet": "Wallet",
+    "noBalance": "No balance",
+    "newComments": "New Comments",
+    "commentsCount": "5 comments",
+    "chargeWallet": "Charge Wallet",
+    "withdraw": "Withdraw"
+}

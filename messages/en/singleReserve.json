@@ -1,0 +1,46 @@
+{
+    "header": {
+        "home": "Home",
+        "reserve": "Reserve",
+        "address": "Address",
+        "star": "star",
+        "copied": "Copied",
+        "notCopied": "Not copied",
+        "close": "Close",
+        "shareText": "Check out this awesome reservation!",
+        "shareSuccess": "Shared successfully",
+        "shareError": "Error sharing",
+        "noShareSupport": "Your browser does not support sharing"
+    },
+    "tab": {
+        "about": "About",
+        "facilities": "Facilities",
+        "comments": "User Comments"
+    },
+    "booking": {
+        "reserveFor": "Reserve house for:",
+        "startDate": "Check-in date",
+        "startDatePlaceholder": "Select check-in date",
+        "endDate": "Check-out date",
+        "endDatePlaceholder": "Select check-out date",
+        "passengerCount": "Number of guests",
+        "reservePrices": "Reservation prices",
+        "currency": "T",
+        "reserveNow": "Book now"
+    },
+    "about": {
+        "aboutProperty": "About this property"
+    },
+    "footer": {
+        "similarAds": "Similar ads",
+        "seeAll": "See all"
+    },
+    "parking": "Parking",
+    "rooms": "{count} bedrooms",
+    "bathroom": "Bathroom",
+    "yard": "Yard",
+    "capacity": "Capacity",
+    "capacityValue": "{count} people",
+    "noCapacity": "None",
+    "noInfo": "No information available"
+}

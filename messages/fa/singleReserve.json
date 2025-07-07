@@ -1,0 +1,46 @@
+{
+    "header": {
+        "home": "خانه",
+        "reserve": "رزرو",
+        "address": "آدرس",
+        "star": "ستاره",
+        "copied": "کپی شد",
+        "notCopied": "کپی نشد",
+        "close": "بستن",
+        "shareText": "یه رزرو عالی ببین!",
+        "shareSuccess": "اشتراک گذاری با موفقیت انجام شد",
+        "shareError": "خطا در اشتراک گذاری",
+        "noShareSupport": "مرورگر شما از اشتراک‌گذاری پشتیبانی نمی‌کند"
+    },
+    "tab": {
+        "about": "درباره ملک",
+        "facilities": "امکانات اقامتگاه",
+        "comments": "نظرات کاربران"
+    },
+    "booking": {
+        "reserveFor": "رزرو خونه برای :",
+        "startDate": "تاریخ رفت",
+        "startDatePlaceholder": "تاریخ رفت را انتخاب کنید",
+        "endDate": "تاریخ برگشت",
+        "endDatePlaceholder": "تاریخ برگشت را انتخاب کنید",
+        "passengerCount": "تعداد مسافران",
+        "reservePrices": "قیمت های رزرو",
+        "currency": "ت",
+        "reserveNow": "همین الان رزرو کن"
+    },
+    "about": {
+        "aboutProperty": "درباره این ملک"
+    },
+    "footer": {
+        "similarAds": "آگهی های متشابه",
+        "seeAll": "مشاهده همه"
+    },
+    "parking": "پارکینگ",
+    "rooms": "{count} خوابه",
+    "bathroom": "سرویس بهداشتی",
+    "yard": "حیاط",
+    "capacity": "ظرفیت",
+    "capacityValue": "{count} نفر",
+    "noCapacity": "ندارد",
+    "noInfo": "هیچ اطلاعاتی موجود نیست"
+}

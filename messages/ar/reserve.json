@@ -1,0 +1,26 @@
+{
+    "filter": {
+        "destination": "وجهتك",
+        "all": "الكل",
+        "cityPlaceholder": "اختر المحافظة أو المدينة",
+        "latest": "الأحدث",
+        "cheapest": "الأرخص",
+        "popular": "الأكثر شعبية",
+        "sortBy": "ترتيب حسب",
+        "search": "بحث",
+        "hotelPlaceholder": "اسم الفندق ...",
+        "count": "عدد الإعلانات",
+        "map": "الخريطة"
+    },
+    "content": {
+        "minPrice": "الحد الأدنى للسعر",
+        "minPricePlaceholder": "٠ تومان",
+        "maxPrice": "الحد الأقصى للسعر",
+        "maxPricePlaceholder": "٠ تومان",
+        "noAds": "لا توجد إعلانات حالياً"
+    },
+    "header": {
+        "home": "الرئيسية",
+        "reserve": "الحجز"
+    }
+}

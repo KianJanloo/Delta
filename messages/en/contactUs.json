@@ -1,0 +1,28 @@
+{
+    "form": {
+        "name": "Full name:",
+        "namePlaceholder": "Enter...",
+        "title": "Subject:",
+        "titlePlaceholder": "Enter...",
+        "message": "Your message:",
+        "messagePlaceholder": ".....",
+        "submit": "Send request",
+        "loading": "Sending...",
+        "successTitle": "Request confirmed",
+        "successMessage": "Your request was sent successfully",
+        "errorTitle": "Error",
+        "errorMessage": "There was a problem with your request",
+        "close": "Close"
+    },
+    "page": {
+        "home": "Home",
+        "contact": "Contact Us",
+        "title1": "Any time of day or night,",
+        "title2": "we are with you",
+        "title3": "!",
+        "desc": "The Delta support team is ready to answer your questions and feedback at any time to solve your problem as soon as possible!",
+        "phone": "09229167194 - 098541612310",
+        "email": "Delta@gmail.com",
+        "address": "Gilan, Rasht, Azadi Square, next to Azimi Zadeh Crossroad"
+    }
+}

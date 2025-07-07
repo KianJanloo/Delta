@@ -1,0 +1,60 @@
+{
+    "header": {
+        "navbar": {
+            "quicklyReserve": " رزرو سریع ",
+            "rentalMortgage": " رهن و اجاره ",
+            "aboutUs": " درباره ما ",
+            "articles": " مقالات ما ",
+            "contactUs": " تماس با ما "
+        },
+        "become-seller": " فروشنده شو ",
+        "signin": " ورود / ثبت نام ",
+        "goToAccount": " ورود به حساب کاربری ",
+        "logout": " خروج از حساب ",
+        "changeTheme": " تغییر تم: ",
+        "changeLang": " تغییر زبان: "
+    },
+    "buttons": {
+        "viewAll": " مشاهده همه "
+    },
+    "footer": {
+        "phone": "09229167194 - 09154569872",
+        "alwaysWithYou": "همیشه کنارتیم",
+        "available247": "24 ساعت روز و 7 روز هفته در اختیار شماییم!",
+        "teamDescription": "تیم دلتا با ارائه بهترین نیروهای خدماتی و سرویس‌های املاکی سعی دارد تا بتواند در تمام لحظات کنار شما باشد."
+    },
+    "footerForm": {
+        "nameLabel": "نام و نام خانوادگی:",
+        "titleLabel": "عنوان:",
+        "messageLabel": "پیام شما:",
+        "inputPlaceholder": "وارد کنید...",
+        "messagePlaceholder": ".....",
+        "sendMessage": " ارسال پیام ",
+        "sending": "در حال ارسال...",
+        "successTitle": "تایید درخواست",
+        "successMessage": "درخواست شما با موفقیت ارسال شد",
+        "errorTitle": "ارور",
+        "errorMessage": "مشکلی در درخواست پیدا شد",
+        "close": "بستن"
+    },
+    "footerInfo": {
+        "platformTitle": "پلتفرم دلتـا",
+        "about": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.",
+        "reservationTitle": "نحوه رزرو اقامتگاه",
+        "reservationGuide": "راهنمای رزرو اقامتگاه",
+        "registerResidence": "ثبت اقامتگاه",
+        "customerServiceTitle": "خدمات مشتریان",
+        "faqGuest": "پرسش های متداول مهمان",
+        "faqHost": "پرسش های متداول میزبان",
+        "howToRegisterResidence": "چطور اقامتگاه ثبت کنم؟",
+        "privacyPolicy": "حریم شخصی کاربران",
+        "contactTitle": "راه ارتباطی دلتا",
+        "phone": "09392198743 - 09385412312",
+        "email": "Delta@gmail.com",
+        "address": "گیلان، رشت، میدان آزادی، جنب چهار راه عظیمی‌زاده",
+        "copyright": "تمام حقوق مادی و معنوی این اثر برای دلتا محفوظ است."
+    },
+    "modal": {
+        "cancel": "انصراف"
+    }
+}

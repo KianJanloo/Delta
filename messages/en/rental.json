@@ -1,0 +1,101 @@
+{
+    "header": {
+        "home": "Home",
+        "rental": "Rent & Mortgage"
+    },
+    "filter": {
+        "destination": "Your destination",
+        "all": "All",
+        "cityPlaceholder": "Select province or city",
+        "latest": "Latest",
+        "cheapest": "Cheapest",
+        "popular": "Most popular",
+        "sortBy": "Sort by",
+        "apartment": "Apartment",
+        "villa": "Villa",
+        "rural": "Rural",
+        "propertyType": "Property type",
+        "mortgageAndRental": "Mortgage & Rental",
+        "mortgage": "Mortgage",
+        "rental": "Rental",
+        "directPurchase": "Direct purchase",
+        "transactionType": "Transaction type",
+        "search": "Search",
+        "hotelPlaceholder": "Hotel name ...",
+        "count": "Ads count"
+    },
+    "filterCap": {
+        "minMortgage": "Min mortgage",
+        "maxMortgage": "Max mortgage",
+        "minRent": "Min rent",
+        "maxRent": "Max rent",
+        "minArea": "Min area",
+        "maxArea": "Max area",
+        "minMortgagePlaceholder": "0 Toman",
+        "maxMortgagePlaceholder": "0 Toman",
+        "minRentPlaceholder": "0 Toman",
+        "maxRentPlaceholder": "0 Toman",
+        "minAreaPlaceholder": "0 m²",
+        "maxAreaPlaceholder": "0 m²"
+    },
+    "single": {
+        "home": "Home",
+        "rental": "Rent & Mortgage",
+        "star": "star",
+        "copied": "Copied",
+        "notCopied": "Not copied",
+        "close": "Close",
+        "shareText": "Check out this awesome rental!",
+        "shareSuccess": "Shared successfully",
+        "shareError": "Error sharing",
+        "noShareSupport": "Your browser does not support sharing",
+        "similarAds": "Similar ads",
+        "seeAll": "See all"
+    },
+    "seller": {
+        "contactInfo": "Contact Info",
+        "mortgagePrice": "Mortgage price from",
+        "rentPrice": "Rent price from",
+        "currency": "T",
+        "callSeller": "Call {phone}",
+        "chatWithSeller": "Chat with seller"
+    },
+    "tabs": {
+        "description": "Property Description",
+        "features": "Property Features",
+        "location": "Property Location",
+        "reviews": "User Reviews",
+        "parking": "Parking",
+        "rooms": "{count} bedrooms",
+        "bathroom": "Bathroom",
+        "yard": "Yard",
+        "capacity": "Capacity",
+        "capacityValue": "{count} people",
+        "noCapacity": "None",
+        "noInfo": "No information available"
+    },
+    "commentForm": {
+        "name": "Full name",
+        "title": "Your title",
+        "forComment": "For comment",
+        "unknown": "Unknown",
+        "rating": "Your rating",
+        "message": "Your message",
+        "send": "Send comment",
+        "sending": "Sending...",
+        "successTitle": "Comment approved",
+        "successMsg": "Your comment was sent successfully",
+        "errorTitle": "Comment error",
+        "errorMsg": "There was a problem and your comment was not sent",
+        "close": "Close"
+    },
+    "commentItem": {
+        "star": "star",
+        "emptyMessage": "This message is empty",
+        "userReplies": "User replies",
+        "anonymous": "Anonymous",
+        "unknownDate": "Unknown date",
+        "noComment": "No comment submitted",
+        "reply": "Reply"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "filter": {
+        "destination": "Your destination",
+        "all": "All",
+        "cityPlaceholder": "Select province or city",
+        "latest": "Latest",
+        "cheapest": "Cheapest",
+        "popular": "Most popular",
+        "sortBy": "Sort by",
+        "search": "Search",
+        "hotelPlaceholder": "Hotel name ...",
+        "count": "Ads count",
+        "map": "Map"
+    },
+    "content": {
+        "minPrice": "Minimum price",
+        "minPricePlaceholder": "0 Toman",
+        "maxPrice": "Maximum price",
+        "maxPricePlaceholder": "0 Toman",
+        "noAds": "There are currently no ads"
+    },
+    "header": {
+        "home": "Home",
+        "reserve": "Reserve"
+    }
+}

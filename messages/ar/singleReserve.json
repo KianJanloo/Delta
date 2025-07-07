@@ -1,0 +1,46 @@
+{
+    "header": {
+        "home": "الرئيسية",
+        "reserve": "الحجز",
+        "address": "العنوان",
+        "star": "نجمة",
+        "copied": "تم النسخ",
+        "notCopied": "لم يتم النسخ",
+        "close": "إغلاق",
+        "shareText": "شاهد هذا الحجز الرائع!",
+        "shareSuccess": "تمت المشاركة بنجاح",
+        "shareError": "خطأ في المشاركة",
+        "noShareSupport": "متصفحك لا يدعم المشاركة"
+    },
+    "tab": {
+        "about": "حول العقار",
+        "facilities": "مرافق الإقامة",
+        "comments": "تعليقات المستخدمين"
+    },
+    "booking": {
+        "reserveFor": "حجز المنزل لـ:",
+        "startDate": "تاريخ الذهاب",
+        "startDatePlaceholder": "اختر تاريخ الذهاب",
+        "endDate": "تاريخ العودة",
+        "endDatePlaceholder": "اختر تاريخ العودة",
+        "passengerCount": "عدد المسافرين",
+        "reservePrices": "أسعار الحجز",
+        "currency": "ت",
+        "reserveNow": "احجز الآن"
+    },
+    "about": {
+        "aboutProperty": "حول هذا العقار"
+    },
+    "footer": {
+        "similarAds": "إعلانات مشابهة",
+        "seeAll": "عرض الكل"
+    },
+    "parking": "موقف سيارات",
+    "rooms": "{count} غرفة",
+    "bathroom": "حمام",
+    "yard": "ساحة",
+    "capacity": "السعة",
+    "capacityValue": "{count} أشخاص",
+    "noCapacity": "لا يوجد",
+    "noInfo": "لا توجد معلومات متاحة"
+}

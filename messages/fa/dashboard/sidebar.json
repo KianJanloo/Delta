@@ -1,0 +1,19 @@
+{
+    "brand": "دلتا",
+    "dashboard": "داشبورد",
+    "profile": "اطلاعات کاربری",
+    "manageReserves": "مدیریت رزرو ها",
+    "favorites": "علاقه مندی ها",
+    "payments": "پرداخت ها",
+    "notifications": "اعلان ها",
+    "manageHouses": "مدیریت املاک",
+    "myHouses": "املاک من",
+    "addHouse": "ملک جدید",
+    "manageComments": "مدیریت نظرات",
+    "wallet": "کیف پول",
+    "noBalance": "عدم موجودی",
+    "newComments": "نظرات جدید",
+    "commentsCount": "5 نظر",
+    "chargeWallet": "شارژ کیف پول",
+    "withdraw": "برداشت"
+}

@@ -1,0 +1,166 @@
+{
+    "langs": {
+        "changeLanguage": "تغییر زبان",
+        "changeLanguageLabel": "تغییر زبان:"
+    },
+    "notif": {
+        "notifSettings": "تنظیمات نوتیفیکیشن",
+        "close": "بستن",
+        "reserveNotif": "نوتیفیکیشن رزرو",
+        "paymentNotif": "نوتیفیکیشن پرداخت",
+        "discountNotif": "نوتیفیکیشن تخفیف",
+        "systemNotif": "نوتیفیکیشن سیستمی"
+    },
+    "payments": {
+        "transactionsList": "لیست تراکنش ها",
+        "yourTransactions": "لیست تراکنش های شما",
+        "close": "بستن",
+        "date": "تاریخ",
+        "trackingNumber": "شماره پیگیری",
+        "amount": "مبلغ",
+        "viewReceipt": "مشاهده رسید"
+    },
+    "detailReserve": {
+        "details": "جزییات",
+        "hotelName": "هتل همایون فرکیش ایران",
+        "close": "بستن",
+        "imageAlt": "تصویر",
+        "address": "کیش، گیلان، رشت، چابکسر، جاده رشت...",
+        "bedrooms": "4 خوابه",
+        "parking": "1 پارکینگ",
+        "bathrooms": "2 حمام",
+        "yard": "حیاط",
+        "purchasePrice": "قیمت خرید:",
+        "currency": "ت",
+        "description": "آپارتمانی دنج و آرام در قلب شهر، جایی که زندگی روزمره راحت و سبک‌تر است. فضایی مدرن با طراحی منحصربه‌فرد، یادآور خانه‌های دنج و دل‌نشین. محلی برای لحظه‌های خوش، آرامش و شروعی نو در زندگی روزمره‌تان.",
+        "reserveDate": "تاریخ رزرو",
+        "tags": "برچسب ها:",
+        "free": "رایگان",
+        "confirmed": "تایید شده",
+        "paid": "پرداخت شده"
+    },
+    "filter": {
+        "filters": "فیلترها",
+        "close": "بستن",
+        "propertyType": "نوع ملک",
+        "apartment": "آپارتمان",
+        "villa": "ویلا",
+        "house": "خانه",
+        "ownerStatus": "وضعیت مالک",
+        "active": "فعال",
+        "inactive": "غیرفعال",
+        "priceFrom": "قیمت از",
+        "priceTo": "قیمت تا",
+        "currency": "تومان",
+        "applyFilter": "اعمال فیلتر"
+    },
+    "filterPayment": {
+        "filters": "فیلترها",
+        "close": "بستن",
+        "propertyType": "نوع ملک",
+        "apartment": "آپارتمان",
+        "destination": "مقصد یا هتل شما",
+        "destinationPlaceholder": "استان ، شهر ، هتل ....",
+        "minPrice": "حداقل قیمت",
+        "minPricePlaceholder": "0 تومن",
+        "maxPrice": "حداکثر قیمت",
+        "maxPricePlaceholder": "0 تومن",
+        "applyFilter": "اعمال فیلتر"
+    },
+    "filterReserve": {
+        "filters": "فیلترها",
+        "close": "بستن",
+        "startDate": "تاریخ رفت",
+        "endDate": "تاریخ برگشت",
+        "reserveStatus": "وضعیت رزرو",
+        "confirmed": "تایید شده",
+        "canceled": "لغو شده",
+        "applyFilter": "اعمال فیلتر"
+    },
+    "passengers": {
+        "passengers": "مسافر ها",
+        "passengerList": "لیست مسافر ها",
+        "close": "بستن",
+        "name": "نام",
+        "gender": "جنسیت",
+        "phoneNumber": "شماره تماس",
+        "sendMessage": "ارسال پیام"
+    },
+    "paymentsReserves": {
+        "payments": "پرداختی ها",
+        "paymentsList": "لیست پرداختی ها",
+        "close": "بستن",
+        "date": "تاریخ",
+        "trackingNumber": "شماره پیگیری",
+        "amount": "مبلغ",
+        "viewReceipt": "مشاهده رسید"
+    },
+    "selectImage": {
+        "selectProfile": "انتخاب پروفایل",
+        "close": "بستن",
+        "cancel": "انصراف",
+        "select": "انتخاب"
+    },
+    "filter2": {
+        "close": "بستن",
+        "filters": "فیلترها",
+        "checkInDate": "تاریخ ورود:",
+        "checkInDatePlaceholder": "مثال: ۱۴۰۴/۰۱/۰۱",
+        "checkOutDate": "تاریخ خروج:",
+        "checkOutDatePlaceholder": "مثال: ۱۴۰۴/۰۱/۰۳",
+        "reservationStatus": "وضعیت رزرو:",
+        "approved": "تایید شده",
+        "pending": "در انتظار تایید",
+        "canceled": "لغو شده",
+        "propertyType": "نوع اقامتگاه:",
+        "apartment": "آپارتمان",
+        "hotel": "هتل",
+        "villa": "ویلا",
+        "suite": "سوئیت",
+        "applyFilter": "اعمال فیلتر",
+        "clearFilters": "حذف فیلتر"
+    },
+    "paymentList": {
+        "title": "لیست پرداختی ها",
+        "close": "بستن",
+        "date": "تاریخ",
+        "trackingNumber": "شماره پیگیری",
+        "amount": "مبلغ",
+        "receipt": "رسید",
+        "showReceipt": "مشاهده رسید",
+        "sampleDate": "۱۲ مرداد / ۱۴۰۱ – ۱۹:۳۳",
+        "sampleTrackingNumber": "۱۳۳۴۵۶۷۸۹۱۳۳۴۵۶",
+        "sampleAmount": "۱۲۵۰۰۰۰"
+    },
+    "reserveModal": {
+        "hotelName": "هتل همایون فر کیش ایران",
+        "close": "بستن",
+        "description": "آپارتمانی دنج و آرام در قلب شهر، جایی که زندگی روزمره راحت و سبک‌تر است. فضایی مدرن با طراحی منحصربه‌فرد، یادآور خانه‌های دنج و دل‌نشین. محلی برای لحظه‌های خوش، آرامش و شروعی نو در زندگی روزمره‌تان.",
+        "tags": "برچسب ها",
+        "tagsList": [
+            "بالکن",
+            "مسکونی",
+            "آپارتمان",
+            "آپارتمان",
+            "آپارتمان"
+        ],
+        "stars": "۵ ستاره",
+        "addressLabel": "آدرس",
+        "address": "گیلان، رشت، میدان آزادی، جنب چهارراه عظیمی، گیلان، رشت...",
+        "bedrooms": "۴ خواب",
+        "parking": "۱ پارکینگ",
+        "bathrooms": "۲ حمام",
+        "yard": "۵۰ متر حیاط",
+        "priceLabel": "قیمت خرید",
+        "price": "۵,۰۰۰,۰۰۰ ت",
+        "reserves": "رزرو ها",
+        "payments": "پرداختی ها"
+    },
+    "reservesList": {
+        "title": "لیست رزرو ها",
+        "close": "بستن",
+        "date": "تاریخ",
+        "guestCount": "تعداد مسافر ها",
+        "sampleDate": "۱۲ مرداد / ۱۴۰۱ – ۱۹:۳۳"
+    }
+}

@@ -1,0 +1,166 @@
+{
+    "langs": {
+        "changeLanguage": "Change Language",
+        "changeLanguageLabel": "Change Language:"
+    },
+    "notif": {
+        "notifSettings": "Notification Settings",
+        "close": "Close",
+        "reserveNotif": "Reservation Notification",
+        "paymentNotif": "Payment Notification",
+        "discountNotif": "Discount Notification",
+        "systemNotif": "System Notification"
+    },
+    "payments": {
+        "transactionsList": "Transactions List",
+        "yourTransactions": "Your Transactions",
+        "close": "Close",
+        "date": "Date",
+        "trackingNumber": "Tracking Number",
+        "amount": "Amount",
+        "viewReceipt": "View Receipt"
+    },
+    "detailReserve": {
+        "details": "Details",
+        "hotelName": "Homayoun Hotel, Kish, Iran",
+        "close": "Close",
+        "imageAlt": "Image",
+        "address": "Kish, Gilan, Rasht, Chaboksar, Rasht Road...",
+        "bedrooms": "4 bedrooms",
+        "parking": "1 parking",
+        "bathrooms": "2 bathrooms",
+        "yard": "Yard",
+        "purchasePrice": "Purchase Price:",
+        "currency": "IRR",
+        "description": "A cozy and calm apartment in the heart of the city, where daily life is comfortable and lighter. A modern space with a unique design, reminiscent of cozy and pleasant homes. A place for happy moments, peace, and a fresh start in your daily life.",
+        "reserveDate": "Reserve Date",
+        "tags": "Tags:",
+        "free": "Free",
+        "confirmed": "Confirmed",
+        "paid": "Paid"
+    },
+    "filter": {
+        "filters": "Filters",
+        "close": "Close",
+        "propertyType": "Property Type",
+        "apartment": "Apartment",
+        "villa": "Villa",
+        "house": "House",
+        "ownerStatus": "Owner Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "priceFrom": "Price from",
+        "priceTo": "Price to",
+        "currency": "Toman",
+        "applyFilter": "Apply Filter"
+    },
+    "filterPayment": {
+        "filters": "Filters",
+        "close": "Close",
+        "propertyType": "Property Type",
+        "apartment": "Apartment",
+        "destination": "Destination or Hotel",
+        "destinationPlaceholder": "Province, City, Hotel ...",
+        "minPrice": "Minimum Price",
+        "minPricePlaceholder": "0 Toman",
+        "maxPrice": "Maximum Price",
+        "maxPricePlaceholder": "0 Toman",
+        "applyFilter": "Apply Filter"
+    },
+    "filterReserve": {
+        "filters": "Filters",
+        "close": "Close",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "reserveStatus": "Reserve Status",
+        "confirmed": "Confirmed",
+        "canceled": "Canceled",
+        "applyFilter": "Apply Filter"
+    },
+    "passengers": {
+        "passengers": "Passengers",
+        "passengerList": "Passenger List",
+        "close": "Close",
+        "name": "Name",
+        "gender": "Gender",
+        "phoneNumber": "Phone Number",
+        "sendMessage": "Send Message"
+    },
+    "paymentsReserves": {
+        "payments": "Payments",
+        "paymentsList": "Payments List",
+        "close": "Close",
+        "date": "Date",
+        "trackingNumber": "Tracking Number",
+        "amount": "Amount",
+        "viewReceipt": "View Receipt"
+    },
+    "selectImage": {
+        "selectProfile": "Select Profile",
+        "close": "Close",
+        "cancel": "Cancel",
+        "select": "Select"
+    },
+    "filter2": {
+        "close": "Close",
+        "filters": "Filters",
+        "checkInDate": "Check-in Date:",
+        "checkInDatePlaceholder": "e.g. 2025/3/21",
+        "checkOutDate": "Check-out Date:",
+        "checkOutDatePlaceholder": "e.g. 2025/3/23",
+        "reservationStatus": "Reservation Status:",
+        "approved": "Approved",
+        "pending": "Pending",
+        "canceled": "Canceled",
+        "propertyType": "Property Type:",
+        "apartment": "Apartment",
+        "hotel": "Hotel",
+        "villa": "Villa",
+        "suite": "Suite",
+        "applyFilter": "Apply Filter",
+        "clearFilters": "Delete Filter"
+    },
+    "paymentList": {
+        "title": "Payment List",
+        "close": "Close",
+        "date": "Date",
+        "trackingNumber": "Tracking Number",
+        "amount": "Amount",
+        "receipt": "Receipt",
+        "showReceipt": "Show Receipt",
+        "sampleDate": "3 Aug 2022 – 19:33",
+        "sampleTrackingNumber": "133456789133456",
+        "sampleAmount": "1,250,000"
+    },
+    "reserveModal": {
+        "hotelName": "Homayounfar Hotel Kish Iran",
+        "close": "Close",
+        "description": "A cozy and peaceful apartment in the heart of the city, where daily life is comfortable and lighter. A modern space with a unique design, reminiscent of cozy and pleasant homes. A place for happy moments, relaxation, and a fresh start in your daily life.",
+        "tags": "Tags",
+        "tagsList": [
+            "Balcony",
+            "Residential",
+            "Apartment",
+            "Apartment",
+            "Apartment"
+        ],
+        "stars": "5 Stars",
+        "addressLabel": "Address",
+        "address": "Gilan, Rasht, Azadi Square, next to Azimi Crossroad, Gilan, Rasht...",
+        "bedrooms": "4 Bedrooms",
+        "parking": "1 Parking",
+        "bathrooms": "2 Bathrooms",
+        "yard": "50m Yard",
+        "priceLabel": "Purchase Price",
+        "price": "5,000,000 T",
+        "reserves": "Reserves",
+        "payments": "Payments"
+    },
+    "reservesList": {
+        "title": "Reservation List",
+        "close": "Close",
+        "date": "Date",
+        "guestCount": "Guest Count",
+        "sampleDate": "3 Aug 2022 – 19:33"
+    }
+}
