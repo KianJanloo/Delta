@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { publicRoutes, authRoutes } from "./core/config/routes";
-import createMiddleware from 'next-intl/middleware';
-import { routing } from './i18n/routing';
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -12,11 +12,13 @@ export async function middleware(request: NextRequest) {
     return intlResponse;
   }
 
-  const token = request.cookies.get('next-auth.session-token')?.value;
+  const token =
+    request.cookies.get("next-auth.session-token")?.value ||
+    request.cookies.get("__Secure-next-auth.session-token")?.value;
+
   const { pathname } = request.nextUrl;
 
-  // Check if the path starts with /dashboard
-  if (pathname.includes('/dashboard')) {
+  if (pathname.includes("/dashboard")) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
@@ -35,7 +37,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next|_vercel|.*\\..*).*)",
-  ],
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
