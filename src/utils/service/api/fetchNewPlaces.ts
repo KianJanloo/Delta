@@ -1,19 +1,8 @@
+import { fetchApi } from "@/core/interceptore/fetchApi"
+import { IHouse } from "@/types/houses-type/house-type"
+
 export const fetchNewPlaces = async () => {
-    const item = {
-        id: '2',
-        title: ' اقمتگاه دال در قشم ',
-        rate: '3.2',
-        categories: {
-            id: 1,
-            name: ' 11.000 نفر بازدید کننده '
-        },
-    }
-    const items = [
-        item,
-        item,
-        item,
-        item,
-        item,
-    ]
+    
+    const items = await fetchApi.get("/houses?page=1&limit=10&sort=created_at&order=DESC") as { houses: IHouse[], totalCount: number }
     return items
 }
