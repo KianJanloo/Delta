@@ -1,5 +1,5 @@
 export interface ISlider {
-    items: TItems[];
+    items: { houses: TItems[], totalCount: number };
     view: '1' | '2';
     loading: boolean;
 }

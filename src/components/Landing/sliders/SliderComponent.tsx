@@ -11,6 +11,7 @@ import SkeletonCardComponent from '../cards/SkeletonCardComponent'
 
 export default function SliderComponent({ items, view, loading }: ISlider) {
   const loadingMap = [1, 2, 3, 4]
+
   return (
     <div className="w-full">
       <Swiper
@@ -30,8 +31,8 @@ export default function SliderComponent({ items, view, loading }: ISlider) {
               <SkeletonCardComponent />
             </SwiperSlide>
           ))
-          : items.map((item, index) => (
-            <SwiperSlide key={index}>
+          : items.houses.map((item, index) => (
+            <SwiperSlide className='my-12' key={index}>
               <CardComponent {...item} view={view} />
             </SwiperSlide>
           ))}

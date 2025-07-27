@@ -12,7 +12,7 @@ const CallSlider = () => {
 
     return (
         <div>
-            {items && <SliderComponent items={items} view='1' loading={isLoading} />}
+            {items && <SliderComponent items={{ houses: items, totalCount: items.length }} view='1' loading={isLoading} />}
         </div>
     )
 }
