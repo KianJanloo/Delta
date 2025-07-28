@@ -1,24 +1,23 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import MiniCard from './cards/MiniCard'
 import StatusProfile from './cards/StatusProfile'
 import SituationPayroll from './cards/SituationPayroll'
 import RecentReserves from './cards/RecentReserves'
-import { getAllBookings } from '@/utils/service/api/booking/getAllBookings'
-import { IReserveType } from '@/types/reserves-type/reserves-type'
 import { getDashboardSummary } from '@/utils/service/api/dashboard/getDashboardSummary'
 import { IDashboardSummary } from '@/types/dashboard-type/summary-type/summary-type'
+import { Booking, getCustomersBookings } from '@/utils/service/api/booking/getCustomersBookings'
+import MiniCard from './cards/MiniCard'
 
 const ComSellerDashboard = () => {
-  const [reserves, setReserves] = useState<IReserveType[]>([])
+  const [reserves, setReserves] = useState<Booking[]>([])
   const [dashboard, setDashboard] = useState<IDashboardSummary | null>(null)
 
   useEffect(() => {
     const fetchReserves = async () => {
       try {
-        const res = await getAllBookings(1, 8, "created_at", "DESC") as { data: IReserveType[] }
-        setReserves(res.data)
+        const res = await getCustomersBookings(1, 8, "created_at", "DESC");
+        setReserves(res?.bookings || []);
       } catch (err) {
         console.error('Failed to fetch reserves', err)
       }
@@ -28,7 +27,7 @@ const ComSellerDashboard = () => {
   }, [])
 
   useEffect(() => {
-    const fetchReserves = async () => {
+    const fetchDashboard = async () => {
       try {
         const res = await getDashboardSummary()
         setDashboard(res)
@@ -37,14 +36,14 @@ const ComSellerDashboard = () => {
       }
     }
 
-    fetchReserves()
+    fetchDashboard()
   }, [])
 
   const dataMiniCards = [
-    { number: dashboard?.houses, title: "totalProperties", href: "/dashboard/seller/manage-houses/my-houses" },
-    { number: dashboard?.bookings, title: "activeReserves", href: "/dashboard/seller/manage-reserves" },
-    { number: 12, title: "pendingReserves", href: "/dashboard/seller/manage-reserves" },
-    { number: 8, title: "todayVisits", href: "/dashboard/seller/manage-houses/my-houses" },
+    { number: dashboard?.houses, title: " تعداد املاک ", href: "/dashboard/seller/manage-houses/my-houses" },
+    { number: dashboard?.bookings.conformedBookings, title: " رزرو های تایید شده ", href: "/dashboard/seller/manage-reserves" },
+    { number: dashboard?.bookings.pendingBookings, title: " رزرو های در حال انتظار ", href: "/dashboard/seller/manage-reserves" },
+    { number: dashboard?.comments, title: " تعداد نظرات ", href: "/dashboard/seller/manage-houses/my-houses" },
   ]
 
   return (

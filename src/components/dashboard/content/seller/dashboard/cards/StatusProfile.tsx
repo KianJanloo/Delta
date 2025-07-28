@@ -10,7 +10,6 @@ import { useTranslations } from 'next-intl'
 import { getProfileById } from '@/utils/service/api/profile/getProfileById';
 import { IProfile } from '@/types/profile-type/profile-type';
 import { useSession } from 'next-auth/react';
-import { calculateProfileCompletion } from '@/utils/helper/completeProfile/completeProfile';
 import { convertToJalaliString } from '@/utils/helper/shamsiDate/ShamsDate';
 
 const COLORS = ['fill-primary', 'fill-subBg2'];
@@ -21,12 +20,13 @@ const StatusProfile = () => {
 
     const [profile, setProfile] = useState<IProfile | null>(null);
     const [completionPercentage, setCompletionPercentage] = useState(0);
+    console.log(completionPercentage)
 
     const getProfile = useCallback(async () => {
         if (session?.userInfo?.id) {
             const profile = await getProfileById(session?.userInfo?.id);
-            setProfile(profile);
-            setCompletionPercentage(calculateProfileCompletion(profile));
+            setProfile(profile.user);
+            setCompletionPercentage(profile.additionalPercentage);
         }
     }, [session])
 

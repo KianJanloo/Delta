@@ -22,13 +22,13 @@ const MobileSidebar = () => {
     const moreRef = useRef<HTMLDivElement | null>(null);
 
     const [role, setRole] = useState("");
-    const routeSelect = role === "seller" ? sellerRoutes : routes;
+    const routeSelect = (role === "seller" || role === "admin") ? sellerRoutes : routes;
 
     const { data: session } = useSession() as any
 
     const getProfile = useCallback(async () => {
         const user = await getProfileById(session?.userInfo.id)
-        setRole(user.role)
+        setRole(user.user.role)
     }, [session])
 
     useEffect(() => {

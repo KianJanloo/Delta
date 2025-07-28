@@ -24,7 +24,7 @@ const PersonalInformation = () => {
   const getProfile = useCallback(async () => {
     if (session?.userInfo?.id) {
       const profile = await getProfileById(session?.userInfo?.id);
-      setProfile(profile);
+      setProfile(profile.user);
     }
   }, [session?.userInfo?.id])
 

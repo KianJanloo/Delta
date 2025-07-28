@@ -31,7 +31,7 @@ const HeaderDashboard: React.FC = () => {
     const dir = useDirection()
 
     const [role, setRole] = useState("");
-    const routeSelect = role === "seller" ? sellerRoutes : routes;
+    const routeSelect = (role === "seller" || role === "admin") ? sellerRoutes : routes;
 
 
     useEffect(() => {
@@ -53,8 +53,8 @@ const HeaderDashboard: React.FC = () => {
     const getProfileState = useCallback(async () => {
         if (session?.userInfo?.id) {
             const profile = await getProfileById(session.userInfo.id);
-            setProfile(profile);
-            setRole(profile?.role)
+            setProfile(profile.user);
+            setRole(profile?.user.role)
         }
     }, [session?.userInfo])
 
@@ -94,7 +94,13 @@ const HeaderDashboard: React.FC = () => {
                         <div onClick={() => {
                             setModalView(!modalView)
                         }} className="flex relative gap-4 items-center cursor-pointer">
-                            <Image src={session?.user?.image || profile?.profilePicture || "/"} alt="" width={40} height={40} className="border-0 outline-none bg-secondary-light rounded-[8px]" />
+                            <Image
+                                src={session?.user?.image || profile?.profilePicture || "/"}
+                                alt=""
+                                width={32}
+                                height={32}
+                                className="border-0 outline-none bg-secondary-light rounded-[8px] w-10 h-10 object-cover"
+                            />
                             <div className="flex max-md:hidden flex-col justify-between">
                                 <h2>{session?.user?.name || (profile?.firstName ?? "") + " " + (profile?.lastName ?? "")}</h2>
                                 <span className="text-muted-foreground text-sm">{profile?.role}</span>

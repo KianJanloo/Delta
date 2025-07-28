@@ -25,7 +25,7 @@ const MiniCard = ({
       </div>
       <div className="w-full flex justify-center items-center flex-col">
         <h2 className="font-semibold text-lg"> {number} </h2>
-        <span className="text-lg"> {t(title)} </span>
+        <span className="text-lg"> {title} </span>
       </div>
 
       <svg width="100%" height="2" viewBox="0 0 547 2" fill="none" xmlns="http://www.w3.org/2000/svg">

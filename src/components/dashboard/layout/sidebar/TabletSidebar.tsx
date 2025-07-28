@@ -47,7 +47,7 @@ const TabletSidebar = ({
 
     const getProfile = useCallback(async () => {
         const user = await getProfileById(session?.userInfo.id)
-        setRole(user.role)
+        setRole(user.user.role)
     }, [session])
 
     useEffect(() => {
@@ -70,7 +70,7 @@ const TabletSidebar = ({
         };
     }, [setView]);
 
-    const routeSelect = role === "seller" ? sellerRoutes : routes;
+    const routeSelect = (role === "seller" || role === "admin") ? sellerRoutes : routes;
 
     return (
         <div

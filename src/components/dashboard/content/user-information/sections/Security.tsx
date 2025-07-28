@@ -7,12 +7,12 @@ import { Label } from '@/components/ui/label'
 import React, { useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { securityValidation } from '@/utils/validations/security-validation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ISecurity } from '@/types/security-type/security-type'
-import { editProfile } from '@/utils/service/api/profile/editProfile'
+import { ChangePasswordPayload } from '@/types/security-type/security-type'
 import { useSession } from 'next-auth/react'
 import { showToast } from '@/core/toast/toast'
+import { changeUserPassword } from '@/utils/service/api/profile/security'
+import { changePasswordValidation } from '@/utils/validations/security-validation'
 
 const Security = () => {
     const t = useTranslations('dashboardBuyer.profile3');
@@ -24,12 +24,13 @@ const Security = () => {
         reset,
         formState: { errors }
     } = useForm({
-        resolver: zodResolver(securityValidation)
+        resolver: zodResolver(changePasswordValidation)
     })
 
-    const onSubmit = async (data: ISecurity) => {
-        if(session?.password === data.previousPassword) {
-            const response = await editProfile(session?.userInfo?.id, data)
+    const onSubmit = async (data: ChangePasswordPayload) => {
+        if(session?.password === data.currentPassword) {
+            const response = await changeUserPassword(data);
+            console.log(response)
             if (response) {
                 showToast("success", "رمز عبور با موفقیت تغییر کرد")
             }
@@ -56,38 +57,26 @@ const Security = () => {
                 <div className='flex flex-col gap-2'>
                     <Label htmlFor='previousPassword' className='text-subText'>{t('previousPassword')}</Label>
                     <Input
-                        {...register('previousPassword')}
+                        {...register('currentPassword')}
                         className='text-subText border-subText max-w-[450px] placeholder:text-subText px-4 py-2 border rounded-xl bg-transparent'
                         placeholder={t('previousPasswordPlaceholder')}
-                        name='previousPassword'
-                        id='previousPassword'
+                        name='currentPassword'
+                        id='currentPassword'
                         type='password'
                     />
-                    {errors.previousPassword && <span className='text-danger text-xs'>{errors.previousPassword.message}</span>}
+                    {errors.currentPassword && <span className='text-danger text-xs'>{errors.currentPassword.message}</span>}
                 </div>
                 <div className='flex flex-col gap-2'>
                     <Label htmlFor='newPassword' className='text-subText'>{t('newPassword')}</Label>
                     <Input
-                        {...register('password')}
+                        {...register('newPassword')}
                         className='text-subText border-subText max-w-[450px] placeholder:text-subText px-4 py-2 border rounded-xl bg-transparent'
                         placeholder={t('newPasswordPlaceholder')}
-                        name='password'
-                        id='password'
+                        name='newPassword'
+                        id='newPassword'
                         type='password'
                     />
-                    {errors.password && <span className='text-danger text-xs'>{errors.password.message}</span>}
-                </div>
-                <div className='flex flex-col gap-2'>
-                    <Label htmlFor='repeatPassword' className='text-subText'>{t('repeatPassword')}</Label>
-                    <Input
-                        {...register('confirmPassword')}
-                        className='text-subText border-subText max-w-[450px] placeholder:text-subText px-4 py-2 border rounded-xl bg-transparent'
-                        placeholder={t('repeatPasswordPlaceholder')}
-                        name='confirmPassword'
-                        id='confirmPassword'
-                        type='password'
-                    />
-                    {errors.confirmPassword && <span className='text-danger text-xs'>{errors.confirmPassword.message}</span>}
+                    {errors.newPassword && <span className='text-danger text-xs'>{errors.newPassword.message}</span>}
                 </div>
             </div>
         </form>

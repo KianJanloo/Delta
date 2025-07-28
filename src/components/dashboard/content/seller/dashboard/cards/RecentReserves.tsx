@@ -5,9 +5,9 @@
 import { BlurFade } from '@/components/magicui/blur-fade'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { IHouse } from '@/types/houses-type/house-type'
-import { IReserveType } from '@/types/reserves-type/reserves-type'
 import { convertToJalaliString } from '@/utils/helper/shamsiDate/ShamsDate'
 import { SplitNumber } from '@/utils/helper/spliter/SplitNumber'
+import { Booking } from '@/utils/service/api/booking/getCustomersBookings'
 import { getHouseById } from '@/utils/service/api/houses-api'
 import { CheckCircle2, Coins, Flower, Pin, Rocket, Text, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -18,7 +18,7 @@ const RecentReserves = ({
     reserves,
 }:
     {
-        reserves: IReserveType[],
+        reserves: Booking[],
     }) => {
     const t = useTranslations('dashboardSeller.dashboard')
     const [housesData, setHousesData] = useState<Record<string, IHouse>>({})

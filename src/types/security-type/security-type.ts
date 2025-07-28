@@ -1,5 +1,4 @@
-export interface ISecurity {
-    previousPassword: string;
-    password: string;
-    confirmPassword: string;
+export interface ChangePasswordPayload {
+    currentPassword: string;
+    newPassword: string;
 }

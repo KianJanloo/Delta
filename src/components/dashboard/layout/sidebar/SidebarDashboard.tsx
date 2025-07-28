@@ -52,7 +52,7 @@ const SidebarDashboard = ({
   
   const getProfile = useCallback(async () => {
     const user = await getProfileById(session?.userInfo.id)
-    setRole(user.role)
+    setRole(user.user.role)
   }, [session])
 
   useEffect(() => {
@@ -114,7 +114,7 @@ const SidebarDashboard = ({
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className="flex flex-col gap-2">
-            {(role === "seller" ? sellerRoutes : routes).map(({ label, href, icon: Icon, children }) => {
+            {((role === "seller" || role === "admin") ? sellerRoutes : routes).map(({ label, href, icon: Icon, children }) => {
               const isActive = pathname === href;
               const isDropdownOpen = openDropdown === href;
 
