@@ -68,7 +68,7 @@ const ContentMyHouses = ({ houses, fetchReserve, reset }: {
                         <TableHead className='text-right'>{t('houseName')}</TableHead>
                         <TableHead className='text-right'>{t('price')}</TableHead>
                         <TableHead className='text-right'>{t('rating')}</TableHead>
-                        <TableHead className='text-right'>{t('views')}</TableHead>
+                        <TableHead className='text-right'>{" ظرفیت "}</TableHead>
                         <TableHead className='text-right'>{t('reserves')}</TableHead>
                         <TableHead>  </TableHead>
                     </TableRow>
@@ -77,7 +77,7 @@ const ContentMyHouses = ({ houses, fetchReserve, reset }: {
                     {houses.map((house, idx) => (
                         <TableRow key={house.id || idx}>
                             <TableCell className='py-4 flex gap-4 items-center'>
-                                <img src={house.photos[0] || " "} alt='' width={108} height={72} className='rounded-2xl bg-subBg2' />
+                                <img src={house.photos !== null ? house.photos[0] : " "} alt='' width={108} height={72} className='rounded-2xl bg-subBg2' />
                                 {house.title}
                             </TableCell>
                             <TableCell>{SplitNumber(house.price)} {t('currency')}</TableCell>
@@ -106,7 +106,7 @@ const ContentMyHouses = ({ houses, fetchReserve, reset }: {
             <div className='flex flex-col gap-4 w-full lg:hidden'>
                 {houses.map((house, idx) => (
                     <div key={idx} className='w-full max-sm:flex-col bg-subBg2 px-4 py-2 rounded-xl flex gap-4 relative'>
-                        <img src={house.photos[0] || " "} alt='' className='w-1/3 max-sm:w-full max-sm:h-[200px] bg-secondary-light3 rounded-xl' />
+                        <img src={house.photos !== null ? house.photos[0] : " "} alt='' className='w-1/3 max-sm:w-full max-sm:h-[200px] bg-secondary-light3 rounded-xl' />
                         <div className='h-full flex flex-col gap-2 max-sm:gap-4 text-base flex-grow'>
                             <div className='flex items-center text-base gap-4 my-2 max-sm:text-lg justify-between flex-wrap'>
                                 <span>{house.title}</span>

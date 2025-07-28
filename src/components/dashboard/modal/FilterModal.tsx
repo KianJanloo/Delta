@@ -12,15 +12,15 @@ import { useTranslations } from 'next-intl'
 const FilterModal = ({ handleFilterChange, filters }: { handleFilterChange: (key: string, value: any) => void, filters: {
     sort: string;
     transaction_type: string;
-    fromPrice: number;
-    toPrice: number;
+    minPrice: number;
+    maxPrice: number;
     search: string;
 } }) => {
     const [open, setOpen] = useState<boolean>(false)
     const [transaction_type, setTransaction_type] = useState<string>(filters.transaction_type || "");
     const [sort, setSort] = useState<string>(filters.sort || "");
-    const [priceFrom, setPriceFrom] = useState(filters.fromPrice || "0")
-    const [priceTo, setPriceTo] = useState(filters.toPrice || "15000000")
+    const [priceFrom, setPriceFrom] = useState(filters.minPrice || "0")
+    const [priceTo, setPriceTo] = useState(filters.maxPrice || "15000000")
     const t = useTranslations('modals.filter');
 
     const handleFilter = () => {
@@ -31,10 +31,10 @@ const FilterModal = ({ handleFilterChange, filters }: { handleFilterChange: (key
             handleFilterChange("transaction_type", transaction_type)
         }
         if(priceTo){
-            handleFilterChange("toPrice", priceTo)
+            handleFilterChange("maxPrice", priceTo)
         }
         if(priceFrom){
-            handleFilterChange("fromPrice", priceFrom)
+            handleFilterChange("minPrice", priceFrom)
         }
 
         setOpen(false)
@@ -57,17 +57,19 @@ const FilterModal = ({ handleFilterChange, filters }: { handleFilterChange: (key
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
                     <CommonSelect
-                        onValueChange={(val) => setTransaction_type(val)}
+                        onValueChange={(val) => setTransaction_type(val === "all" ? "" : val)}
                         label={t('propertyType')}
                         selectItems={[
                             { label: "فروش", value: 'direct_purchase' },
                             { label: "رهن", value: 'mortgage' },
                             { label: "اجاره", value: 'rental' },
                             { label: "رزرو", value: 'reservation' },
+                            { label: "همه", value: 'all' },
                         ]}
                         placeholder={transaction_type !== "" && transaction_type ? transaction_type : "نوع ملک را انتخاب کنید"}
                         color='text-subText'
                         classname='bg-subBg2 w-full'
+                        value={transaction_type}
                     />
                     <CommonSelect
                         label="ترتیب"
@@ -77,6 +79,7 @@ const FilterModal = ({ handleFilterChange, filters }: { handleFilterChange: (key
                             { label: "قدیمی ترین ها", value: "created_at ASC" },
                             { label: "محبوب ترین ها", value: "rate DESC" },
                         ]}
+                        value={sort}
                         placeholder="ترتیب املاک را انتخاب کنید"
                         color='text-subText'
                         classname='bg-subBg2 w-full'

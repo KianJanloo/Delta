@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 'use client'
 
 import React, { useEffect, useState } from 'react'
@@ -6,122 +7,82 @@ import HeaderMyHouses from './header/HeaderMyHouses'
 import ContentMyHouses from './content/ContentMyHouses'
 import { BlurFade } from '@/components/magicui/blur-fade'
 import { IHouse } from '@/types/houses-type/house-type'
-import { getProperties } from '@/utils/service/api/properties/getProperties'
 import CommonButton from '@/components/common/buttons/common/CommonButton'
-import { redirect } from 'next/navigation'
+import { redirect, useRouter, useSearchParams } from 'next/navigation'
 import { PlusCircle } from 'lucide-react'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import { getAllBookings } from '@/utils/service/api/booking/getAllBookings'
 import { IReserveType } from '@/types/reserves-type/reserves-type'
 import { useSession } from 'next-auth/react'
-import { showToast } from '@/core/toast/toast'
+import { getMyHouses } from '@/utils/service/api/houses/getMyHouses'
+
+const limit = 5;
 
 const ComponentMyHouses = () => {
-    const [allHouses, setAllHouses] = useState<IHouse[]>([]);
-    const [filteredHouses, setFilteredHouses] = useState<IHouse[]>([]);
-    const [page, setPage] = useState<number>(1);
-    const limit = 5;
-
-    const [filters, setFilters] = useState<{
-        sort: string,
-        transaction_type: string,
-        fromPrice: number,
-        toPrice: number,
-        search: string
-    }>({
+    const [allHouses, setAllHouses] = useState<IHouse[]>([])
+    const [filteredHouses, setFilteredHouses] = useState<IHouse[]>([])
+    const [totalCount, setTotalCount] = useState<number>(0)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [filters, setFilters] = useState({
         sort: '',
         transaction_type: '',
-        fromPrice: 0,
-        toPrice: 15000000,
+        minPrice: 0,
+        maxPrice: 15000000,
         search: ''
-    });
-
-    const { data: session } = useSession() as any;
+    })
+    const { data: session } = useSession() as any
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const page = Number(searchParams.get('page')) || 1
+    const totalPages = Math.ceil(totalCount / limit)
 
     useEffect(() => {
         if (session) {
             const fetchHouses = async () => {
-                const response = await getProperties(1, 1000);
-                if (!response) {
-                    showToast('error', 'خطا در بارگذاری داده‌ها');
-                    return;
-                }
-                const responseSeller = response.filter(house => house.sellerId === session.userInfo.id);
-                setAllHouses(responseSeller);
+                setLoading(true)
+                const params = { page, limit, ...filters }
+                const response = await getMyHouses(params)
+                setAllHouses(response?.houses || [])
+                setTotalCount(response?.totalCount || 0)
+                setLoading(false)
             }
-            fetchHouses();
+            fetchHouses()
         }
-    }, [session]);
-
-    const handleResetFilters = () => {
-        const handle = async () => {
-            setFilters({
-                sort: '',
-                transaction_type: '',
-                fromPrice: 0,
-                toPrice: 15000000,
-                search: ''
-            });
-            if (session) {
-                const response = await getProperties(1, 1000);
-                if (!response) {
-                    showToast('error', 'خطا در بارگذاری داده‌ها');
-                    return;
-                }
-                const responseSeller = response.filter(house => house.sellerId === session.userInfo.id);
-                setAllHouses(responseSeller);
-            }
-        }
-
-        handle()
-    };
+    }, [session, page, filters])
 
     useEffect(() => {
-        let filtered = [...allHouses];
+        setFilteredHouses(allHouses)
+    }, [allHouses])
 
-        if (filters.transaction_type) {
-            filtered = filtered.filter(house => house.transaction_type === filters.transaction_type);
-        }
-
-        if (filters.fromPrice) {
-            filtered = filtered.filter(house => Number(house.price) >= filters.fromPrice);
-        }
-
-        if (filters.toPrice) {
-            filtered = filtered.filter(house => Number(house.price) <= filters.toPrice);
-        }
-
-        if (filters.search) {
-            filtered = filtered.filter(house => house.title?.toLowerCase().includes(filters.search.toLowerCase()));
-        }
-
-        if (filters.sort) {
-            const [sortField, sortOrder] = filters.sort.split(' ');
-            filtered.sort((a, b) => {
-                const aValue = (a as Record<string, any>)[sortField];
-                const bValue = (b as Record<string, any>)[sortField];
-                if (aValue < bValue) return sortOrder === 'ASC' ? -1 : 1;
-                if (aValue > bValue) return sortOrder === 'ASC' ? 1 : -1;
-                return 0;
-            });
-        }
-
-        setFilteredHouses(filtered);
-        setPage(1);
-    }, [filters, allHouses]);
-
-    const paginatedHouses = filteredHouses.slice((page - 1) * limit, page * limit);
+    const handleResetFilters = () => {
+        setFilters({
+            sort: '',
+            transaction_type: '',
+            minPrice: 0,
+            maxPrice: 15000000,
+            search: ''
+        })
+        router.replace('?page=1')
+    }
 
     const handleFilterChange = (key: string, value: any) => {
         setFilters(prev => ({
             ...prev,
-            [key]: key === "fromPrice" || key === "toPrice" ? Number(value) : value
-        }));
-    };
+            [key]: key === "minPrice" || key === "maxPrice" ? Number(value) : value
+        }))
+        router.replace('?page=1')
+    }
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage !== page) {
+            setLoading(true)
+            router.replace(`?page=${newPage}`)
+        }
+    }
 
     const fetchReserve = async (house_id: string) => {
-        const response = await getAllBookings(1, 100, "created_at", "DESC", Number(house_id)) as { data: IReserveType[] };
-        return response;
+        const response = await getAllBookings(1, 100, "created_at", "DESC", Number(house_id)) as { data: IReserveType[] }
+        return response
     }
 
     return (
@@ -130,30 +91,40 @@ const ComponentMyHouses = () => {
             <svg width="100%" height="2" viewBox="0 0 1131 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <line x1="-0.00439453" y1="0.881836" x2="1131" y2="0.881836" stroke="#888888" strokeOpacity="0.26" strokeDasharray="7 7" />
             </svg>
-            <ContentMyHouses reset={handleResetFilters} houses={paginatedHouses} fetchReserve={fetchReserve} />
+            {loading ? (
+                <div className="flex justify-center items-center py-10">
+                    <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></span>
+                </div>
+            ) : (
+                <ContentMyHouses reset={handleResetFilters} houses={filteredHouses} fetchReserve={fetchReserve} />
+            )}
             <div className='flex w-full flex-wrap justify-between items-end'>
                 <CommonButton onclick={() => redirect("/dashboard/seller/manage-houses/add-houses")} icon={<PlusCircle size={20} />} title={" ساخت ملک جدید "} />
                 <div>
                     <Pagination className='w-fit'>
                         <PaginationContent className="justify-center mt-6">
                             <PaginationItem>
-                                <PaginationPrevious onClick={() => setPage(prev => Math.max(prev - 1, 1))} />
+                                <PaginationPrevious
+                                    onClick={() => handlePageChange(Math.max(page - 1, 1))}
+                                    aria-disabled={page === 1}
+                                />
                             </PaginationItem>
-
-                            {Array.from({ length: Math.ceil(filteredHouses.length / limit) }, (_, idx) => (
+                            {Array.from({ length: totalPages }, (_, idx) => (
                                 <PaginationItem key={idx + 1}>
                                     <PaginationLink
                                         isActive={page === idx + 1}
-                                        onClick={() => setPage(idx + 1)}
+                                        onClick={() => handlePageChange(idx + 1)}
                                         className={page === idx + 1 ? 'bg-primary text-primary-foreground' : ''}
                                     >
                                         {idx + 1}
                                     </PaginationLink>
                                 </PaginationItem>
                             ))}
-
                             <PaginationItem>
-                                <PaginationNext onClick={() => setPage(prev => Math.min(prev + 1, Math.ceil(filteredHouses.length / limit)))} />
+                                <PaginationNext
+                                    onClick={() => handlePageChange(Math.min(page + 1, totalPages))}
+                                    aria-disabled={page === totalPages}
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
