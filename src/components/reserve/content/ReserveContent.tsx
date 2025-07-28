@@ -28,13 +28,14 @@ interface IReserveContent {
   setLocation: React.Dispatch<React.SetStateAction<string>>
   marker: MarkerType | null
   setMarker: React.Dispatch<React.SetStateAction<MarkerType | null>>
+  totalCount: number
 }
 
-const ReserveContent: React.FC<IReserveContent> = ({ houses, isLoading, setMaxPrice, setMinPrice, marker, setMarker }) => {
+const ReserveContent: React.FC<IReserveContent> = ({ totalCount, houses, isLoading, setMaxPrice, setMinPrice, marker, setMarker }) => {
   const t = useTranslations('reserve.content');
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 3
-  const totalPages = Math.ceil(houses.length / itemsPerPage)
+  const totalPages = Math.ceil(totalCount / itemsPerPage)
 
   const paginatedHouses = houses.slice(
     (currentPage - 1) * itemsPerPage,

@@ -53,7 +53,7 @@ const RentalFilter: FC<IReserveFilter> = ({ setOrder, setSort, setSearch, houseL
                         }
                         if (value === 'rate') {
                             setSort('rate')
-                            setOrder('DESC')
+                            setOrder('ASC')
                         }
                     })}
                     placeholder={t('latest')}
@@ -85,7 +85,7 @@ const RentalFilter: FC<IReserveFilter> = ({ setOrder, setSort, setSearch, houseL
                 />
                 <CommonSelect
                     onValueChange={(value => {
-                        setTransactionType(value === 'all' ? "" : value)
+                        setTransactionType(value === 'all' ? "[rental, mortgage, direct_purchase]" : value)
                     })}
                     placeholder={t('mortgageAndRental')}
                     icon={<Coins size={16} className='text-subText' />}

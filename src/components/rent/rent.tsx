@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 "use client";
 import {
   ChevronLeft,
@@ -20,19 +22,23 @@ import SellerDetail from "./SellerDetail";
 import Photo from "./Photo";
 import { Loader } from "../common/Loader";
 import { useTranslations } from "next-intl";
+import { addFavorite } from "@/utils/service/api/favorites/addFavorite";
+import { useSession } from "next-auth/react";
 
 const Rent = () => {
-  const t = useTranslations('rental.single');
+  const t = useTranslations("rental.single");
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   const [house, setHouse] = React.useState<IHouse>();
   const params = useParams();
   const id = params?.id as string;
 
+  const session = useSession() as any;
+
   const fetchHouse = useCallback(async () => {
-    const houseData = await getHouseById(id) as IHouse;
+    const houseData = (await getHouseById(id)) as IHouse;
     setHouse(houseData);
-  }, [id])
+  }, [id]);
 
   useEffect(() => {
     fetchHouse();
@@ -44,7 +50,7 @@ const Rent = () => {
         prev === house?.photos.length - 1 ? 0 : prev + 1
       );
     }
-  }, [house])
+  }, [house]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -55,19 +61,19 @@ const Rent = () => {
   }, [nextSlide]);
 
   const handleCopy = async () => {
-    if (typeof window === 'undefined') return;
-    
+    if (typeof window === "undefined") return;
+
     try {
       await navigator.clipboard.writeText(window.location.href);
       showToast("success", t("copied"), t("close"));
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   };
 
   const handleShare = async () => {
-    if (typeof window === 'undefined') return;
-    
+    if (typeof window === "undefined") return;
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -77,8 +83,34 @@ const Rent = () => {
         });
         showToast("success", t("shareSuccess"), t("close"));
       } catch (error) {
-        console.error('Error sharing:', error);
+        console.error("Error sharing:", error);
       }
+    }
+  };
+
+  const handleFavorite = async () => {
+    try {
+      const data = {
+        house_id: Number(id),
+        user_id: session.userInfo?.id,
+      };
+
+      const response = await addFavorite(data);
+      if(response){
+        showToast('success', ' ملک با موفقیت به علاقه مندی ها اضافه شد. ')
+      }
+      else {
+        showToast('error', ' خطا. ')
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const favorites = async () => {
+    try {
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -125,7 +157,10 @@ const Rent = () => {
           ))}
         </div>
 
-        <div className="mt-6 w-full flex flex-col sm:flex-row justify-between items-start gap-4" dir="rtl">
+        <div
+          className="mt-6 w-full flex flex-col sm:flex-row justify-between items-start gap-4"
+          dir="rtl"
+        >
           <div className="flex flex-col w-full gap-4" dir="rtl">
             <div className="flex flex-row max-md:flex-wrap sm:flex-row sm:items-center justify-between w-full gap-2">
               <span className="lg:text-xl text-md sm:text-xl md:text-xl">
@@ -134,13 +169,19 @@ const Rent = () => {
 
               <div className="flex flex-row items-center gap-2 self-start sm:self-auto">
                 <button className="w-10 h-10 flex items-center justify-center rounded-lg bg-secondary-light2">
-                  <HeartIcon className="w-5 h-5 text-subText" />
+                  <HeartIcon
+                    onClick={handleFavorite}
+                    className="w-5 h-5 text-subText"
+                  />
                 </button>
                 <button className="w-10 h-10 flex items-center justify-center rounded-lg bg-secondary-light2">
                   <Copy onClick={handleCopy} className="w-5 h-5 text-subText" />
                 </button>
                 <button className="w-10 h-10 flex items-center justify-center rounded-lg bg-secondary-light2 ">
-                  <ShareIcon onClick={handleShare} className="w-5 h-5 text-subText" />
+                  <ShareIcon
+                    onClick={handleShare}
+                    className="w-5 h-5 text-subText"
+                  />
                 </button>
               </div>
             </div>
@@ -158,7 +199,10 @@ const Rent = () => {
               <HomeIcon />
               {t("similarAds")}
             </p>
-            <button onClick={() => redirect("/rent")} className="flex gap-1 text-primary pl-4">
+            <button
+              onClick={() => redirect("/rent")}
+              className="flex gap-1 text-primary pl-4"
+            >
               {t("seeAll")}
               <ChevronLeft />
             </button>

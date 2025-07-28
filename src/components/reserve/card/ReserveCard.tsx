@@ -13,13 +13,14 @@ interface IReserveContent {
     items: IHouse
 }
 const ReserveCard : FC<IReserveContent> = ({ items }) => {
+
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} whileHover={{ scale: 1.02 }} className="flex flex-col md:flex-row w-full border-b-2 bg-transparent py-6 items-center group justify-between border-[#3B3B3B]">
             <div className="flex flex-col md:flex-row gap-4 md:w-4/5 w-full">
                 <img
                     alt=""
-                    src={items.photos[0]}
-                    className="bg-secondary-light3 md:min- md:w-[228.35986328125px] w-full h-[144px] group-hover:shadow-[#8CFF451F] group-hover:shadow-2md group-hover:border group-hover:border-primary rounded-[16px]"
+                    src={items.photos !== null ? items.photos[0] : ' '}
+                    className="bg-secondary-light3 md:w-[228.35986328125px] w-full h-[144px] group-hover:shadow-[#8CFF451F] group-hover:shadow-2md group-hover:border group-hover:border-primary rounded-[16px]"
                 />
                 <div className="flex flex-col gap-4 items-start justify-between w-full">
                     <div className="bg-accent text-white text-sm flex gap-2 px-4 py-1 flex-row-reverse rounded-[8px]">

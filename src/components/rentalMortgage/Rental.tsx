@@ -19,7 +19,7 @@ const RentalComponent = () => {
 
   const searchParams = useSearchParams()
 
-  const urlTransactionType = searchParams.get('transactionType') || ''
+  const urlTransactionType = searchParams.get('transactionType') || "[rental, mortgage, direct_purchase]"
   const urlLocation = searchParams.get('location') || ''
   const urlMinArea = Number(searchParams.get('minRent')) || ''
   const urlMaxArea = Number(searchParams.get('maxRent')) || ''
@@ -38,12 +38,13 @@ const RentalComponent = () => {
   const [minArea, setMinArea] = useState<number | "">(urlMinArea)
   const [maxArea, setMaxArea] = useState<number | "">(urlMaxArea)
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [transactionType, setTransactionType] = useState<string>(urlTransactionType)
+  const [transactionType, setTransactionType] = useState<string>(urlTransactionType || "[rental, mortgage, direct_purchase]")
   const [location, setLocation] = useState<string>(urlLocation)
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
-  const totalPages = Math.ceil(houses.length / itemsPerPage)
+  const totalPages = Math.ceil(totalCount / itemsPerPage)
 
   const paginatedHouses = houses.slice(
     (currentPage - 1) * itemsPerPage,
@@ -62,7 +63,8 @@ const RentalComponent = () => {
         transactionType, search, order, sort, location,
         propertyType, '', '', minRent, maxRent, minMortgage, maxMortgage, minArea, maxArea
       )
-      setHouses(response)
+      setHouses(response.houses);
+      setTotalCount(response.totalCount);
       setCurrentPage(1)
     } catch (error) {
       console.error('Error fetching houses:', error)

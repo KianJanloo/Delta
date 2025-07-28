@@ -18,7 +18,7 @@ const RentalCard : FC<IReserveContent> = ({ items }) => {
             <div className="flex flex-col overflow-hidden lg:flex-row gap-4 max-lg:w-full w-fit">
                 <img
                     alt=""
-                    src={items.photos[0]}
+                    src={items.photos !== null ? items.photos[0] : ' '}
                     className="bg-secondary-light3 lg:min- lg:w-[228] w-full h-[144px] max-lg:h-[200px] group-hover:shadow-[#8CFF451F] group-hover:shadow-2md group-hover:border group-hover:border-primary rounded-[16px]"
                 />
                 <div className="flex flex-col gap-4 items-start justify-between w-full">

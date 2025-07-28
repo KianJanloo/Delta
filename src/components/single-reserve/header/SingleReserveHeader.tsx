@@ -75,7 +75,7 @@ const SingleReserveHeader: FC<IProps> = ({ house }) => {
                 </p>
                 <div className='flex gap-5 items-center'>
                     <div className="bg-accent items-center text-white text-sm flex gap-2 px-4 py-1 flex-row-reverse rounded-[8px]">
-                        <span className='whitespace-nowrap'>{house.rate} {t('star')}</span>
+                        <span className='whitespace-nowrap'>{house.rate || 0} {t('star')}</span>
                         <Star size={16} />
                     </div>
                     |
