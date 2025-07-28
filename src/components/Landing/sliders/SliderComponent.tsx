@@ -12,8 +12,6 @@ import SkeletonCardComponent from '../cards/SkeletonCardComponent'
 export default function SliderComponent({ items, view, loading }: ISlider) {
   const loadingMap = [1, 2, 3, 4]
 
-  console.log(items)
-
   return (
     <div className="w-full">
       <Swiper
