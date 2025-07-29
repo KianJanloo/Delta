@@ -5,11 +5,12 @@ import LoginForm from '@/components/auth/loginForm'
 import { useTranslations } from 'next-intl'
 
 interface IProps {
-    defaultValue: "register" | "login";
+    defaultValue: "register" | "login" | "forget-password";
     registerElement: ReactNode;
+    forgetPasswordElement?: ReactNode;
 }
 
-const TabContent: FC<IProps> = ({ defaultValue, registerElement }) => {
+const TabContent: FC<IProps> = ({ defaultValue, registerElement, forgetPasswordElement }) => {
   const t = useTranslations('auth.tabContent');
 
   return (
@@ -17,6 +18,7 @@ const TabContent: FC<IProps> = ({ defaultValue, registerElement }) => {
         <TabsList className='bg-subBg text-subText w-full mt-[20px]' >
           <TabsTrigger value="login" className='bg-subBg w-1/2'>{t('loginTab')}</TabsTrigger>
           <TabsTrigger value="register" className='bg-subBg w-1/2'>{t('registerTab')}</TabsTrigger>
+          <TabsTrigger value="forget-password" className='bg-subBg w-1/2'> فراموشی رمز عبور </TabsTrigger>
         </TabsList>
         <div className="flex md:flex-nowrap flex-wrap gap-4 w-full my-8">
           <div className="md:w-1/2 w-full">
@@ -52,6 +54,9 @@ const TabContent: FC<IProps> = ({ defaultValue, registerElement }) => {
         </TabsContent>
         <TabsContent value="register" className='mt-[30px]'>
           {registerElement}
+        </TabsContent>
+        <TabsContent value="forget-password" className='mt-[30px]'>
+          {forgetPasswordElement}
         </TabsContent>
       </Tabs>
   )

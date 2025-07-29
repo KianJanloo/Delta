@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { getToken, removeToken, setToken } from "@/core/cookie/auth";
+import Cookies from "js-cookie";
+
 
 interface UserState {
   tempUserId: number | null;
@@ -37,9 +39,41 @@ const useUserStore = create<UserState>((set) => ({
   },
 }));
 
+const getEmail = Cookies.get("email");
+
 const useEmailStore = create<EmailState>((set) => ({
-  email: null,
+  email: getEmail ? JSON.parse(getEmail) : null,
   setEmail: (email: string) => set({ email: email }),
 }));
 
-export { useUserStore, useEmailStore };
+useEmailStore.subscribe((state) => {
+  const email = state.email;
+  if (email) {
+    Cookies.set("email", JSON.stringify(email), { expires: 1 });
+  } else {
+    Cookies.remove("email");
+  }
+});
+
+interface CodeState {
+  code: string | null;
+  setCode: (code: string) => void;
+}
+
+const getCode = Cookies.get("code");
+
+const useCodeStore = create<CodeState>((set) => ({
+  code: getCode ? JSON.parse(getCode) : null,
+  setCode: (code: string) => set({ code: code }),
+}));
+
+useCodeStore.subscribe((state) => {
+  const code = state.code;
+  if (code) {
+    Cookies.set("code", JSON.stringify(code), { expires: 1 });
+  } else {
+    Cookies.remove("code");
+  }
+});
+
+export { useUserStore, useEmailStore, useCodeStore };

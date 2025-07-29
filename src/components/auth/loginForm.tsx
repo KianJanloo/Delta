@@ -18,6 +18,7 @@ import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
 import { jwtDecode } from "jwt-decode";
 import ReCAPTCHA from "react-google-recaptcha";
+import Link from "next/link";
 
 export interface LoginResponse {
   accessToken: string;
@@ -161,13 +162,13 @@ const LoginForm = () => {
                   </p>
                 )}
               </div>
-              <span className="text-card-foreground flex gap-2 text-sm cursor-pointer">
+              <Link href={"/forget-password/send"} className="text-card-foreground flex gap-2 text-sm cursor-pointer">
                 <p>{t("forgotPassword")}</p>{" "}
                 <ArrowLeft
                   className={` ${dir === "ltr" && "rotate-180"} `}
                   size={20}
                 />
-              </span>
+              </Link>
             </div>
           </div>
         </div>
