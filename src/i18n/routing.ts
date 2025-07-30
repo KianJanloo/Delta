@@ -7,7 +7,7 @@ export const directionMap = {
 } as const;
 
 export const defaultLocale = "fa"
-export const locales = ['fa', 'en', 'ar']
+export const locales = ['fa']
 
 export const routing = defineRouting({
   locales,
