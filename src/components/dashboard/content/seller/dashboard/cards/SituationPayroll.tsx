@@ -16,7 +16,6 @@ const SituationPayroll = () => {
   const fetchMarket = async () => {
     const response = await getMarketTrends();
     setMarketTrends(response);
-    console.log(response)
   }
 
   useEffect(() => {
@@ -57,7 +56,7 @@ const SituationPayroll = () => {
             <div className="bg-primary rounded-full w-[16px] h-[16px]" />
             <span className="font-semibold">{t("currentMonthIncome")}</span>
           </div>
-          <CommonButton title={`${marketTrends?.[0].bookingCount || 0} ${t("currency")}`} />
+          <CommonButton title={`${marketTrends?.[0].bookingCount || 0} ${" رزرو "}`} />
         </div>
         <div className="w-full flex justify-between">
           <div className="flex gap-2 items-center">
@@ -66,7 +65,7 @@ const SituationPayroll = () => {
           </div>
           <CommonButton
             classname="bg-subBg2 text-foreground"
-            title={`${marketTrends?.[1].bookingCount || 0} ${t("currency")}`}
+            title={`${marketTrends?.[1].bookingCount || 0} ${" رزرو "}`}
           />
         </div>
       </div>

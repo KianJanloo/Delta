@@ -102,12 +102,12 @@ const LoginForm = () => {
         className="mt-8 space-y-6 text-foreground"
         onSubmit={handleSubmit(handleLogin)}
       >
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+          size="invisible"
+          ref={recaptchaRef}
+        />
         <div className="rounded-md -space-y-px flex md:flex-nowrap flex-wrap gap-4">
-          <ReCAPTCHA
-            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-            size="invisible"
-            ref={recaptchaRef}
-          />
           <div className="md:w-1/2 w-full flex gap-1 flex-col text-card-foreground">
             <Label htmlFor="email" className={`text-[13px] flex gap-0.5`}>
               <span>{t("email")}</span>
@@ -162,7 +162,10 @@ const LoginForm = () => {
                   </p>
                 )}
               </div>
-              <Link href={"/forget-password/send"} className="text-card-foreground flex gap-2 text-sm cursor-pointer">
+              <Link
+                href={"/forget-password/send"}
+                className="text-card-foreground flex gap-2 text-sm cursor-pointer"
+              >
                 <p>{t("forgotPassword")}</p>{" "}
                 <ArrowLeft
                   className={` ${dir === "ltr" && "rotate-180"} `}

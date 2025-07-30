@@ -26,10 +26,10 @@ export interface Booking {
   };
 }
 
-export const getCustomersBookings = async (page: number, limit: number, sort: string, order: "DESC" | "ASC") => {
+export const getCustomersBookings = async (id: number, page: number, limit: number, sort: string, order: "DESC" | "ASC") => {
   try {
     const response = (await fetchApi.get(
-      `/bookings/:id/customers?page=${page}&limit=${limit}&sort=${sort}&order=${order}`
+      `/bookings/${id}/customers?page=${page}&limit=${limit}&sort=${sort}&order=${order}`
     )) as { bookings: Booking[]; totalCount: number };
     return response;
   } catch (error) {

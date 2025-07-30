@@ -38,7 +38,6 @@ const VerifyPasswordForm = () => {
     const res = await verifyRequest(data);
 
     if (res && code) {
-      console.log(code);
       setCode(code);
 
       showToast("success", " کد تایید شد. ");
@@ -74,8 +73,6 @@ const VerifyPasswordForm = () => {
                     email: email,
                   };
                 }
-
-                console.log(data);
 
                 const res = await verifyRequest(data);
 

@@ -36,8 +36,6 @@ const ResetForm = () => {
       newPassword: values.newPassword,
     };
 
-    console.log(data)
-
     const res = await resetPassword(data);
 
     if (res) {

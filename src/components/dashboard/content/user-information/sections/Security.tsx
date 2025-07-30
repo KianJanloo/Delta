@@ -30,7 +30,6 @@ const Security = () => {
     const onSubmit = async (data: ChangePasswordPayload) => {
         if(session?.password === data.currentPassword) {
             const response = await changeUserPassword(data);
-            console.log(response)
             if (response) {
                 showToast("success", "رمز عبور با موفقیت تغییر کرد")
             }

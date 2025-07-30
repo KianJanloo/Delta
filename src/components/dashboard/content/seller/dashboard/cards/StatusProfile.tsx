@@ -20,7 +20,6 @@ const StatusProfile = () => {
 
     const [profile, setProfile] = useState<IProfile | null>(null);
     const [completionPercentage, setCompletionPercentage] = useState(0);
-    console.log(completionPercentage)
 
     const getProfile = useCallback(async () => {
         if (session?.userInfo?.id) {
