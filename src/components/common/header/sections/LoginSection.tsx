@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import { handleLogout } from "@/core/logOut";
-import LanguageSwitcher from "./LangSwitcher";
 import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
 import { IProfile } from "@/types/profile-type/profile-type";
@@ -34,7 +33,7 @@ const LoginSection = () => {
   const getProfileState = async () => {
     if (session?.userInfo?.id) {
       const profile = await getProfileById(session?.userInfo?.id);
-      setProfile(profile);
+      setProfile(profile.user);
     }
   }
 
@@ -44,9 +43,6 @@ const LoginSection = () => {
 
   return (
     <div className="flex whitespace-nowrap items-center xl:px-8 px-4 justify-end gap-3 xl:text-[16px] text-[12px]">
-      <div className="max-md:hidden">
-        <LanguageSwitcher />
-      </div>
       <motion.button
         initial={{ rotate: 0, scale: 0 }}
         animate={{ rotate: 360, scale: 1 }}

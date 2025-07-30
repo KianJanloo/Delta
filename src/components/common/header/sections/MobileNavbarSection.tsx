@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useTheme } from "@/utils/service/TanstakProvider";
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
-import LanguageSwitcher from "./LangSwitcher";
 
 const MobileNavbarSection = () => {
   const { theme, toggleTheme } = useTheme();
@@ -75,11 +74,6 @@ const MobileNavbarSection = () => {
             <Moon className="w-5 h-5" />
           )}
         </button>
-      </div>
-
-      <div className="flex items-center pt-2">
-        <span className="text-foreground ml-3"> {t("changeLang")} </span>
-        <LanguageSwitcher />
       </div>
 
       <div className="pt-4 mt-2 border-t border-border">

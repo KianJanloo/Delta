@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { Routes } from "@/types/routes-type/routes-type";
 import { BellDot, Coins, Heart, Home, House, HousePlus, PlusCircle, Settings, SquaresSubtract, User } from "lucide-react";
 
@@ -24,5 +22,5 @@ export const sellerRoutes = [
   { label: "manageReserves", href: "/dashboard/seller/manage-reserves", icon: PlusCircle },
   { label: "payments", href: "/dashboard/seller/payments", icon: Coins },
   { label: "manageComments", href: "/dashboard/seller/manage-comments", icon: SquaresSubtract },
-  { label: "notifications", href: "/dashboard/seller/notifications", icon: BellDot },
+  { label: "notifications", href: "/dashboard/notifications", icon: BellDot },
 ] as Routes[]

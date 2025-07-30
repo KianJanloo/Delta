@@ -11,8 +11,6 @@ import NotifModal from "../../modal/NotifModal";
 import { redirect } from "next/navigation";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
 import useClearPathname from "@/utils/helper/clearPathname/clearPathname";
-import LanguageSwitcher from "@/components/common/header/sections/LangSwitcher";
-import LangModal from "../../modal/LangSwitcherModal";
 import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
 import { IProfile } from "@/types/profile-type/profile-type";
@@ -75,9 +73,6 @@ const HeaderDashboard: React.FC = () => {
                 )}
                 <div></div>
                 <div className='flex gap-4 items-center'>
-                    <div className="max-md:hidden">
-                        <LanguageSwitcher />
-                    </div>
                     <button
                         onClick={toggleTheme}
                         className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-subBg2 transition-colors"
@@ -117,7 +112,6 @@ const HeaderDashboard: React.FC = () => {
                                     <PlusCircle size={16} className="text-primary" />
                                     <span className="text-sm">{t('walletCharge')}</span>
                                 </div>
-                                <LangModal />
 
                                 <NotifModal />
 
