@@ -37,7 +37,7 @@ const SingleReserveComponent = () => {
     return house ? <div className='px-8 flex flex-col gap-16'>
         <SingleReserveHeader house={house} />
         <div className='flex xl:flex-row flex-col-reverse gap-12 justify-between'>
-            <SingleReserveTab id={id} photos={house.photos} caption={house.caption || t('noInfo')} facilities={facilities} defaultValue='about' />
+            <SingleReserveTab id={id} photos={house.photos !== null ? house.photos : [" "]} caption={house.caption || t('noInfo')} facilities={facilities} defaultValue='about' />
             <SingleReserveBooking house={house} price={house?.price} discountedPrice={1000000} />
         </div>
         <SingleReserveFooter />

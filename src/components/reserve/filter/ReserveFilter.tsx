@@ -31,8 +31,8 @@ const ReserveFilter: FC<IReserveFilter> = ({ setOrder, setSort, setSearch, house
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} className='bg-secondary-light4 w-full lg:flex-nowrap flex-wrap gap-4 rounded-[24px] px-4 py-3 flex justify-between'>
             <div className='flex lg:flex-row flex-col w-full gap-4'>
 
-                <div className=" w-fit flex-col flex gap-1">
-                    <Label className={`text-[13px] w-[150px] whitespace-nowrap flex gap-0.5 min-w-fit text-subText`}>
+                <div className=" w-fit flex-col flex gap-1 max-lg:w-full">
+                    <Label className={`text-[13px] whitespace-nowrap flex gap-0.5 min-w-fit text-subText`}>
                         <span>{t('destination')}</span>
                         <span> : </span>
                     </Label>

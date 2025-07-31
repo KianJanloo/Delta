@@ -43,7 +43,7 @@ const HeroSection = () => {
       </div>
 
       <div
-        className="absolute bottom-0 left-1/2 max-md:-z-0 lg:left-3/8 md:left-1/2 sm:left-3/8 transform -translate-x-1/4 md: z-40"
+        className="absolute bottom-0 left-[100] max-md:-z-0 lg:left-3/8 md:left-1/2 sm:left-3/8 transform -translate-x-1/4 md: z-40"
       >
         <Image src={building} alt="building" className="object-contain" />
       </div>
@@ -53,7 +53,7 @@ const HeroSection = () => {
           <HeroLogo />
         </div>
         <div className="flex  w-full  justify-between items-center z-30">
-          <div className=" flex flex-col justify-center items-end border-red-500 w-[25%] ">
+          <div className=" flex flex-col max-md:hidden justify-center items-end border-red-500 w-[25%] ">
             <InfoIndicator />
           </div>
 

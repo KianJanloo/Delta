@@ -87,10 +87,10 @@ const SingleReserveHeader: FC<IProps> = ({ house }) => {
             </div>
             <div className='flex max-2xl:flex-col gap-6 mt-2'>
                 <div className='2xl:w-11/12 w-full'>
-                    <BlurFade className='w-full max-lg:hidden h-[444px] bg-secondary-light2 rounded-[40px] overflow-hidden flex items-center justify-center'>
+                    <BlurFade className='w-full h-[444px] bg-secondary-light2 rounded-[40px] overflow-hidden flex items-center justify-center'>
                         <img
-                            src={house.photos[currentIndex]}
-                            alt={`house-photo-${currentIndex}`}
+                            src={house.photos !== null ? house.photos[currentIndex] : " "}
+                            alt={` `}
                             className='w-full h-full object-cover rounded-[40px]'
                         />
                     </BlurFade>
@@ -98,7 +98,7 @@ const SingleReserveHeader: FC<IProps> = ({ house }) => {
 
                 <div className='2xl:w-2/12 w-full flex flex-wrap gap-4 2xl:justify-between items-center'>
                     {[...Array(8)].map((_, index) => {
-                        const photo = house.photos[index]
+                        const photo = house.photos !== null ? house.photos[index] : null
 
                         if (photo) {
                             return (
@@ -111,8 +111,8 @@ const SingleReserveHeader: FC<IProps> = ({ house }) => {
                                         }`}
                                 >
                                     <img
-                                        src={photo}
-                                        alt={`thumb-${index}`}
+                                        src={photo ? photo : " "}
+                                        alt=' '
                                         className='w-full h-full object-cover rounded-[32px]'
                                     />
                                 </motion.button>

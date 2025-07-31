@@ -3,6 +3,7 @@ import LoginButton from '@/components/common/buttons/auth/LoginButton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import LoginForm from '@/components/auth/loginForm'
 import { useTranslations } from 'next-intl'
+import SendForm from './sendForm'
 
 interface IProps {
     defaultValue: "register" | "login" | "forget-password";
@@ -15,7 +16,7 @@ const TabContent: FC<IProps> = ({ defaultValue, registerElement, forgetPasswordE
 
   return (
     <Tabs defaultValue={defaultValue} className='rtl'>
-        <TabsList className='bg-subBg text-subText w-full mt-[20px]' >
+        <TabsList className='bg-subBg text-subText w-full mt-[20px] overflow-x-scroll' >
           <TabsTrigger value="login" className='bg-subBg w-1/2'>{t('loginTab')}</TabsTrigger>
           <TabsTrigger value="register" className='bg-subBg w-1/2'>{t('registerTab')}</TabsTrigger>
           <TabsTrigger value="forget-password" className='bg-subBg w-1/2'> فراموشی رمز عبور </TabsTrigger>
@@ -56,7 +57,7 @@ const TabContent: FC<IProps> = ({ defaultValue, registerElement, forgetPasswordE
           {registerElement}
         </TabsContent>
         <TabsContent value="forget-password" className='mt-[30px]'>
-          {forgetPasswordElement}
+          {forgetPasswordElement || <SendForm />}
         </TabsContent>
       </Tabs>
   )

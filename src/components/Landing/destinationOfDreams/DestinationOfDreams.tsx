@@ -12,7 +12,7 @@ const DestinationOfDreams = () => {
   const t = useTranslations('landing.destinations');
 
   return (
-    <div className='flex justify-center items-center py-[50px] gap-16 flex-col relative bg-secondary-light rounded-b-[64px]'>
+    <div className='flex justify-center text-center items-center py-[50px] gap-16 flex-col relative bg-secondary-light rounded-b-[64px]'>
       <div className='w-full h-fit flex flex-col justify-center items-center gap-4 px-8'>
         <div className='flex gap-1 justify-center items-center'>
           <div className="flex flex-row w-fit items-center gap-4">
