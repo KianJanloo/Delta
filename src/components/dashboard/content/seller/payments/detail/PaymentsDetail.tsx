@@ -18,11 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { convertToJalaliString } from "@/utils/helper/shamsiDate/ShamsDate";
-import { SplitNumber } from "@/utils/helper/spliter/SplitNumber";
-import {
-  getAllCustomersPayments,
-  IPayment,
-} from "@/utils/service/api/seller-finance/getAllCustomersPayments";
+import { SplitNumber } from "@/utils/helper/spliter/SplitNumber";import { getAllCustomersPayments, IPayment } from "@/utils/service/api/seller-finance/getAllCustomersPayments";
 import {
   CheckCircle2,
   Clock,

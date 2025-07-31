@@ -30,7 +30,6 @@ export const getAllCustomersPayments = async (data: IUrl) => {
       params.set("transactionType", data.transactionType);
 
     const url = `/seller/finance?${params.toString()}`;
-    console.log(url)
 
     const response = (await fetchApi.get(url)) as {
       data: IPayment[];

@@ -6,7 +6,7 @@ import { SplitNumber } from "@/utils/helper/spliter/SplitNumber";
 import {
   getDashboardFinance,
   IDashboardFinance,
-} from "@/utils/service/api/seller-finance/getDashboardFinance";
+} from "@/utils/service/api/notifications/seller-finance/getDashboardFinance";
 
 const PaymentHeader = () => {
   const [dashboardFinance, setDashboardFinance] = useState<IDashboardFinance>();

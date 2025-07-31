@@ -1,21 +1,19 @@
 import CommonButton from "@/components/common/buttons/common/CommonButton";
 import { BlurFade } from "@/components/magicui/blur-fade";
-import { CreditCard } from "lucide-react";
 import React, {useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import {
-  getMarketTrends,
-  IMarketTrends,
-} from "@/utils/service/api/dashboard/getMarketTrends";
+import { CreditCard } from "lucide-react";
+import { SplitNumber } from "@/utils/helper/spliter/SplitNumber";
+import { getDashboardFinance, IDashboardFinance } from "@/utils/service/api/seller-finance/getDashboardFinance";
 
 const SituationPayroll = () => {
   const t = useTranslations("dashboardSeller.dashboard.situationPayroll");
 
-  const [marketTrends, setMarketTrends] = useState<IMarketTrends[]>();
+  const [dashboardFinance, setDashboardFinance] = useState<IDashboardFinance>();
 
   const fetchMarket = async () => {
-    const response = await getMarketTrends();
-    setMarketTrends(response);
+    const response = await getDashboardFinance();
+    setDashboardFinance(response);
   }
 
   useEffect(() => {
@@ -56,7 +54,7 @@ const SituationPayroll = () => {
             <div className="bg-primary rounded-full w-[16px] h-[16px]" />
             <span className="font-semibold">{t("currentMonthIncome")}</span>
           </div>
-          <CommonButton title={`${marketTrends?.[0].bookingCount || 0} ${" رزرو "}`} />
+          <CommonButton title={`${SplitNumber(dashboardFinance?.totalCurrentMonthAmount || 0)} ${" تومن "}`} />
         </div>
         <div className="w-full flex justify-between">
           <div className="flex gap-2 items-center">
@@ -65,7 +63,7 @@ const SituationPayroll = () => {
           </div>
           <CommonButton
             classname="bg-subBg2 text-foreground"
-            title={`${marketTrends?.[1].bookingCount || 0} ${" رزرو "}`}
+            title={`${SplitNumber(dashboardFinance?.totalPerviousMonthAmount || 0)} ${" تومن "}`}
           />
         </div>
       </div>
