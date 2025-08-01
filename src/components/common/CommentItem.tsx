@@ -48,7 +48,7 @@ export const QAWidget: FC<
 
     const getProfile = useCallback(async () => {
       const res = await getProfileById(user_id);
-      setUser(res)
+      setUser(res.user)
     }, [user_id])
 
     useEffect(() => {
