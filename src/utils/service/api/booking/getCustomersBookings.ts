@@ -12,7 +12,7 @@ export interface Booking {
     gender: string;
     firstName: string;
     lastName: string;
-    birthDate: string;
+    birthDate: Date;
     nationalId: string;
   }[];
   status: "pending" | "confirmed" | "canceled";

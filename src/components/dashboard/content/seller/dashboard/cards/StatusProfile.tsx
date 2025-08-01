@@ -62,7 +62,7 @@ const StatusProfile = () => {
                     <div className='flex flex-col gap-4'>
                         <h2 className='font-bold text-xl'> {completionPercentage}% </h2>
                         <span className='max-w-[310px] text-sm'>
-                             برای اینکه بازدید خوبی داشته باشید، پروفایل شما باید حداقل {100 - completionPercentage}% تکمیل شده باشد. 
+                             برای اینکه بازدید خوبی داشته باشید، پروفایل شما باید حداقل {70}% تکمیل شده باشد. 
                         </span>
                     </div>
                     {profile?.updatedAt ? (

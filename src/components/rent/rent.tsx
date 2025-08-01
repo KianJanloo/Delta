@@ -24,15 +24,16 @@ import { Loader } from "../common/Loader";
 import { useTranslations } from "next-intl";
 import { addFavorite } from "@/utils/service/api/favorites/addFavorite";
 import { useSession } from "next-auth/react";
-import { getFavoritesByUserId } from "@/utils/service/api/favorites/getFavoritesByUserId";
+import { getFavorites } from "@/utils/service/api/favorites/getFavoritesByUserId";
 import { IAddFavorite, IFavorite } from "@/types/favorites-type/favorites-type";
 
 const Rent = () => {
   const t = useTranslations("rental.single");
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
+  const [refetch, setRefetch] = useState<boolean>(false);
+
   const [house, setHouse] = React.useState<IHouse>();
-  const [favorites, setFavorites] = React.useState<IFavorite[]>([]);
   const params = useParams();
   const id = params?.id as string;
 
@@ -41,7 +42,8 @@ const Rent = () => {
   const fetchHouse = useCallback(async () => {
     const houseData = (await getHouseById(id)) as IHouse;
     setHouse(houseData);
-  }, [id]);
+    setRefetch(false);
+  }, [id, refetch]);
 
   useEffect(() => {
     fetchHouse();
@@ -99,35 +101,16 @@ const Rent = () => {
       };
 
       const response = await addFavorite(data);
-      if(response){
-        showToast('success', ' ملک با موفقیت به علاقه مندی ها اضافه شد. ')
-      }
-      else {
-        showToast('error', ' خطا. ')
+      if (response) {
+        showToast("success", " ملک با موفقیت به علاقه مندی ها اضافه شد. ");
+        setRefetch(true);
+      } else {
+        showToast("error", " خطا. ");
       }
     } catch (error) {
       console.log(error);
     }
   };
-
-  const fetchFavorites = async () => {
-    try {
-      const response = await getFavoritesByUserId(
-        session.userInfo?.id,
-        1,
-        10,
-        "createdAt",
-        "DESC"
-      );
-      setFavorites(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchFavorites();
-  }, [fetchFavorites, session.userInfo?.id]);
 
   return house ? (
     <div className="mx-8" dir="ltr">
@@ -182,9 +165,12 @@ const Rent = () => {
                 {house.title}
               </span>
 
-            
               <div className="flex flex-row items-center gap-2 self-start sm:self-auto">
-                <button className={`w-10 h-10 flex items-center justify-center rounded-lg ${favorites.some(favorite => favorite.house_id == Number(house.id)) ? 'bg-danger' : 'bg-secondary-light2'} `}>
+                <button
+                  className={`w-10 h-10 flex items-center justify-center rounded-lg ${
+                    house.isFavorite ? "bg-danger" : "bg-secondary-light2"
+                  } `}
+                >
                   <HeartIcon
                     onClick={handleFavorite}
                     className={`w-5 h-5 text-subText`}

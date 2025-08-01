@@ -1,42 +1,20 @@
-/* eslint-disable */
 import { BlurFade } from '@/components/magicui/blur-fade'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { IReserveType } from '@/types/reserves-type/reserves-type'
-import { getHouseById } from '@/utils/service/api/houses-api'
 import { CheckCircle2, Coins, Pin, Rocket, Text, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { IHouse } from '@/types/houses-type/house-type'
 import { convertToJalaliString } from '@/utils/helper/shamsiDate/ShamsDate'
 import { SplitNumber } from '@/utils/helper/spliter/SplitNumber'
+import { Booking } from '@/utils/service/api/booking/getCustomersBookings'
 
-const RecentReserves = ({ reserves }: { reserves: IReserveType[] }) => {
+const RecentReserves = ({ reserves }: { reserves: Booking[] }) => {
     const t = useTranslations('dashboardSeller.dashboard')
-    const [housesData, setHousesData] = useState<Record<string, IHouse>>({})
-
-    useEffect(() => {
-        const fetchHouses = async () => {
-            const houses: Record<string, IHouse> = {}
-            for (const reserve of reserves) {
-                if (!houses[reserve.houseId]) {
-                    const house = await getHouseById(reserve.houseId.toString())
-                    houses[reserve.houseId] = house
-                }
-            }
-            setHousesData(houses)
-        }
-
-        if (reserves?.length) {
-            fetchHouses()
-        }
-    }, [reserves])
 
     return <BlurFade delay={1} className='w-full min-h-full rounded-[12px] bg-subBg flex gap-4 px-4 py-4 flex-col'>
         <div className='flex justify-between w-full items-center flex-wrap gap-4'>
             <div className='flex gap-2 w-fit items-center'>
                 <Pin size={24} />
-                <span className='text-base font-bold'>{t('title')}</span>
+                <span className='text-base font-bold'> رزرو های اخیر </span>
             </div>
             <Link href={"/dashboard/manage-reserves"} className='w-fit cursor-pointer gap-8 items-center flex justify-between'>
                 <span className='text-muted'>{t('viewAll')}</span>
@@ -63,19 +41,17 @@ const RecentReserves = ({ reserves }: { reserves: IReserveType[] }) => {
 
             <TableBody>
                 {reserves && reserves.map((reserve, idx) => {
-                    const house = housesData[reserve.houseId]
-                    if (!house) return null
 
                     return <TableRow key={idx}>
                         <TableCell className='py-4 whitespace-nowrap flex gap-2 items-center'>
-                            <img src={house.photos[0] || "/"} alt=" " width={107} height={72} className=" rounded-[12px] bg-card-light flex-shrink-0" />
-                            {house.title}
+                            {/* <img src={house.photos[0] || "/"} alt=" " width={107} height={72} className=" rounded-[12px] bg-card-light flex-shrink-0" /> */}
+                            {reserve.house.title}
                         </TableCell>
                         <TableCell className='whitespace-nowrap'>
                             {convertToJalaliString(reserve.reservedDates[0].value)}
                         </TableCell>
                         <TableCell className='whitespace-nowrap'>
-                            {SplitNumber(house.price || "")} {t('currency')}
+                            {SplitNumber(reserve.house.price || "")} {t('currency')}
                         </TableCell>
                         <TableCell>
                             <div className={`px-2 py-1 flex gap-2 whitespace-nowrap w-fit rounded-[16px] pl-6 items-center ${reserve.status !== "pending" ? "bg-primary text-primary-foreground" : "bg-danger text-accent-foreground"}`}> {reserve.status !== "pending" ? <CheckCircle2 size={14} /> : <X size={14} />} {reserve.status !== "pending" ? t('confirmed') : t('notConfirmed')} </div>
@@ -86,14 +62,11 @@ const RecentReserves = ({ reserves }: { reserves: IReserveType[] }) => {
         </Table>
         <div className='flex flex-col gap-4 w-full lg:hidden'>
             {reserves && reserves.map((reserve, idx) => {
-                const house = housesData[reserve.houseId]
-                if (!house) return null
-
                 return <div key={idx} className='w-full max-sm:flex-col bg-subBg2 px-4 py-4 rounded-xl flex gap-4'>
                     <div className=' h-full flex flex-col gap-2 max-sm:gap-4 text-base'>
-                        <div className='flex gap-4 items-center flex-wrap'> <Text className='text-subText' size={20} /> <p className='text-subText'> {t('hotelName')} : </p> <span> {house.title} </span> </div>
+                        <div className='flex gap-4 items-center flex-wrap'> <Text className='text-subText' size={20} /> <p className='text-subText'> {t('hotelName')} : </p> <span> {reserve.house.title} </span> </div>
                         <div className='flex gap-4 items-center flex-wrap'> <Rocket className='text-subText' size={20} />  <p className='text-subText'> {t('reserveDate')} : </p> <span> {convertToJalaliString(reserve.reservedDates[0].value)} </span> </div>
-                        <div className='flex gap-4 items-center flex-wrap'> <Coins className='text-subText' size={20} /> <p className='text-subText'> {t('price')} : </p> <span className='gap-2 flex'> {SplitNumber(house.price || "")} <p>{t('currency')}</p>  </span> </div>
+                        <div className='flex gap-4 items-center flex-wrap'> <Coins className='text-subText' size={20} /> <p className='text-subText'> {t('price')} : </p> <span className='gap-2 flex'> {SplitNumber(reserve.house.price || "")} <p>{t('currency')}</p>  </span> </div>
                         <div className={`px-2 py-1 flex gap-2 whitespace-nowrap w-fit rounded-[16px] pl-6 items-center ${reserve.status !== "pending" ? "bg-primary text-primary-foreground" : "bg-danger text-accent-foreground"}`}> {reserve.status !== "pending" ? <CheckCircle2 size={14} /> : <X size={14} />} {reserve.status !== "pending" ? t('confirmed') : t('notConfirmed')} </div>
                     </div>
                 </div>

@@ -33,13 +33,13 @@ const ContentDashboard = () => {
     },
     {
       id: 2,
-      title: summary?.bookings,
+      title: summary?.bookings.bookingCount,
       subtitle: " کل رزرو ها",
       href: "/dashboard/manage-reserves",
     },
     {
       id: 4,
-      title: summary?.users,
+      title: summary?.users.userCount,
       subtitle: " کل کاربران",
       href: "/dashboard/manage-reserves",
     },

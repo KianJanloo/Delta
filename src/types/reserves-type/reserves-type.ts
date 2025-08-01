@@ -22,8 +22,8 @@ export interface Reservation {
     date: string;
     price: string;
     guestCount: string;
-    status: "confirmed" | "waiting" | "cancelled";
-    paymentStatus: "paid" | "waiting" | "cancelled" | "confirmed";
+    status: "confirmed" | "waiting" | "canceled";
+    paymentStatus: "paid" | "waiting" | "canceled" | "confirmed";
     propertyType?: string;
     houseId: string;
     traveler_details: IPassenger[];

@@ -23,8 +23,8 @@ const ProfileCompletion = () => {
   const getProfile = useCallback(async () => {
       if (session?.userInfo?.id) {
         const profile = await getProfileById(session?.userInfo?.id);
-        setProfile(profile);
-        setCompletionPercentage(calculateProfileCompletion(profile));
+        setProfile(profile.user);
+        setCompletionPercentage(profile.additionalPercentage);
       }
   }, [session])
 
@@ -86,7 +86,7 @@ const ProfileCompletion = () => {
 
         <p className="text-3xl font-bold text-primary">{completionPercentage}%</p>
         <p className="text-sm lg:text-sm md:text-xs sm:text-xs text-muted-foreground leading-relaxed mt-2">
-        برای اینکه بازدید خوبی داشته باشید، پروفایل شما باید حداقل {100 - completionPercentage}% تکمیل شده باشد
+        برای اینکه بازدید خوبی داشته باشید، پروفایل شما باید حداقل {70}% تکمیل شده باشد
         </p>
         <span className="text-xs text-ring mt-3">
           اخرین تغییرات {profile?.updatedAt ? getRelativeTimeString(profile.updatedAt) : ''}

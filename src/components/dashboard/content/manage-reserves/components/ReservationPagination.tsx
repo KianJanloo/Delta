@@ -9,12 +9,14 @@ import {
 
 interface ReservationPaginationProps {
   currentPage: number;
+  totalPages: number;
   onPageChange: (page: number) => void;
 }
 
 export default function ReservationPagination({
   currentPage,
   onPageChange,
+  totalPages,
 }: ReservationPaginationProps) {
   return (
     <div className="flex w-full justify-center mt-4">
@@ -22,37 +24,34 @@ export default function ReservationPagination({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
             />
           </PaginationItem>
 
-          <PaginationItem>
-            <PaginationLink
-              className={currentPage === 1 ? "bg-primary text-primary-foreground" : ""}
-              onClick={() => onPageChange(1)}
-            >
-              1
-            </PaginationLink>
-          </PaginationItem>
-
-          <PaginationItem>
-            <PaginationLink
-              className={currentPage === 2 ? "bg-primary text-primary-foreground" : ""}
-              onClick={() => onPageChange(2)}
-            >
-              2
-            </PaginationLink>
-          </PaginationItem>
+          {Array.from({ length: totalPages }).map((_, idx) => {
+            return (
+              <PaginationItem key={idx}>
+                <PaginationLink
+                  className={
+                    currentPage === idx + 1
+                      ? "bg-primary text-primary-foreground"
+                      : ""
+                  }
+                  onClick={() => onPageChange(idx + 1)}
+                >
+                  {idx + 1}
+                </PaginationLink>
+              </PaginationItem>
+            );
+          })}
 
           <PaginationItem>
             <PaginationNext
-              onClick={() => onPageChange(currentPage + 1)}
-              className={currentPage === 2 ? "pointer-events-none opacity-50" : ""}
+              onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
             />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
     </div>
   );
-} 
+}

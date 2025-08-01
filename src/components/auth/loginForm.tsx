@@ -44,55 +44,58 @@ const LoginForm = () => {
   const handleLogin = async (values: any) => {
     setIsLoading(true);
 
-    if (!recaptchaRef.current) return;
+    try {
+      if (!recaptchaRef.current) return;
 
-    const token = await recaptchaRef.current.executeAsync();
-    recaptchaRef.current.reset();
+      const token = await recaptchaRef.current.executeAsync();
+      recaptchaRef.current.reset();
 
-    const response = await fetch("/api/submit-form", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token,
-        email: values.email,
-      }),
-    });
-
-    if (response.ok) {
-      const user = (await fetchApi.post("/auth/login", {
-        email: values.email,
-        password: values.password,
-      })) as any;
-
-      let decoded: any = null;
-
-      if (user?.accessToken) {
-        decoded = jwtDecode(user.accessToken);
-      }
-
-      const res = await signIn("credentials", {
-        redirect: false,
-        accessToken: user?.accessToken,
-        refreshToken: user?.refreshToken,
-        password: values.password,
+      const response = await fetch("/api/submit-form", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token,
+          email: values.email,
+        }),
       });
 
-      setIsLoading(false);
+      if (response.ok) {
+        const user = (await fetchApi.post("/auth/login", {
+          email: values.email,
+          password: values.password,
+        })) as any;
 
-      if (res?.ok) {
-        showToast("success", t("successTitle"), t("close"), "");
-        reset();
-        if (decoded?.role === "seller" || decoded?.role === "admin") {
-          redirect("/dashboard/seller");
-        } else if (decoded?.role === "buyer") {
-          redirect("/dashboard");
+        let decoded: any = null;
+
+        if (user?.accessToken) {
+          decoded = jwtDecode(user.accessToken);
         }
+
+        const res = await signIn("credentials", {
+          redirect: false,
+          accessToken: user?.accessToken,
+          refreshToken: user?.refreshToken,
+          password: values.password,
+        });
+
+        setIsLoading(false);
+
+        if (res?.ok) {
+          showToast("success", t("successTitle"), t("close"), "");
+          reset();
+          if (decoded?.role === "seller" || decoded?.role === "admin") {
+            redirect("/dashboard/seller");
+          } else if (decoded?.role === "buyer") {
+            redirect("/dashboard");
+          }
+        }
+      } else {
+        showToast("error", " reCaptCHA failed, please try again.");
+        setIsLoading(false);
       }
-    } else {
-      showToast("error", " reCaptCHA failed, please try again.");
+    } catch {
       setIsLoading(false);
     }
-
     setIsLoading(false);
   };
 

@@ -78,11 +78,6 @@ export default function ReservationMobile({
                 />
                 {openModalIndex === idx && (
                   <div className="flex absolute left-full top-0 flex-col rounded-xl gap-2 p-2 z-20 bg-subBg shadow-2xl">
-                    <ReserveModal button={<div
-                      className="bg-subBg px-4 py-1 flex gap-2 rounded-xl justify-between flex-row-reverse cursor-pointer hover:bg-border"
-                    >
-                      {t("details")} <Info size={16} />
-                    </div>} houseId={reservation.houseId} />
                     <CommonModal
                       handleClick={t("delete")}
                       title={t("deleteConfirm")}
