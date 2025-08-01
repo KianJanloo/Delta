@@ -3,10 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import MiniCard from "../../dashboard/cards/MiniCard";
 import { SplitNumber } from "@/utils/helper/spliter/SplitNumber";
-import {
-  getDashboardFinance,
-  IDashboardFinance,
-} from "@/utils/service/api/notifications/seller-finance/getDashboardFinance";
+import { getDashboardFinance, IDashboardFinance } from "@/utils/service/api/seller-finance/getDashboardFinance";
 
 const PaymentHeader = () => {
   const [dashboardFinance, setDashboardFinance] = useState<IDashboardFinance>();
