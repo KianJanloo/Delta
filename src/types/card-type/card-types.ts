@@ -14,5 +14,5 @@ export interface ICard {
   id?: string;
   discount_id?: string;
   categories?: TCategories;
-  discounted_price: string;
+  discounted_price?: string;
 }
