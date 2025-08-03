@@ -41,14 +41,14 @@ const MobileNavbarSection = () => {
         </Link>
       </div>
 
-      <div>
+      {/* <div>
         <Link
           href="/articles"
           className="text-subText transition-colors hover:text-primary block"
         >
           {t("navbar.articles")}
         </Link>
-      </div>
+      </div> */}
 
       <div>
         <Link
@@ -78,7 +78,8 @@ const MobileNavbarSection = () => {
 
       <div className="pt-4 mt-2 border-t border-border">
         <Link
-          href="/become-seller"
+          // href="/become-seller"
+          href={""}
           className="bg-accent text-accent-foreground px-4 py-2 rounded-[10px] hover:opacity-90 transition-opacity flex items-center justify-center"
         >
           <svg

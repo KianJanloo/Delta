@@ -15,6 +15,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
 import {
+  createSettings,
+  deleteSettings,
   getSettings,
   ISetting,
 } from "@/utils/service/api/notifications-settings/settings";
@@ -25,17 +27,42 @@ const NotifModal = () => {
   const dir = useDirection();
 
   const [settings, setSettings] = useState<ISetting[]>([]);
+  const [refetch, setRefetch] = useState<boolean>(false);
 
   const fetchSettings = useCallback(async () => {
     const response = await getSettings();
     setSettings(response || []);
+    setRefetch(true);
   }, []);
 
   useEffect(() => {
     fetchSettings();
-  }, [fetchSettings]);
+  }, [fetchSettings, refetch]);
 
   const settingsData = settings.map((s) => s.notificationType);
+
+  const handleChangeSetting = async ({
+    type,
+    id,
+  }: {
+    type: string;
+    id?: number;
+  }) => {
+    if (!settings.some((s) => s.notificationType == type)) {
+      const response = await createSettings({
+        notificationType: type,
+        criteria: {},
+      });
+      if (response) {
+        setRefetch(true);
+      }
+    } else if (id) {
+      const response = await deleteSettings(id);
+      if (response) {
+        setRefetch(true);
+      }
+    }
+  };
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
@@ -64,19 +91,87 @@ const NotifModal = () => {
           <div className="flex flex-col gap-4 w-full mx-auto justify-center items-center">
             <div className="flex w-full justify-between text-lg items-center">
               {t("reserveNotif")}
-              <Switch defaultChecked={settingsData.some((s) => s === 'new_booking')} />
+              <Switch
+                onCheckedChange={() => {
+                  const data = settings.find(
+                    (s) => s.notificationType === "new_booking"
+                  );
+                  if (data) {
+                    handleChangeSetting({
+                      type: data?.notificationType,
+                      id: data?.id,
+                    });
+                  } else {
+                    handleChangeSetting({
+                      type: "new_booking",
+                    });
+                  }
+                }}
+                defaultChecked={settingsData.some((s) => s === "new_booking")}
+              />
             </div>
             <div className="flex w-full justify-between text-lg items-center">
               {t("paymentNotif")}
-              <Switch />
+              <Switch
+                onCheckedChange={() => {
+                  const data = settings.find(
+                    (s) => s.notificationType === "new_payment"
+                  );
+                  if (data) {
+                    handleChangeSetting({
+                      type: data?.notificationType,
+                      id: data?.id,
+                    });
+                  } else {
+                    handleChangeSetting({
+                      type: "new_payment",
+                    });
+                  }
+                }}
+                defaultChecked={settingsData.some((s) => s === "new_payment")}
+              />
             </div>
             <div className="flex w-full justify-between text-lg items-center">
               {t("discountNotif")}
-              <Switch />
+              <Switch
+                onCheckedChange={() => {
+                  const data = settings.find(
+                    (s) => s.notificationType === "discount"
+                  );
+                  if (data) {
+                    handleChangeSetting({
+                      type: data?.notificationType,
+                      id: data?.id,
+                    });
+                  } else {
+                    handleChangeSetting({
+                      type: "discount",
+                    });
+                  }
+                }}
+                defaultChecked={settingsData.some((s) => s === "discount")}
+              />
             </div>
             <div className="flex w-full justify-between text-lg items-center">
               {t("systemNotif")}
-              <Switch />
+              <Switch
+                onCheckedChange={() => {
+                  const data = settings.find(
+                    (s) => s.notificationType === "system"
+                  );
+                  if (data) {
+                    handleChangeSetting({
+                      type: data?.notificationType,
+                      id: data?.id,
+                    });
+                  } else {
+                    handleChangeSetting({
+                      type: "system",
+                    });
+                  }
+                }}
+                defaultChecked={settingsData.some((s) => s === "system")}
+              />
             </div>
           </div>
         </DialogFooter>

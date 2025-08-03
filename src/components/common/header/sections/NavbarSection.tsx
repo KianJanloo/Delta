@@ -34,7 +34,7 @@ const NavbarSection = () => {
           <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-bottom group-hover:origin-bottom z-20"></span>
         </Link>
       </div>
-      <div className="group flex items-center h-full relative">
+      {/* <div className="group flex items-center h-full relative">
         <Link
           href="/articles"
           className="flex items-center h-full text-subText transition-colors pb-1 group-hover:text-primary"
@@ -42,7 +42,7 @@ const NavbarSection = () => {
           {t("navbar.articles")}
           <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-bottom group-hover:origin-bottom z-20"></span>
         </Link>
-      </div>
+      </div> */}
       <div className="group flex items-center h-full relative">
         <Link
           href="/contact"
@@ -53,7 +53,8 @@ const NavbarSection = () => {
         </Link>
       </div>
       <Link
-        href="/become-seller"
+        // href="/become-seller"
+        href={""}
         className="bg-accent hidden whitespace-nowrap text-accent-foreground w-fit gap-2 h-[80%] px-4 py-1.5 rounded-[10px] hover:opacity-90 transition-opacity xl:flex items-center justify-center lg:text-[14px] md:text-[12px] md:px-3 md:py-1"
       >
         <svg

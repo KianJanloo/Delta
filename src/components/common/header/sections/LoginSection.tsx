@@ -70,7 +70,7 @@ const LoginSection = () => {
         </Link>
       ) : (
         <div className="relative group" ref={dropdownRef}>
-          <Link href={"/login"} className="flex items-center gap-2 py-2 rounded-2lg hover:bg-subBg text-foreground cursor-pointer transition-colors rounded-full">
+          <Link href={session.userInfo.role === "buyer" ? "/dashboard" : "/dashboard/seller"} className="flex items-center gap-2 py-2 rounded-2lg hover:bg-subBg text-foreground cursor-pointer transition-colors rounded-full">
             {(session.user?.image && session.user?.image !== "") || (profile?.profilePicture && profile?.profilePicture !== "") ? (
               <Image
                 alt=" "

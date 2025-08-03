@@ -3,21 +3,36 @@ import CommonButton from '@/components/common/buttons/common/CommonButton';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CreditCard, X } from 'lucide-react';
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useDirection } from '@/utils/hooks/useDirection';
-
-const payments = [
-    { date: "12 مرداد - 1401 / 12:33", phoneNumber: 123456789123456, price: 1250000 },
-    { date: "12 مرداد - 1401 / 12:33", phoneNumber: 123456789123456, price: 1250000 },
-    { date: "12 مرداد - 1401 / 12:33", phoneNumber: 123456789123456, price: 1250000 },
-    { date: "12 مرداد - 1401 / 12:33", phoneNumber: 123456789123456, price: 1250000 },
-]
+import { IPayment } from '@/utils/service/api/seller-finance/getAllCustomersPayments';
+import { getPayments } from '@/utils/service/api/payment/getPayments';
+import { convertToJalaliString } from '@/utils/helper/shamsiDate/ShamsDate';
+import { SplitNumber } from '@/utils/helper/spliter/SplitNumber';
 
 const PaymentsModal = () => {
     const t = useTranslations('modals.payments');
     const dir = useDirection()
     const [open, setOpen] = useState<boolean>(false);
+    const [payments, setPayments] = useState<IPayment[]>([])
+
+    const fetchPayments = useCallback(async () => {
+        const data = {
+            page: 1,
+            limit: 5,
+            sort: 'createdAt',
+            order: 'DESC'
+        }
+        const response = await getPayments(data);
+        if(response) {
+            setPayments(response.payments);
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchPayments();
+    }, [fetchPayments])
 
     return (
         <Dialog onOpenChange={setOpen} open={open} >
@@ -44,7 +59,7 @@ const PaymentsModal = () => {
                             <TableHeader className='bg-subBg2 rounded-2xl text-foreground'>
                                 <TableRow className='text-right'>
                                     <TableHead className='text-right text-foreground'>{t('date')}</TableHead>
-                                    <TableHead className='text-right text-foreground'>{t('trackingNumber')}</TableHead>
+                                    <TableHead className='text-right text-foreground'>{" کد پرداخت "}</TableHead>
                                     <TableHead className='text-right text-foreground'>{t('amount')}</TableHead>
                                     <TableHead className='text-right text-foreground'></TableHead>
                                 </TableRow>
@@ -53,13 +68,13 @@ const PaymentsModal = () => {
                                 {payments.map((payment, idx) => (
                                     <TableRow key={idx}>
                                         <TableCell className='py-4 whitespace-nowrap'>
-                                            {payment.date}
+                                            {convertToJalaliString(payment.createdAt)}
                                         </TableCell>
                                         <TableCell className='whitespace-nowrap'>
-                                            {payment.phoneNumber}
+                                            {payment.id}
                                         </TableCell>
                                         <TableCell className='whitespace-nowrap'>
-                                            {payment.price}
+                                            {SplitNumber(Number(payment.amount))} ت
                                         </TableCell>
                                         <TableCell className='relative whitespace-nowrap cursor-pointer'>
                                             {t('viewReceipt')}

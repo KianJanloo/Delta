@@ -13,7 +13,7 @@ export interface IPayment {
   bookingId: string;
   amount: string;
   description: string;
-  status: "completed" | "pending" | "canceled";
+  status: "completed" | "pending" | "failed" | "canceled";
   paymentUrl: string;
   transactionId: null | string;
   createdAt: Date;

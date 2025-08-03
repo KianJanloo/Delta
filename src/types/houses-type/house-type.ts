@@ -4,6 +4,7 @@ export interface IHouse {
     address: string,
     photos: string[],
     rate: string,
+    discounted_price: string,
     price: string,
     tags: string[],
     last_updated: string,
@@ -21,6 +22,7 @@ export interface IHouse {
     rooms: number,
     yard_type: string,
     num_comments: number,
+    discount_id: string,
     transaction_type: "" | "rental" | "mortgage" | "reservation" | "direct_purchase",
     sellerId: string,
     sellerName: string,
@@ -31,16 +33,15 @@ export interface IHouse {
 export interface ICreateHouse {
     title: string,
     address: string,
-    photos: string[],
     price: string,
     tags: string[],
+    photos: string[],
     capacity: number,
     location: {
         lat: number,
         lng: number
     },
     categories: {
-        id: number,
         name: string
     },
     bathrooms: number,

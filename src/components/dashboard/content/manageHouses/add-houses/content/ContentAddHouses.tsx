@@ -16,8 +16,8 @@ const ContentAddHouses = () => {
       {step === 0 && <FirstStep setStep={setStep} />}
       {step === 1 && <ThirdStep setStep={setStep} />}
       {step === 2 && <SecondStep setStep={setStep} />}
-      {step === 3 && <FourthStep setStep={setStep} />}
-      {step === 4 && <FifthStep setStep={setStep} />}
+      {step === 4 && <FourthStep setStep={setStep} />}
+      {step === 3 && <FifthStep setStep={setStep} />}
       </div>
   )
 }

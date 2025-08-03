@@ -37,7 +37,7 @@ export const getNotifications = async (userId: number, data: Partial<IUrl>) => {
     if(data.order) params.set('order', String(data.order));
     if(data.isRead) params.set('isRead', String(data.isRead));
 
-    const url = `/notifications?${params.toString()}`;
+    const url = `/notifications/${userId}?${params.toString()}`;
 
     const response = await fetchApi.get(url) as { totalCount: number, data: INotification[] };
     return response;

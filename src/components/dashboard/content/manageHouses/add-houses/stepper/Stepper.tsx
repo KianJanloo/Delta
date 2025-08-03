@@ -7,8 +7,8 @@ export default function Stepper({ currentStep }: { currentStep: number }) {
         t('basicInfo'),
         t('address'),
         t('facilities'),
-        t('images'),
         t('finalConfirm'),
+        t('images'),
     ];
 
     return (
