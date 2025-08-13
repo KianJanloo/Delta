@@ -37,10 +37,7 @@ A modern and stylish real estate platform built with **Next.js**, **Tailwind CSS
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/<your-repo>.git
-
-# Navigate to the project directory
-cd <your-repo>
+git clone https://github.com/KianJanloo/Delta.git
 
 # Install dependencies
 npm install
