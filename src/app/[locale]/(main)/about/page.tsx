@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const AboutPage = () => {
   return (
     <div className='mt-[120px]'>
-      <AboutComponent />
+      {/* <AboutComponent /> */}
     </div>
   )
 }
