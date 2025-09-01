@@ -1,4 +1,4 @@
-import AboutComponent from '@/components/about/AboutComponent'
+// import AboutComponent from '@/components/about/AboutComponent'
 import { Metadata } from 'next'
 import React from 'react'
 

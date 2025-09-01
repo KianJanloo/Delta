@@ -32,14 +32,14 @@ const MobileNavbarSection = () => {
         </Link>
       </div>
 
-      <div>
+      {/* <div>
         <Link
           href="/about"
           className="text-subText transition-colors hover:text-primary block"
         >
           {t("navbar.aboutUs")}
         </Link>
-      </div>
+      </div> */}
 
       {/* <div>
         <Link
