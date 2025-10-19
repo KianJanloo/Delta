@@ -9,13 +9,11 @@ import { useTranslations } from 'next-intl'
 
 const SellerDetail: FC<{ house: IHouse }> = ({ house }) => {
     const t = useTranslations('rental.seller');
-    const jalaliDate = convertToJalaliString(house.last_updated)
     const rentPrice = SplitNumber(house.price)
     const mortgagePrice = SplitNumber(house.price)
-    //   const maskedPhone = house.phone.replace(/^(\d{2})(\d{4})(\d{3})$/, '$1****$3')
 
     return (
-        <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="bg-secondary-light2 border-border border rounded-2xl p-4 shadow-md flex flex-col justify-between max-2xl:w-full w-2/12">
+        <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="bg-secondary-light2 border-border border rounded-2xl p-4 shadow-md flex flex-col justify-between w-3/12 max-md:w-full">
             <div className="text-center border-b border-subText pb-2 mb-3">
                 <h2 className="text-sm font-bold flex items-center flex-row-reverse justify-center gap-2">
                     <Phone size={16} /> {t('contactInfo')}
@@ -27,7 +25,7 @@ const SellerDetail: FC<{ house: IHouse }> = ({ house }) => {
 
                 <p className="font-semibold text-lg">{house.sellerName}</p>
                 <p className="text-sm text-subText flex items-center gap-1">
-                    {jalaliDate} <Calendar size={14} />
+                    {convertToJalaliString(new Date())} <Calendar size={14} />
                 </p>
             </div>
 

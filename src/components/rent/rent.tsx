@@ -24,8 +24,6 @@ import { Loader } from "../common/Loader";
 import { useTranslations } from "next-intl";
 import { addFavorite } from "@/utils/service/api/favorites/addFavorite";
 import { useSession } from "next-auth/react";
-import { getFavorites } from "@/utils/service/api/favorites/getFavoritesByUserId";
-import { IAddFavorite, IFavorite } from "@/types/favorites-type/favorites-type";
 
 const Rent = () => {
   const t = useTranslations("rental.single");
@@ -125,7 +123,7 @@ const Rent = () => {
           </div>
         </div>
       </div>
-      <div className="flex mt-4 gap-4 flex-col 2xl:flex-row">
+      <div className="flex mt-4 gap-4 max-md:flex-col 2xl:flex-row">
         {house && <SellerDetail house={house} />}
         {house && (
           <Photo

@@ -32,7 +32,7 @@ const ReserveCard: FC<IReserveContent> = ({ items }) => {
     >
       <div className="flex flex-col md:flex-row gap-4 md:w-4/5 w-full">
         <img
-          alt=""
+          alt=" "
           src={items.photos !== null ? items.photos[0] : " "}
           className="bg-secondary-light3 md:w-[228.35986328125px] w-full h-[144px] group-hover:shadow-[#8CFF451F] group-hover:shadow-2md group-hover:border group-hover:border-primary rounded-[16px]"
         />
