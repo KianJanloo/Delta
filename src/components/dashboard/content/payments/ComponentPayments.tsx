@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/pagination";
 import { getPayments } from "@/utils/service/api/payment/getPayments";
 import { IPayment } from "@/utils/service/api/seller-finance/getAllCustomersPayments";
+import { Loader2 } from "lucide-react";
 
 const ComponentPayments = () => {
   const [payments, setPayments] = useState<IPayment[]>([]);
@@ -67,8 +68,8 @@ const ComponentPayments = () => {
       </svg>
 
       {isLoading ? (
-        <div className="mx-auto text-subText animate-pulse">
-          در حال دریافت اطلاعات...
+        <div className="w-full mx-auto my-[200px]">
+          <Loader2 className="animate-spin mx-auto text-primary" size={40} />
         </div>
       ) : payments.length > 0 ? (
         <ContentPayment payments={payments} />

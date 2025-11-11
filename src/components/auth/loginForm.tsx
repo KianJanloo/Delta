@@ -82,7 +82,7 @@ const LoginForm = () => {
 
         if (res?.ok) {
           showToast("success", t("successTitle"), t("close"), "");
-          if (decoded?.role === "seller" || decoded?.role === "admin") {
+          if (decoded?.role == "seller" || decoded?.role == "admin") {
             redirect("/dashboard/seller");
           } else if (decoded?.role === "buyer") {
             redirect("/dashboard");

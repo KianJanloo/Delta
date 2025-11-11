@@ -1,7 +1,6 @@
 /* eslint-disable */
 
 'use client'
-import { useTheme } from "@/utils/service/TanstakProvider";
 import { Bell, ChevronDown, ChevronUp, LogOut, Moon, PlusCircle, Sun } from "lucide-react";
 import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import CommonModal from "../../modal/CommonModal";
@@ -21,7 +20,6 @@ import Image from "next/image";
 const HeaderDashboard: React.FC = () => {
     const t = useTranslations('dashboardHeader');
     const tRout = useTranslations('dashboardSidebar');
-    const { theme, toggleTheme } = useTheme();
     const [modalView, setModalView] = React.useState(false);
     const moreRef = useRef<HTMLDivElement | null>(null);
     const pathname = useClearPathname();
@@ -73,17 +71,6 @@ const HeaderDashboard: React.FC = () => {
                 )}
                 <div></div>
                 <div className='flex gap-4 items-center'>
-                    <button
-                        onClick={toggleTheme}
-                        className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-subBg2 transition-colors"
-                        aria-label={theme === "dark" ? t('lightMode') : t('darkMode')}
-                    >
-                        {theme === "dark" ? (
-                            <Sun className="w-5 h-5 text-subText hover:text-primary" />
-                        ) : (
-                            <Moon className="w-5 h-5 text-subText hover:text-primary" />
-                        )}
-                    </button>
                     <Bell onClick={() => redirect("/dashboard/notifications")} className="cursor-pointer" />
                     <div className="relative">
                         <div onClick={() => {

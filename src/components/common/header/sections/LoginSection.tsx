@@ -5,7 +5,6 @@ import { User, LogOut, LayoutDashboard, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { useUserStore } from "@/utils/zustand/store";
-import { useTheme } from "@/utils/service/TanstakProvider";
 import { motion } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
@@ -17,7 +16,6 @@ import { getProfileById } from "@/utils/service/api/profile/getProfileById";
 
 const LoginSection = () => {
   const { checkAuthStatus } = useUserStore();
-  const { theme, toggleTheme } = useTheme();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession() as any;
 
@@ -43,22 +41,6 @@ const LoginSection = () => {
 
   return (
     <div className="flex whitespace-nowrap items-center xl:px-8 px-4 justify-end gap-3 xl:text-[16px] text-[12px]">
-      <motion.button
-        initial={{ rotate: 0, scale: 0 }}
-        animate={{ rotate: 360, scale: 1 }}
-        exit={{ rotate: -360, scale: 0 }}
-        transition={{ duration: 0.5 }}
-        onClick={toggleTheme}
-        className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-subBg2 transition-colors"
-        aria-label={theme === "dark" ? "تغییر به حالت روشن" : "تغییر به حالت تاریک"}
-      >
-        {theme === "dark" ? (
-          <Sun className="w-5 h-5 text-subText hover:text-primary" />
-        ) : (
-          <Moon className="w-5 h-5 text-subText hover:text-primary" />
-        )}
-      </motion.button>
-
 
       {!session ? (
         <Link

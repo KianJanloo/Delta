@@ -2,17 +2,14 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import darkHeroSection from "@/assets/images/heroSection/landingHerosectiondark.png";
-import lightHeroSection from "@/assets/images/heroSection/landingHerosectionlight.png";
 import building from "@/assets/images/heroSection/building.png";
 import HeroLogo from "./section/HeroLogo";
 import HeroContent from "./section/HeroContent";
 import StatisticSection from "./section/StatisticSection";
 import SearchBar from "./section/SearchBar";
 import InfoIndicator from "./section/InfoIndicator";
-import { useTheme } from "@/utils/service/TanstakProvider";
 
 const HeroSection = () => {
-  const { theme } = useTheme();
   const [heroSection, setHeroSection] = useState(darkHeroSection);
   const [mounted, setMounted] = useState(false);
 
@@ -22,9 +19,9 @@ const HeroSection = () => {
 
   useEffect(() => {
     if (mounted) {
-      setHeroSection(theme === "dark" ? darkHeroSection : lightHeroSection);
+      setHeroSection(darkHeroSection);
     }
-  }, [theme, mounted]);
+  }, [mounted]);
 
   if (!mounted) {
     return null;

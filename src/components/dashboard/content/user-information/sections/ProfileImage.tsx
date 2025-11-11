@@ -80,7 +80,7 @@ const ProfileImage: React.FC = () => {
           alt=" "
           width={120}
           height={120}
-          className="rounded-full w-[120px] h-[120px] bg-subBg2 relative"
+          className="rounded-full w-[120px] h-[120px] bg-subBg2 relative object-cover"
         />
         <div
           onClick={() => setOpen(true)}

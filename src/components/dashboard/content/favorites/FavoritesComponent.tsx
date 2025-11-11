@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/pagination";
 import { getFavorites } from "@/utils/service/api/favorites/getFavoritesByUserId";
 import { IFavorite } from "@/types/favorites-type/favorites-type";
+import { Loader } from "@/components/common/Loader";
 
 export interface IFilters {
   search?: string
@@ -29,8 +30,10 @@ const FavoritesComponent = () => {
   const limit = 3;
   const [refetch, setRefetch] = useState<boolean>(false);
   const [filters, setFilters] = useState<IFilters>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchFavorites = useCallback(async () => {
+    setIsLoading(true);
     const data = {
       page,
       limit,
@@ -49,6 +52,7 @@ const FavoritesComponent = () => {
     }
 
     setRefetch(false);
+    setIsLoading(true);
   }, [page, limit, refetch, filters]);
 
   useEffect(() => {
@@ -56,6 +60,10 @@ const FavoritesComponent = () => {
   }, [fetchFavorites]);
 
   const totalPages = Math.ceil(totalCount / limit);
+
+  if (isLoading) return <div className="mx-auto my-[200px]">
+    <Loader />
+  </div> 
 
   return (
     <BlurFade className="px-4 bg-subBg rounded-xl py-4 flex flex-col gap-6">

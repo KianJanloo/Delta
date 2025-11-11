@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle2, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import CommonButton from "@/components/common/buttons/common/CommonButton";
 import { useTranslations } from "next-intl";
 import { INotification } from "@/utils/service/api/notifications/getNotifications";
@@ -80,7 +80,9 @@ export default function ContentNotifications({
           {loading ? (
             <TableRow>
               <TableCell colSpan={3} className="text-center py-8">
-                <span className="text-muted-foreground">در حال بارگذاری...</span>
+                <div className="w-full mx-auto my-[100px]">
+                  <Loader2 className="animate-spin mx-auto text-primary" size={40} />
+                </div>
               </TableCell>
             </TableRow>
           ) : (
@@ -94,7 +96,11 @@ export default function ContentNotifications({
                   className="flex w-fit gap-4 justify-between items-center py-3"
                 >
                   {t("unread")} ({unread.length})
-                  {openUnread ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  {openUnread ? (
+                    <ChevronUp size={18} />
+                  ) : (
+                    <ChevronDown size={18} />
+                  )}
                 </TableCell>
               </TableRow>
 
@@ -127,7 +133,11 @@ export default function ContentNotifications({
                   className="flex w-fit gap-4 justify-between items-center py-3"
                 >
                   {t("read")} ({read.length})
-                  {openRead ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  {openRead ? (
+                    <ChevronUp size={18} />
+                  ) : (
+                    <ChevronDown size={18} />
+                  )}
                 </TableCell>
               </TableRow>
 
@@ -150,8 +160,8 @@ export default function ContentNotifications({
 
       <div className="flex flex-col gap-4 lg:hidden">
         {loading ? (
-          <div className="text-center text-muted-foreground py-8">
-            در حال بارگذاری...
+          <div className="w-full mx-auto my-[200px]">
+            <Loader2 className="animate-spin mx-auto text-primary" size={40} />
           </div>
         ) : (
           <>
@@ -163,13 +173,19 @@ export default function ContentNotifications({
                 <span>
                   {t("unread")} ({unread.length})
                 </span>
-                {openUnread ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                {openUnread ? (
+                  <ChevronUp size={18} />
+                ) : (
+                  <ChevronDown size={18} />
+                )}
               </div>
               {openUnread &&
                 unread.map((not, i) => (
                   <div key={i} className="bg-subBg2 p-4 rounded-lg space-y-2">
                     <p className="font-medium flex gap-4">{not.title}</p>
-                    <p className="text-sm text-muted-foreground">{not.message}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {not.message}
+                    </p>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">
                         {convertToJalaliString(not.createdAt)}
@@ -202,7 +218,9 @@ export default function ContentNotifications({
                     className="bg-subBg2 p-4 rounded-lg opacity-70 space-y-2"
                   >
                     <p className="font-medium">{not.title}</p>
-                    <p className="text-sm text-muted-foreground">{not.message}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {not.message}
+                    </p>
                     <span className="text-xs text-muted-foreground">
                       {convertToJalaliString(not.createdAt)}
                     </span>

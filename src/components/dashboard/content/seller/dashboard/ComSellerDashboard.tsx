@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StatusProfile from "./cards/StatusProfile";
 import SituationPayroll from "./cards/SituationPayroll";
 import RecentReserves from "./cards/RecentReserves";
@@ -14,14 +14,17 @@ import {
 } from "@/utils/service/api/booking/getCustomersBookings";
 import MiniCard from "./cards/MiniCard";
 import { useSession } from "next-auth/react";
+import { Loader, Loader2 } from "lucide-react";
 
 const ComSellerDashboard = () => {
   const [reserves, setReserves] = useState<Booking[]>([]);
   const [dashboard, setDashboard] = useState<IDashboardSummary | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const session = useSession() as any;
 
   const fetchReserves = async () => {
+    setIsLoading(true);
     try {
       const res = await getCustomersBookings(
         session.data?.userInfo?.id,
@@ -31,9 +34,10 @@ const ComSellerDashboard = () => {
         "DESC"
       );
       setReserves(res?.bookings || []);
-      console.log(res)
+      setIsLoading(false);
     } catch (err) {
       console.error("Failed to fetch reserves", err);
+      setIsLoading(false);
     }
   };
 
@@ -76,6 +80,13 @@ const ComSellerDashboard = () => {
       href: "/dashboard/seller/manage-comments",
     },
   ];
+
+  if (isLoading)
+    return (
+      <div className="w-full mx-auto my-[200px]">
+        <Loader2 className="animate-spin mx-auto text-primary" size={40} />
+      </div>
+    );
 
   return (
     <div className="bg-bgDash rounded-xl py-4 flex flex-col gap-8">

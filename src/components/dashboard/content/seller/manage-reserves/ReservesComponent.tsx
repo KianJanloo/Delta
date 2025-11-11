@@ -13,8 +13,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Booking, getCustomersBookings } from "@/utils/service/api/booking/getCustomersBookings";
+import {
+  Booking,
+  getCustomersBookings,
+} from "@/utils/service/api/booking/getCustomersBookings";
 import { useSession } from "next-auth/react";
+import { Loader2 } from "lucide-react";
 
 const ReservesComponent = () => {
   const [reserves, setReserves] = useState<Booking[]>([]);
@@ -72,7 +76,13 @@ const ReservesComponent = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getCustomersBookings(session.data?.userInfo?.id, currentPage, limit, "created_at", "DESC");
+      const response = await getCustomersBookings(
+        session.data?.userInfo?.id,
+        currentPage,
+        limit,
+        "created_at",
+        "DESC"
+      );
       setReserves(response?.bookings || []);
       setFilteredReserves(response?.bookings || []);
       setTotal(response?.totalCount || 0);
@@ -113,14 +123,13 @@ const ReservesComponent = () => {
       </svg>
 
       {loading ? (
-        <div className="mx-auto">در حال بارگذاری...</div>
+        <div className="w-full mx-auto my-[200px]">
+          <Loader2 className="animate-spin mx-auto text-primary" size={40} />
+        </div>
       ) : error ? (
         <div className="text-red-500 mx-auto">{error}</div>
       ) : (
-        <ReservesContent
-          reset={fetchReserves}
-          reserves={filteredReserves}
-        />
+        <ReservesContent reset={fetchReserves} reserves={filteredReserves} />
       )}
 
       <div className="flex w-full flex-wrap justify-between items-end">
