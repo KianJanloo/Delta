@@ -9,7 +9,8 @@ import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Edit, X } from "lucide-react"
+import { Edit, X, Upload, ImageIcon, Loader2, Trash2 } from "lucide-react"
+import { uploadHousePhotos } from "@/utils/service/api/houses/uploadPhotos"
 import {
     Dialog,
     DialogContent,
@@ -102,22 +103,49 @@ const EditHouseModal = ({
 }) => {
     const [open, setOpen] = useState(false)
     const [photos, setPhotos] = useState<string[]>(house.photos || []);
-    const [input, setInput] = useState('');
+    const [newPhotos, setNewPhotos] = useState<File[]>([]);
+    const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
-    const removePhotos = (indexToRemove: any) => {
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const filesArray = Array.from(e.target.files);
+            setNewPhotos(prev => [...prev, ...filesArray]);
+            
+            // Create preview URLs
+            const urls = filesArray.map(file => URL.createObjectURL(file));
+            setPreviewUrls(prev => [...prev, ...urls]);
+        }
+    };
+
+    const removeExistingPhoto = (indexToRemove: number) => {
         setPhotos(photos.filter((_, index) => index !== indexToRemove));
     };
 
-    const handleKeyDown = (e: any) => {
-        if ((e.key === 'Enter' || e.key === ',') && input.trim()) {
-            e.preventDefault();
-            const newTag = input.trim()
-            if (!photos.includes(newTag)) {
-                setPhotos([...photos, newTag]);
+    const removeNewPhoto = (indexToRemove: number) => {
+        setNewPhotos(newPhotos.filter((_, index) => index !== indexToRemove));
+        URL.revokeObjectURL(previewUrls[indexToRemove]);
+        setPreviewUrls(previewUrls.filter((_, index) => index !== indexToRemove));
+    };
+
+    const handleUploadPhotos = async () => {
+        if (newPhotos.length === 0 || !house.id) return;
+        
+        try {
+            setIsUploadingPhotos(true);
+            const response = await uploadHousePhotos(String(house.id), newPhotos);
+            
+            if (response && Array.isArray(response.photos)) {
+                setPhotos(prev => [...prev, ...response.photos]);
+                setNewPhotos([]);
+                previewUrls.forEach(url => URL.revokeObjectURL(url));
+                setPreviewUrls([]);
+                showToast("success", "تصاویر با موفقیت آپلود شدند");
             }
-            setInput('');
-        } else if (e.key === 'Backspace' && !input && photos.length) {
-            setPhotos(photos.slice(0, -1));
+        } catch (error) {
+            showToast("error", "خطا در آپلود تصاویر");
+        } finally {
+            setIsUploadingPhotos(false);
         }
     };
 
@@ -178,36 +206,88 @@ const EditHouseModal = ({
                     <DialogTitle className="text-center">ویرایش مشخصات ملک</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-4 mt-2">
-                    <div className="w-full flex flex-col gap-2">
-                        <Label htmlFor="tags" className="text-subText text-sm">
-                            تصاویر ملک
-                        </Label>
-                        <div className="flex flex-wrap gap-2 px-4 py-2 border border-subText rounded-xl">
-                            {photos.map((tag, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-center bg-primary text-primary-foreground gap-1 px-2 py-1 rounded-lg text-sm max-w-[200px] truncate line-clamp-1"
+                    {/* Photos Upload Section */}
+                    <div className="w-full flex flex-col gap-4">
+                        <div className="flex justify-between items-center">
+                            <Label className="text-subText text-sm">تصاویر ملک</Label>
+                            {newPhotos.length > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={handleUploadPhotos}
+                                    disabled={isUploadingPhotos}
+                                    className="text-xs bg-primary text-primary-foreground px-3 py-1 rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center gap-1"
                                 >
-                                    <button
-                                        type="button"
-                                        className="ml-1 text-primary-foreground"
-                                        onClick={() => removePhotos(index)}
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                    {tag}
-                                </div>
-                            ))}
-                            <input
-                                id="photos"
-                                name="photos"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                className="flex-grow bg-transparent text-subText text-sm focus:outline-none"
-                                placeholder=" تصویر ملک را وارد و Enter بزنید "
-                            />
+                                    {isUploadingPhotos ? (
+                                        <>
+                                            <Loader2 size={14} className="animate-spin" />
+                                            در حال آپلود...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Upload size={14} />
+                                            آپلود تصاویر جدید
+                                        </>
+                                    )}
+                                </button>
+                            )}
                         </div>
+                        
+                        {/* Existing Photos */}
+                        {photos.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                <span className="text-xs text-subText">تصاویر فعلی:</span>
+                                <div className="flex flex-wrap gap-2">
+                                    {photos.map((photo, index) => (
+                                        <div key={index} className="relative group w-20 h-20 rounded-lg overflow-hidden border-2 border-border">
+                                            <img src={photo} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeExistingPhoto(index)}
+                                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <Trash2 size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* New Photos Preview */}
+                        {previewUrls.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                <span className="text-xs text-subText">تصاویر جدید (آپلود نشده):</span>
+                                <div className="flex flex-wrap gap-2">
+                                    {previewUrls.map((url, index) => (
+                                        <div key={index} className="relative group w-20 h-20 rounded-lg overflow-hidden border-2 border-primary">
+                                            <img src={url} alt={`New ${index + 1}`} className="w-full h-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeNewPhoto(index)}
+                                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* Upload Button */}
+                        <label className="border-2 border-dashed border-subText rounded-xl p-4 hover:border-primary cursor-pointer transition-colors flex flex-col items-center gap-2">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleFileSelect}
+                                className="hidden"
+                                disabled={isUploadingPhotos}
+                            />
+                            <ImageIcon size={32} className="text-subText" />
+                            <span className="text-sm text-subText">انتخاب تصاویر جدید</span>
+                            <span className="text-xs text-muted">می‌توانید چند تصویر را انتخاب کنید</span>
+                        </label>
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="title" className="text-subText">عنوان ملک</Label>
