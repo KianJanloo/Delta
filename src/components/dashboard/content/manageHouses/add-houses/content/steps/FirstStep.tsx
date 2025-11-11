@@ -35,6 +35,7 @@ const FirstStep = ({
   const [transaction_type, setTransaction_type] = useState<string | null>(
     house.transaction_type || null
   );
+  const [showTransactionError, setShowTransactionError] = useState(false);
   const t = useTranslations("dashboardSeller.firstStep");
   const selectItems = [
     { label: t("direct_purchase"), value: "direct_purchase" },
@@ -56,10 +57,17 @@ const FirstStep = ({
   };
 
   const onSubmit = (values: Partial<ICreateHouseValues>) => {
+    if (!transaction_type) {
+      setShowTransactionError(true);
+      return;
+    }
+    
+    setShowTransactionError(false);
+    
     const data = {
       title: values.title,
       capacity: values.capacity,
-      transaction_type: transaction_type || "direct_purchase",
+      transaction_type: transaction_type,
       price: values.price,
       caption: values.caption,
       categories: {
@@ -67,7 +75,7 @@ const FirstStep = ({
       },
     };
     setData(data);
-    setStep(1);
+    setStep(1); // Move to property details step
   };
 
   const handleTransactionTypePlaceHolder = () => {
@@ -133,7 +141,10 @@ const FirstStep = ({
       <div className="flex max-lg:flex-col w-full justify-between gap-8">
         <div className="w-1/2 max-lg:w-full flex flex-col gap-2">
           <CommonSelect
-            onValueChange={(val) => setTransaction_type(val)}
+            onValueChange={(val) => {
+              setTransaction_type(val);
+              setShowTransactionError(false);
+            }}
             selectItems={selectItems}
             placeholder={
               handleTransactionTypePlaceHolder() ||
@@ -143,10 +154,9 @@ const FirstStep = ({
             color="text-subText"
             label={t("dealType")}
           />
-          {!transaction_type && transaction_type === null && (
+          {showTransactionError && !transaction_type && (
             <span className="text-xs text-danger">
-              {" "}
-              نوع ملک خود رو انتخاب نمایید.{" "}
+              نوع معامله الزامی است
             </span>
           )}
         </div>

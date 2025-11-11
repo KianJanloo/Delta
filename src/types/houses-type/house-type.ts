@@ -35,7 +35,7 @@ export interface ICreateHouse {
     address: string,
     price: string,
     tags: string[],
-    photos: string[],
+    photos?: string[],
     capacity: number,
     location: {
         lat: number,
@@ -49,7 +49,8 @@ export interface ICreateHouse {
     rooms: number,
     yard_type: string,
     transaction_type: string,
-    caption: string
+    caption: string,
+    sellerName: string
 }
 
 export interface ICreateHouseValues {

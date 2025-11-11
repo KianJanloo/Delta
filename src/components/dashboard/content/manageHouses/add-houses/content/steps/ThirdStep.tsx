@@ -14,15 +14,23 @@ const ThirdStep = ({ setStep }: { setStep: Dispatch<SetStateAction<number>> }) =
   const { data: house, setData } = useHouseStore()
   const [marker, setMarker] = useState<MarkerType | null>(null)
   const [address, setAddress] = useState<string>(house.address || '')
+  const [showAddressError, setShowAddressError] = useState(false)
 
   const handleNext = () => {
+    if (!address || !address.trim()) {
+      setShowAddressError(true);
+      return;
+    }
+    
+    setShowAddressError(false);
+    
     setData({
       address: address,
       location: marker 
         ? { lat: marker.lat, lng: marker.lng } 
-        : house.location || undefined,
+        : house.location || { lat: 0, lng: 0 },
     })
-    setStep(prev => prev + 1)
+    setStep(3) // Move to preview/submit step
   }
 
   return (
@@ -37,10 +45,18 @@ const ThirdStep = ({ setStep }: { setStep: Dispatch<SetStateAction<number>> }) =
               name="address"
               id="address"
               value={address}
-              onChange={e => setAddress(e.target.value)}
+              onChange={e => {
+                setAddress(e.target.value);
+                setShowAddressError(false);
+              }}
               placeholder={t('addressPlaceholder')}
               className="w-full px-4 py-2 text-sm bg-transparent border rounded-xl text-subText border-subText"
             />
+            {showAddressError && (
+              <span className="text-xs text-danger">
+                آدرس الزامی است
+              </span>
+            )}
           </div>
           <span className="text-xl leading-[60px]">
             {t('desc1')}

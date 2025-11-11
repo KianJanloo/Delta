@@ -9,7 +9,7 @@ export const houseSchema = z.object({
     .min(1, "آدرس الزامی است"),
   photos: z
     .array(z.string({ required_error: "لینک عکس نامعتبر است" }))
-    .min(1, "حداقل یک عکس نیاز است"),
+    .optional(),
   price: z
     .string({ required_error: "قیمت الزامی است" })
     .min(1, "قیمت الزامی است"),

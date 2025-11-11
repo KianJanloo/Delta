@@ -13,8 +13,9 @@ import {
   Coins,
   Drill,
   MapPin,
+  Loader2,
 } from "lucide-react";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useHouseIdStore, useHouseStore } from "@/utils/zustand/house";
 import CommonButton from "@/components/common/buttons/common/CommonButton";
@@ -23,6 +24,7 @@ import { showToast } from "@/core/toast/toast";
 import { ICreateHouse } from "@/types/houses-type/house-type";
 import { sendNotif } from "@/utils/helper/sendNotif/sendNotif";
 import { useSession } from "next-auth/react";
+import { getProfileById } from "@/utils/service/api/profile/getProfileById";
 
 const FifthStep = ({
   setStep,
@@ -32,46 +34,84 @@ const FifthStep = ({
   const t = useTranslations("dashboardSeller.fifthStep");
   const { data: house, reset } = useHouseStore();
   const { setHouseId } = useHouseIdStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const session = useSession() as any;
 
   const submitHouse = async () => {
-    const data = {
-      title: house.title,
-      caption: house.title,
-      address: house.address,
-      bathrooms: house.bathrooms,
-      capacity: house.capacity,
-      categories: house.categories,
-      location: house.location,
-      parking: house.parking,
-      price: house.price,
-      rooms: house.rooms,
-      tags: house.tags,
-      transaction_type: house.transaction_type,
-      yard_type: house.yard_type,
-      photos: [""]
-    } as ICreateHouse;
+    // Validate required fields
+    if (!house.title || !house.price || !house.address || !house.transaction_type) {
+      showToast("error", "لطفا تمامی فیلدهای الزامی را پر کنید");
+      return;
+    }
 
-    const response = (await createHouse(data)) as { id: number };
-    if (response) {
-      const dataNotification = {
-        userId: session?.data.userInfo.id,
-        title: " ملک جدید ",
-        message: ` آگهی ملک ${house.title} ثبت شد `,
-        type: "new_property",
-        dataNotification: {
-          houseTitle: house.title,
-          houseType: house.transaction_type,
-        },
+    try {
+      setIsSubmitting(true);
+      
+      let sellerName = "فروشنده";
+      try {
+        const userId = session?.data?.userInfo?.id;
+        if (userId) {
+          const profileResponse = await getProfileById(userId);
+          if (profileResponse?.user) {
+            const { firstName, lastName, fullName } = profileResponse.user;
+            sellerName = fullName || `${firstName || ''} ${lastName || ''}`.trim() || "فروشنده";
+          }
+        }
+      } catch (profileError) {
+        console.log("Error fetching profile:", profileError);
+        // Continue with default seller name
+      }
+      
+      const data = {
+        title: house.title,
+        caption: house.caption || house.title,
+        address: house.address,
+        bathrooms: house.bathrooms || 1,
+        capacity: house.capacity || 1,
+        categories: house.categories || { name: "مسکونی" },
+        location: house.location || { lat: 0, lng: 0 },
+        parking: house.parking || 0,
+        price: house.price,
+        rooms: house.rooms || 1,
+        tags: house.tags || [],
+        transaction_type: house.transaction_type,
+        yard_type: house.yard_type || "",
+        sellerName: sellerName
       };
-      await sendNotif(dataNotification);
-      setHouseId(response.id);
-      showToast("success", " ملک شما با موفقیت ثبت شد. ");
-      setStep(4);
-      reset();
-    } else {
-      showToast("error", " ثبت اطلاعات با مشکل مواجه شد ");
+
+      const response = (await createHouse(data)) as { id: number };
+      
+      if (response && response.id) {
+        // Send notification
+        try {
+          const dataNotification = {
+            userId: session?.data?.userInfo?.id,
+            title: "ملک جدید",
+            message: `آگهی ملک ${house.title} ثبت شد`,
+            type: "new_property",
+            dataNotification: {
+              houseTitle: house.title,
+              houseType: house.transaction_type,
+            },
+          };
+          await sendNotif(dataNotification);
+        } catch (notifError) {
+          console.log("Notification error:", notifError);
+          // Don't fail the whole process if notification fails
+        }
+
+        setHouseId(response.id);
+        showToast("success", "ملک شما با موفقیت ثبت شد. اکنون تصاویر را آپلود کنید");
+        setStep(4); // Move to photo upload step
+      } else {
+        showToast("error", "ثبت اطلاعات با مشکل مواجه شد");
+      }
+    } catch (error) {
+      console.error("Error creating house:", error);
+      showToast("error", "خطا در ثبت ملک. لطفا دوباره تلاش کنید");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -226,13 +266,15 @@ const FifthStep = ({
           classname="w-fit flex-row-reverse bg-subText text-[#000000]"
           icon={<ChevronRight size={16} />}
           onclick={() => setStep((prev) => prev - 1)}
+          disabled={isSubmitting}
         />
         <CommonButton
           type="button"
-          title="ساخت ملک"
+          title={isSubmitting ? "در حال ثبت..." : "ساخت ملک"}
           classname="w-fit"
-          icon={<ChevronLeft size={16} />}
+          icon={isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <ChevronLeft size={16} />}
           onclick={submitHouse}
+          disabled={isSubmitting}
         />
       </div>
     </div>

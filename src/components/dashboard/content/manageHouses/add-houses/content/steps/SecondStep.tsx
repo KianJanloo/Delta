@@ -36,7 +36,7 @@ const SecondStep = ({ setStep }: { setStep: Dispatch<SetStateAction<number>> }) 
             tags: tags,
         }
         setData(data);
-        setStep(3);
+        setStep(2);
     }
 
     const selectItems = [

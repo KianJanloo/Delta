@@ -4,11 +4,11 @@ import { useTranslations } from "next-intl";
 export default function Stepper({ currentStep }: { currentStep: number }) {
     const t = useTranslations('dashboardSeller.addHouses')
     const steps = [
-        t('basicInfo'),
-        t('address'),
-        t('facilities'),
-        t('finalConfirm'),
-        t('images'),
+        t('basicInfo'),      // Step 0: Basic information
+        t('facilities'),     // Step 1: Property details (rooms, bathrooms, etc.)
+        t('address'),        // Step 2: Address and location
+        t('finalConfirm'),   // Step 3: Preview and submit
+        t('images'),         // Step 4: Upload photos
     ];
 
     return (

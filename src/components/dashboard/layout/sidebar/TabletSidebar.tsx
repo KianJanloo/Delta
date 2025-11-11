@@ -162,21 +162,6 @@ const TabletSidebar = ({
                         );
                     })}
                 </div>
-                <Link
-                    className="hover:bg-subBg2 px-3 py-2 flex justify-center items-center rounded-lg"
-                    href={""}
-                >
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger>
-                                <CreditCard />
-                            </TooltipTrigger>
-                            <TooltipContent className="dark:bg-accent bg-subBg2 dark:accent-foreground absolute right-6 whitespace-nowrap text-foreground">
-                                <p> {footerSidebarSelect.title} </p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </Link>
             </div>
         </div>
     )
