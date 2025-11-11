@@ -30,7 +30,7 @@ const ThirdStep = ({ setStep }: { setStep: Dispatch<SetStateAction<number>> }) =
         ? { lat: marker.lat, lng: marker.lng } 
         : house.location || { lat: 0, lng: 0 },
     })
-    setStep(3) // Move to preview/submit step
+    setStep(3)
   }
 
   return (

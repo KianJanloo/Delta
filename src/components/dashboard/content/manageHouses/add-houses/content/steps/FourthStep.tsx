@@ -71,11 +71,9 @@ const FourthStep: React.FC<{ setStep: Dispatch<SetStateAction<number>> }> = ({
         setData({ photos: res.photos });
         showToast("success", "تصاویر با موفقیت آپلود شدند. ملک شما آماده انتشار است!");
         
-        // Clean up state
         reset();
         deleteHouseId();
         
-        // Redirect to my houses after a delay
         setTimeout(() => {
           window.location.href = "/dashboard/seller/manage-houses/my-houses";
         }, 2000);

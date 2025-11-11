@@ -39,7 +39,6 @@ const FifthStep = ({
   const session = useSession() as any;
 
   const submitHouse = async () => {
-    // Validate required fields
     if (!house.title || !house.price || !house.address || !house.transaction_type) {
       showToast("error", "لطفا تمامی فیلدهای الزامی را پر کنید");
       return;
@@ -60,7 +59,6 @@ const FifthStep = ({
         }
       } catch (profileError) {
         console.log("Error fetching profile:", profileError);
-        // Continue with default seller name
       }
       
       const data = {

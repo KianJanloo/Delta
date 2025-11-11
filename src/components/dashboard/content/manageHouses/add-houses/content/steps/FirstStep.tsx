@@ -75,7 +75,7 @@ const FirstStep = ({
       },
     };
     setData(data);
-    setStep(1); // Move to property details step
+    setStep(1);
   };
 
   const handleTransactionTypePlaceHolder = () => {
