@@ -105,7 +105,7 @@ const RentalComponent = () => {
         setMinArea={setMinArea}
         setMaxArea={setMaxArea}
       />
-      <div className='flex gap-8 mt-[20px] w-full flex-wrap' id="rental-items">
+      <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8 mt-[20px] w-full' id="rental-items">
         {isLoading ? (
           Array.from({ length: itemsPerPage }).map((_, idx) => (
             <RentalCardSkeleton key={idx} />
