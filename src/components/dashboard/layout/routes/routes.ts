@@ -8,7 +8,7 @@ import {
   HousePlus,
   PlusCircle,
   Settings,
-  // SquaresSubtract,
+  SquaresSubtract,
   User,
 } from "lucide-react";
 
@@ -51,6 +51,6 @@ export const sellerRoutes = [
     icon: PlusCircle,
   },
   { label: "payments", href: "/dashboard/seller/payments", icon: Coins },
-  // { label: "manageComments", href: "/dashboard/seller/manage-comments", icon: SquaresSubtract },
+  { label: "manageComments", href: "/dashboard/seller/manage-comments", icon: SquaresSubtract },
   { label: "notifications", href: "/dashboard/notifications", icon: BellDot },
 ] as Routes[];

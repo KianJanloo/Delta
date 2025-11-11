@@ -11,7 +11,6 @@ import { schemaLoginValidation } from "@/utils/validations/login-validation";
 import { Button } from "../ui/button";
 import { useRef, useState } from "react";
 import { showToast } from "@/core/toast/toast";
-import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { fetchApi } from "@/core/interceptore/fetchApi";
 import { useTranslations } from "next-intl";
@@ -19,6 +18,7 @@ import { useDirection } from "@/utils/hooks/useDirection";
 import { jwtDecode } from "jwt-decode";
 import ReCAPTCHA from "react-google-recaptcha";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export interface LoginResponse {
   accessToken: string;
@@ -31,6 +31,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -83,9 +84,9 @@ const LoginForm = () => {
         if (res?.ok) {
           showToast("success", t("successTitle"), t("close"), "");
           if (decoded?.role == "seller" || decoded?.role == "admin") {
-            redirect("/dashboard/seller");
+            router.push("/dashboard/seller");
           } else if (decoded?.role === "buyer") {
-            redirect("/dashboard");
+            router.push("/dashboard");
           }
           reset();
         }

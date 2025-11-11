@@ -3,7 +3,7 @@
 "use client";
 import { User, LogOut, LayoutDashboard, Moon, Sun } from "lucide-react";
 import Link from "next/link";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUserStore } from "@/utils/zustand/store";
 import { motion } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
@@ -39,6 +39,21 @@ const LoginSection = () => {
     getProfileState();
   }, [session]);
 
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   return (
     <div className="flex whitespace-nowrap items-center xl:px-8 px-4 justify-end gap-3 xl:text-[16px] text-[12px]">
 
@@ -52,7 +67,10 @@ const LoginSection = () => {
         </Link>
       ) : (
         <div className="relative group" ref={dropdownRef}>
-          <Link href={session.userInfo.role === "buyer" ? "/dashboard" : "/dashboard/seller"} className="flex items-center gap-2 py-2 rounded-2lg hover:bg-subBg text-foreground cursor-pointer transition-colors rounded-full">
+          <div
+            className="flex items-center gap-2 py-2 rounded-2lg hover:bg-subBg text-foreground cursor-pointer transition-colors rounded-full"
+            onClick={() => setDropdownVisible(!isDropdownVisible)}
+          >
             {(session.user?.image && session.user?.image !== "") || (profile?.profilePicture && profile?.profilePicture !== "") ? (
               <Image
                 alt=" "
@@ -64,32 +82,34 @@ const LoginSection = () => {
             ) : (
               <User className="text-subText w-6 h-6" />
             )}
-          </Link>
-
-          <div className={`absolute top-full ${dir === "rtl" ? "left-0" : "right-0"} mt-1 w-36 sm:w-44 md:w-48 lg:w-56 opacity-0 invisible md:group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10`}>
-            <div className="bg-secondary border border-border rounded-md shadow-lg py-1 text-right">
-              <Link
-                href="/dashboard"
-                className="px-2 sm:px-3 md:px-4 py-2 md:py-3 text-[10px] sm:text-xs md:text-sm text-foreground hover:bg-subBg transition-colors flex items-center gap-1 sm:gap-2"
-              >
-                <LayoutDashboard
-                  size={14}
-                  className="text-primary sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6"
-                />
-                <span> {t("goToAccount")} </span>
-              </Link>
-              <button
-                onClick={handleLogout(signOut, '/login')}
-                className="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 text-[10px] sm:text-xs md:text-sm text-foreground hover:bg-subBg transition-colors flex items-center gap-1 sm:gap-2"
-              >
-                <LogOut
-                  size={14}
-                  className="text-danger sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6"
-                />
-                <span> {t("logout")} </span>
-              </button>
-            </div>
           </div>
+
+          {isDropdownVisible && (
+            <div className={`absolute top-full ${dir === "rtl" ? "left-0" : "right-0"} mt-1 w-36 sm:w-44 md:w-48 lg:w-56 opacity-100 visible transition-all duration-200 z-10`}>
+              <div className="bg-secondary border border-border rounded-md shadow-lg py-1 text-right">
+                <Link
+                  href={`${session.userInfo.role === "buyer" ? "/dashboard" : "/dashboard/seller"}`}
+                  className="px-2 sm:px-3 md:px-4 py-2 md:py-3 text-[10px] sm:text-xs md:text-sm text-foreground hover:bg-subBg transition-colors flex items-center gap-1 sm:gap-2"
+                >
+                  <LayoutDashboard
+                    size={14}
+                    className="text-primary sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6"
+                  />
+                  <span> {t("goToAccount")} </span>
+                </Link>
+                <button
+                  onClick={handleLogout(signOut, '/login')}
+                  className="w-full px-2 sm:px-3 md:px-4 py-2 md:py-3 text-[10px] sm:text-xs md:text-sm text-foreground hover:bg-subBg transition-colors flex items-center gap-1 sm:gap-2"
+                >
+                  <LogOut
+                    size={14}
+                    className="text-danger sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6"
+                  />
+                  <span> {t("logout")} </span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
