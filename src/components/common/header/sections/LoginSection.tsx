@@ -75,7 +75,7 @@ const LoginSection = () => {
               <Image
                 alt=" "
                 src={session.user?.image || profile?.profilePicture}
-                className="w-8 h-8 rounded-full"
+                className="w-8 h-8 rounded-full object-cover"
                 width={200}
                 height={40}
               />

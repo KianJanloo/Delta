@@ -92,7 +92,7 @@ const HeaderDashboard: React.FC = () => {
                             <Image
                                 src={session?.user?.image || profile?.profilePicture || "/"}
                                 alt=""
-                                width={32}
+                                width={200}
                                 height={32}
                                 className="border-0 outline-none bg-secondary-light rounded-[8px] w-10 h-10 object-cover"
                             />
