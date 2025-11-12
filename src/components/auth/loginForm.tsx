@@ -72,12 +72,26 @@ const LoginForm = () => {
           decoded = jwtDecode(user.accessToken);
         }
 
-        const res = await signIn("credentials", {
+        if (!user?.accessToken || !user?.refreshToken) {
+          showToast("error", t("errorTitle"), t("close"), "");
+          setIsLoading(false);
+          return;
+        }
+
+        const accessTokenExpires = decoded?.exp ? decoded.exp * 1000 : undefined;
+
+        const signInPayload: Record<string, string | boolean> = {
           redirect: false,
-          accessToken: user?.accessToken,
-          refreshToken: user?.refreshToken,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
           password: values.password,
-        });
+        };
+
+        if (accessTokenExpires) {
+          signInPayload.accessTokenExpires = accessTokenExpires.toString();
+        }
+
+        const res = await signIn("credentials", signInPayload);
 
         setIsLoading(false);
 

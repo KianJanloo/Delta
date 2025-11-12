@@ -10,7 +10,6 @@ import 'swiper/css/navigation'
 import { ISliderPhotos } from '@/types/slider-type/slider-types'
 
 export default function SliderPhotos({ photos, imageClassName }: ISliderPhotos) {
-  console.log(photos)
   return (
     <div className="w-full max-w-xl mx-auto relative">
       <Swiper

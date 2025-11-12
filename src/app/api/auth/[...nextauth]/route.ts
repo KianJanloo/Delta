@@ -6,6 +6,7 @@ import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import { jwtDecode } from "jwt-decode";
+import { API_BASE_URL } from "@/core/config/constants";
 
 interface ExtendedToken extends JWT {
   accessToken?: string;
@@ -16,85 +17,76 @@ interface ExtendedToken extends JWT {
   error?: string;
 }
 
-async function fetchBackendToken(githubToken: string): Promise<string | null> {
-  try {
-    const res = await fetch(
-      "https://delta-project.liara.run/api/auth/github-login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${githubToken}`,
-        },
-      }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(data.message || "Login failed");
-
-    return data.accessToken;
-  } catch (error) {
-    console.error("Error fetching backend token:", error);
-    return null;
-  }
+interface BackendAuthResponse {
+  accessToken: string;
+  refreshToken?: string;
 }
 
-async function fetchBackendTokenGoogle(
-  googleToken: string
-): Promise<string | null> {
+const fetchBackendToken = async (endpoint: string, providerToken: string): Promise<BackendAuthResponse | null> => {
   try {
-    const res = await fetch(
-      "https://delta-project.liara.run/api/auth/google-login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${googleToken}`,
-        },
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}/auth/${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${providerToken}`,
+      },
+    });
 
     const data = await res.json();
 
-    if (!res.ok) throw new Error(data.message || "Login failed");
-
-    return data.accessToken;
-  } catch (error) {
-    console.error("Error fetching backend token:", error);
-    return null;
-  }
-}
-
-async function refreshAccessToken(
-  refreshToken: string
-): Promise<{ accessToken: string } | null> {
-  try {
-    const res = await fetch(
-      "https://delta-project.liara.run/api/auth/refresh-token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: refreshToken }),
-      }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok || !data.token) {
-      throw new Error(data.message || "Failed to refresh token");
-    }
+    if (!res.ok || !data?.accessToken) throw new Error(data?.message || "Login failed");
 
     return {
-      accessToken: data.token,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+    };
+  } catch (error) {
+    console.error("Error fetching backend token:", error);
+    return null;
+  }
+};
+
+const refreshAccessToken = async (token: ExtendedToken): Promise<ExtendedToken> => {
+  if (!token.refreshToken) {
+    return {
+      ...token,
+      error: "NoRefreshToken",
+    };
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refreshToken: token.refreshToken }),
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.accessToken) {
+      throw new Error(data?.message || "Failed to refresh token");
+    }
+
+    const decoded: any = jwtDecode(data.accessToken);
+    const accessTokenExpires = decoded?.exp ? decoded.exp * 1000 : undefined;
+
+    return {
+      ...token,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken ?? token.refreshToken,
+      accessTokenExpires,
+      error: undefined,
     };
   } catch (error) {
     console.error("Refresh token error:", error);
-    return null;
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
   }
-}
+};
 
 const handler = NextAuth({
   providers: [
@@ -112,11 +104,15 @@ const handler = NextAuth({
         accessToken: { label: "AccessToken", type: "text" },
         refreshToken: { label: "RefreshToken", type: "text" },
         password: { label: "Password", type: "text" },
+        accessTokenExpires: { label: "AccessTokenExpires", type: "text" },
       },
       async authorize(credentials) {
         try {
           if (credentials?.accessToken && credentials.refreshToken) {
             const decoded = jwtDecode(credentials.accessToken);
+            const expiresFromCredential = credentials.accessTokenExpires ? Number(credentials.accessTokenExpires) : undefined;
+            const calculatedExpires = decoded && (decoded as any).exp ? (decoded as any).exp * 1000 : undefined;
+            const accessTokenExpires = Number.isFinite(expiresFromCredential) ? expiresFromCredential : calculatedExpires;
 
             return {
               id: credentials.accessToken,
@@ -124,6 +120,7 @@ const handler = NextAuth({
               accessToken: credentials.accessToken,
               refreshToken: credentials.refreshToken,
               password: credentials.password,
+              accessTokenExpires,
             };
           }
           return null;
@@ -144,21 +141,25 @@ const handler = NextAuth({
       account: any;
       user: any;
     }) {
-      if (account?.provider === "github") {
-        const githubAccessToken = account.access_token;
-        const backendToken = await fetchBackendToken(githubAccessToken);
+      if (account?.provider === "github" && account?.access_token) {
+        const backendTokens = await fetchBackendToken("github-login", account.access_token);
 
-        if (backendToken) {
-          token.accessToken = backendToken;
+        if (backendTokens?.accessToken) {
+          const decoded: any = jwtDecode(backendTokens.accessToken);
+          token.accessToken = backendTokens.accessToken;
+          token.refreshToken = backendTokens.refreshToken ?? token.refreshToken;
+          token.accessTokenExpires = decoded?.exp ? decoded.exp * 1000 : token.accessTokenExpires;
         }
       }
 
-      if (account?.provider === "google") {
-        const googleAccessToken = account.access_token;
-        const backendToken = await fetchBackendTokenGoogle(googleAccessToken);
+      if (account?.provider === "google" && account?.access_token) {
+        const backendTokens = await fetchBackendToken("google-login", account.access_token);
 
-        if (backendToken) {
-          token.accessToken = backendToken;
+        if (backendTokens?.accessToken) {
+          const decoded: any = jwtDecode(backendTokens.accessToken);
+          token.accessToken = backendTokens.accessToken;
+          token.refreshToken = backendTokens.refreshToken ?? token.refreshToken;
+          token.accessTokenExpires = decoded?.exp ? decoded.exp * 1000 : token.accessTokenExpires;
         }
       }
 
@@ -167,38 +168,22 @@ const handler = NextAuth({
         token.refreshToken = user.refreshToken;
         token.userInfo = user.userInfo;
         token.password = user.password;
+        token.accessTokenExpires = user.accessTokenExpires ?? token.accessTokenExpires;
       }
 
-      if (
-        typeof token.accessTokenExpires === "number" &&
-        Date.now() < token.accessTokenExpires
-      ) {
+      if (token.accessToken && token.accessTokenExpires && Date.now() < token.accessTokenExpires - 5000) {
         return token;
       }
 
-      const refreshed = await refreshAccessToken(token.refreshToken as string);
-
-      if (refreshed?.accessToken) {
-        const decoded: any = jwtDecode(refreshed.accessToken);
-
-        return {
-          ...token,
-          accessToken: refreshed.accessToken,
-          accessTokenExpires: decoded.exp * 1000,
-        };
-      } else {
-        console.error("Unable to refresh token");
-        return {
-          ...token,
-          error: "RefreshAccessTokenError",
-        };
-      }
+      return refreshAccessToken(token);
     },
     async session({ session, token }: any) {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.userInfo = token.userInfo;
       session.password = token.password;
+      session.accessTokenExpires = token.accessTokenExpires;
+      session.error = token.error;
       return session;
     },
   },

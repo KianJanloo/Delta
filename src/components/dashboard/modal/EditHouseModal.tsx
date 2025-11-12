@@ -169,7 +169,6 @@ const EditHouseModal = ({
     };
 
     const onSubmit = async (data: FormValues) => {
-        console.log("Submit")
         const dataSubmit = {
             title: data.title,
             price: JSON.stringify(data.price),

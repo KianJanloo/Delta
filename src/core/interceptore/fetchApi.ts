@@ -1,117 +1,107 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getSession, signIn, signOut } from 'next-auth/react';
-import { showToast } from '../toast/toast';
+import { getSession } from 'next-auth/react';
+import { API_BASE_URL } from '@/core/config/constants';
+import { refreshSession } from './tokenRefresh';
 
-const baseURL = 'https://delta-project.liara.run/api'
+const parseJson = async (response: Response) => {
+    const text = await response.text();
+    if (!text) return null;
 
-const onSuccess = async (response: Response) => {
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-}
-
-const onError = async (error: Response | Error) => {
-    const session = await getSession() as any;
-    const refreshToken = session?.refreshToken;
-    const password = session?.password;
-
-    const handleRefreshToken = async () => {
-        try {
-            if (refreshToken) {
-                const response = await fetch(`${baseURL}/auth/refresh`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ token: refreshToken })
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message || "Failed to refresh token");
-
-                if (data) {
-                    await signIn("credentials", {
-                        redirect: false,
-                        accessToken: data?.accessToken,
-                        refreshToken: data,
-                        password: password
-                    });
-                } else {
-                    await signOut({ callbackUrl: '/login' });
-                    showToast("error", "شما وارد نشده‌اید!", "بستن");
-                }
-            } else {
-                await signOut({ callbackUrl: '/login' });
-                showToast("error", "شما وارد نشده‌اید!", "بستن");
-            }
-        } catch {
-            await signOut({ callbackUrl: '/login' });
-            showToast("error", "شما وارد نشده‌اید!", "بستن");
-        }
-    }
-
-    if (error instanceof Response) {
-        if (error.status === 401 || error.status === 403) {
-            await handleRefreshToken()
-        }
-
-        if (error.status >= 400 && error.status < 500) {
-            const errorData = await error.json().catch(() => null);
-            console.log("Client request error:", errorData?.message || error.status);
-            throw new Error(errorData?.message || `HTTP error! status: ${error.status}`);
-        }
-    }
-
-    if (error instanceof Error) {
-        if (error.message === "invalid token" || error.message === "Invalid token") {
-            await handleRefreshToken()
-        }
-    }
-
-    throw error;
-}
-
-
-async function fetchWithAuth(url: string, options: RequestInit = {}) {
     try {
-        const session = await getSession();
-        const token = session?.accessToken
+        return JSON.parse(text);
+    } catch {
+        return text as unknown as Record<string, unknown>;
+    }
+};
 
-        const headers = {
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            ...options.headers,
+const buildHeaders = async (options: RequestInit = {}) => {
+    const session = await getSession();
+    const token = (session as any)?.accessToken as string | undefined;
+
+    const headers = new Headers(options.headers || {});
+
+    if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
+        headers.set('Content-Type', 'application/json');
+    }
+
+    if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+};
+
+const performRequest = async (url: string, options: RequestInit, attempt = 0): Promise<any> => {
+    const headers = await buildHeaders(options);
+
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+        ...options,
+        headers,
+    });
+
+    if ((response.status === 401 || response.status === 403) && attempt < 1) {
+        const refreshed = await refreshSession();
+
+        if (refreshed?.accessToken) {
+            const retryHeaders = new Headers(options.headers || {});
+
+            if (!retryHeaders.has('Content-Type') && !(options.body instanceof FormData)) {
+                retryHeaders.set('Content-Type', 'application/json');
+            }
+
+            retryHeaders.set('Authorization', `Bearer ${refreshed.accessToken}`);
+
+            return performRequest(url, { ...options, headers: retryHeaders }, attempt + 1);
         }
 
-        const response = await fetch(`${baseURL}${url}`, {
-            ...options,
-            headers,
-        });
-
-        return await onSuccess(response);
-    } catch (error) {
-        return onError(error as Response | Error);
+        throw new Error('Unauthorized');
     }
-}
+
+    const data = await parseJson(response);
+
+    if (!response.ok) {
+        const message = (data && typeof data === 'object' && 'message' in data)
+            ? (data as Record<string, string>).message
+            : `HTTP error! status: ${response.status}`;
+
+        throw new Error(message);
+    }
+
+    return data;
+};
 
 export const fetchApi = {
     get: <T>(url: string, options?: RequestInit): Promise<T> =>
-        fetchWithAuth(url, { ...options, method: 'GET' }),
+        performRequest(url, { ...options, method: 'GET' }),
 
     post: <T>(url: string, data?: any, options?: RequestInit): Promise<T> =>
-        fetchWithAuth(url, {
+        performRequest(url, {
             ...options,
             method: 'POST',
-            body: JSON.stringify(data)
+            body:
+                data instanceof FormData
+                    ? data
+                    : typeof data === 'string'
+                        ? data
+                        : data !== undefined
+                            ? JSON.stringify(data)
+                            : undefined,
         }),
 
     put: <T>(url: string, data?: any, options?: RequestInit): Promise<T> =>
-        fetchWithAuth(url, {
+        performRequest(url, {
             ...options,
             method: 'PUT',
-            body: JSON.stringify(data)
+            body:
+                data instanceof FormData
+                    ? data
+                    : typeof data === 'string'
+                        ? data
+                        : data !== undefined
+                            ? JSON.stringify(data)
+                            : undefined,
         }),
 
     delete: <T>(url: string, options?: RequestInit): Promise<T> =>
-        fetchWithAuth(url, { ...options, method: 'DELETE' }),
+        performRequest(url, { ...options, method: 'DELETE' }),
 }; 

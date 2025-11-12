@@ -40,7 +40,6 @@ const FavoritesComponent = () => {
     };
 
     let response = await getFavorites(data);
-    console.log(response)
 
     if(filters?.search) {
       response.data = response.data.filter((f) => f.house.title.includes(filters.search || ""))
