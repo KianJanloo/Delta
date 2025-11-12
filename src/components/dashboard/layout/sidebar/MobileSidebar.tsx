@@ -5,35 +5,23 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { MoreHorizontal, X } from 'lucide-react';
 import DeltaIcon from "@/assets/images/icon.png";
 import useClearPathname from '@/utils/helper/clearPathname/clearPathname';
 import { useTranslations } from 'next-intl';
-import { getProfileById } from '@/utils/service/api/profile/getProfileById';
-import { useSession } from 'next-auth/react';
 import { routes, sellerRoutes, adminRoutes } from '../routes/routes';
 
-const MobileSidebar = () => {
+type PanelKey = "admin" | "seller" | "buyer";
+
+const MobileSidebar = ({ activePanel }: { activePanel: PanelKey }) => {
 
     const t = useTranslations("dashboardSidebar")
     const pathname = useClearPathname();
     const [showMore, setShowMore] = useState(false);
     const moreRef = useRef<HTMLDivElement | null>(null);
 
-    const [role, setRole] = useState("");
-    const routeSelect = role === "admin" ? adminRoutes : role === "seller" ? sellerRoutes : routes;
-
-    const { data: session } = useSession() as any
-
-    const getProfile = useCallback(async () => {
-        const user = await getProfileById(session?.userInfo.id)
-        setRole(user.user.role)
-    }, [session])
-
-    useEffect(() => {
-        getProfile()
-    }, [getProfile])  
+    const routeSelect = activePanel === "admin" ? adminRoutes : activePanel === "seller" ? sellerRoutes : routes;
 
     const mainRoutes = routeSelect.slice(0, 4);
     const extraRoutes = routeSelect.slice(4);

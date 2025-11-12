@@ -6,5 +6,12 @@
   "logoutAccount": "خروج از حساب",
   "logoutConfirm": "آیا از خروج خود مطمئن هستید؟",
   "userName": "نام کاربر",
-  "userRole": "خریدار"
+  "userRole": "خریدار",
+  "panelSwitchLabel": "انتخاب پنل",
+  "panelSwitchPlaceholder": "یک پنل را انتخاب کنید",
+  "panelOptionBuyer": "پنل خریدار",
+  "panelOptionSeller": "پنل فروشنده",
+  "panelOptionAdmin": "پنل ادمین",
+  "panelSubtitle": "از این بخش می‌توانید وضعیت و دسترسی‌های هر پنل را مدیریت کنید.",
+  "notificationsButton": "مشاهده اعلان‌ها"
 }

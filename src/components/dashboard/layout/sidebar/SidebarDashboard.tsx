@@ -4,67 +4,33 @@
 
 import {
   LogOut,
-  LogIn,
   ChevronDown,
-  PlusCircle,
-  CreditCard,
-  SquaresSubtract,
 } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import PaymentsModal from "../../modal/PaymentsModal";
 import MobileSidebar from "./MobileSidebar";
 import TabletSidebar from "./TabletSidebar";
 import useClearPathname from "@/utils/helper/clearPathname/clearPathname";
 import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
-import { useSession } from "next-auth/react";
-import { getProfileById } from "@/utils/service/api/profile/getProfileById";
 import { routes, sellerRoutes, adminRoutes } from "../routes/routes";
+
+type PanelKey = "admin" | "seller" | "buyer";
 
 const SidebarDashboard = ({
   view,
   setView,
+  activePanel,
 }: {
   view: number;
   setView: React.Dispatch<React.SetStateAction<number>>;
+  activePanel: PanelKey;
 }) => {
   const pathname = useClearPathname();
   const moreRef = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState<boolean>(false);
   const t = useTranslations("dashboardSidebar")
   const dir = useDirection()
-  const [role, setRole] = useState("");
-  const footerSidebarSelect = role === "buyer"
-    ? {
-        title: "wallet",
-        description: "noBalance",
-        icon: CreditCard,
-    }
-    : role === "admin"
-      ? {
-          title: "systemAlerts",
-          description: "alertsCount",
-          icon: SquaresSubtract,
-        }
-      : {
-          title: "newComments",
-          description: "commentsCount",
-          icon: SquaresSubtract,
-        };
-  const Icon = footerSidebarSelect.icon;
-
-  const { data: session } = useSession() as any
-  
-  const getProfile = useCallback(async () => {
-    const user = await getProfileById(session?.userInfo.id)
-    setRole(user.user.role)
-  }, [session])
-
-  useEffect(() => {
-    getProfile()
-  }, [getProfile])
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
@@ -100,7 +66,7 @@ const SidebarDashboard = ({
     }
   }, [setView]);
 
-  const routeSelect = role === "admin" ? adminRoutes : role === "seller" ? sellerRoutes : routes;
+  const routeSelect = activePanel === "admin" ? adminRoutes : activePanel === "seller" ? sellerRoutes : routes;
 
   return (
     <>
@@ -186,9 +152,9 @@ const SidebarDashboard = ({
         </div>
       </div>
 
-      <TabletSidebar setView={setView} view={view} />
+      <TabletSidebar setView={setView} view={view} activePanel={activePanel} />
 
-      <MobileSidebar />
+      <MobileSidebar activePanel={activePanel} />
     </>
   );
 };

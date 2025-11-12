@@ -1,64 +1,36 @@
 /* eslint-disable */
 
-'use client'
-import React, { useCallback, useEffect, useState } from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChevronDown, CreditCard, LogOut, SquaresSubtract } from 'lucide-react';
+import { ChevronDown, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import useClearPathname from '@/utils/helper/clearPathname/clearPathname';
 import { useTranslations } from 'next-intl';
 import { useDirection } from '@/utils/hooks/useDirection';
-import { useSession } from 'next-auth/react';
-import { getProfileById } from '@/utils/service/api/profile/getProfileById';
 import { routes, sellerRoutes, adminRoutes } from '../routes/routes';
+
+type PanelKey = "admin" | "seller" | "buyer";
 
 const TabletSidebar = ({
     view,
     setView,
+    activePanel,
 }: {
     view: number;
     setView: React.Dispatch<React.SetStateAction<number>>;
+    activePanel: PanelKey;
 }) => {
 
     const pathname = useClearPathname();
     const t = useTranslations("dashboardSidebar")
     const dir = useDirection()
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
-    const [role, setRole] = useState("");
-    const footerSidebarSelect = role === "buyer"
-        ? {
-            title: "wallet",
-            description: "noBalance",
-            icon: CreditCard,
-        }
-        : role === "admin"
-            ? {
-                title: "systemAlerts",
-                description: "alertsCount",
-                icon: SquaresSubtract,
-            }
-            : {
-                title: "newComments",
-                description: "commentsCount",
-                icon: SquaresSubtract,
-            };
-
-    const { data: session } = useSession() as any
-
-    const getProfile = useCallback(async () => {
-        const user = await getProfileById(session?.userInfo.id)
-        setRole(user.user.role)
-    }, [session])
-
-    useEffect(() => {
-        getProfile()
-    }, [getProfile])
 
     useEffect(() => {
         const checkScreenWidth = () => {
@@ -76,7 +48,7 @@ const TabletSidebar = ({
         };
     }, [setView]);
 
-    const routeSelect = role === "admin" ? adminRoutes : role === "seller" ? sellerRoutes : routes;
+    const routeSelect = activePanel === "admin" ? adminRoutes : activePanel === "seller" ? sellerRoutes : routes;
 
     return (
         <div

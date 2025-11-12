@@ -1,23 +1,40 @@
 /* eslint-disable */
 
 'use client'
-import { Bell, ChevronDown, ChevronUp, LogOut, Moon, PlusCircle, Sun } from "lucide-react";
-import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Bell, ChevronDown, ChevronUp, LogOut, PlusCircle } from "lucide-react";
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CommonModal from "../../modal/CommonModal";
 import { signOut, useSession } from 'next-auth/react'
 import { handleLogout } from "@/core/logOut";
 import NotifModal from "../../modal/NotifModal";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
 import useClearPathname from "@/utils/helper/clearPathname/clearPathname";
 import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
 import { IProfile } from "@/types/profile-type/profile-type";
 import { getProfileById } from "@/utils/service/api/profile/getProfileById";
-import { routes, sellerRoutes } from "../routes/routes";
+import { adminRoutes, routes, sellerRoutes } from "../routes/routes";
 import Image from "next/image";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
-const HeaderDashboard: React.FC = () => {
+type PanelKey = "admin" | "seller" | "buyer";
+
+interface HeaderDashboardProps {
+    activePanel: PanelKey;
+    onPanelChange: (panel: PanelKey) => void;
+}
+
+const HeaderDashboard: React.FC<HeaderDashboardProps> = ({
+    activePanel,
+    onPanelChange,
+}) => {
     const t = useTranslations('dashboardHeader');
     const tRout = useTranslations('dashboardSidebar');
     const [modalView, setModalView] = React.useState(false);
@@ -25,10 +42,19 @@ const HeaderDashboard: React.FC = () => {
     const pathname = useClearPathname();
     const { data: session } = useSession() as any;
     const dir = useDirection()
+    const router = useRouter();
 
     const [role, setRole] = useState("");
-    const routeSelect = (role === "seller" || role === "admin") ? sellerRoutes : routes;
-
+    const typeRole = (role: string) => {
+        switch (role) {
+            case "seller":
+                return "فروشنده";
+            case "admin":
+                return "مدیر سیستم";
+            default:
+                return "خریدار";
+        }
+    }
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -58,60 +84,164 @@ const HeaderDashboard: React.FC = () => {
         getProfileState();
     }, [getProfileState]);
 
+    const activeRoutes = useMemo(() => {
+        if (pathname.startsWith("/dashboard/admin")) {
+            return adminRoutes;
+        }
+        if (pathname.startsWith("/dashboard/seller")) {
+            return sellerRoutes;
+        }
+        return routes;
+    }, [pathname]);
+
+    const panelOptions = useMemo(() => {
+        if (role === "admin") {
+            return [
+                { value: "admin" as const, label: t('panelOptionAdmin') },
+                { value: "seller" as const, label: t('panelOptionSeller') },
+                { value: "buyer" as const, label: t('panelOptionBuyer') },
+            ];
+        }
+        if (role === "seller") {
+            return [
+                { value: "seller" as const, label: t('panelOptionSeller') },
+                { value: "buyer" as const, label: t('panelOptionBuyer') },
+            ];
+        }
+        return [];
+    }, [role, t]);
+
+    const currentRouteLabel = useMemo(() => {
+        const match = activeRoutes.find(({ href }) => href === pathname);
+        return match ? tRout(match.label) : "";
+    }, [activeRoutes, pathname, tRout]);
+
+    const panelBadgeLabel = useMemo(() => {
+        switch (activePanel) {
+            case "admin":
+                return t('panelOptionAdmin');
+            case "seller":
+                return t('panelOptionSeller');
+            default:
+                return t('panelOptionBuyer');
+        }
+    }, [activePanel, t]);
+
+    const handlePanelSelect = useCallback(
+        (value: PanelKey) => {
+            if (value === activePanel) return;
+            onPanelChange(value);
+        },
+        [activePanel, onPanelChange]
+    );
+
     return (
         <Fragment>
-            <div dir={dir} className='bg-subBg w-full rounded-[12px] px-8 py-3 flex items-center justify-between'>
-                {routeSelect.map(({ label, href }) => {
-                    return pathname === href && (
-                        <TypingAnimation key={tRout(label)} className='font-extrabold text-xl'>
-                            {tRout(label)}
-                        </TypingAnimation>
-                    )
-                }
-                )}
-                <div></div>
-                <div className='flex gap-4 items-center'>
-                    <Bell onClick={() => redirect("/dashboard/notifications")} className="cursor-pointer" />
-                    <div className="relative">
-                        <div onClick={() => {
-                            setModalView(!modalView)
-                        }} className="flex relative gap-4 items-center cursor-pointer">
-                            <Image
-                                src={session?.user?.image || profile?.profilePicture || "/"}
-                                alt=""
-                                width={200}
-                                height={32}
-                                className="border-0 outline-none bg-secondary-light rounded-[8px] w-10 h-10 object-cover"
-                            />
-                            <div className="flex max-md:hidden flex-col justify-between">
-                                <h2>{session?.user?.name || (profile?.firstName ?? "") + " " + (profile?.lastName ?? "")}</h2>
-                                <span className="text-muted-foreground text-sm">{profile?.role}</span>
+            <div dir={dir} className="sticky top-0 z-40 md:static md:z-auto">
+                <div className="relative w-full rounded-2xl border border-border/50 bg-subBg px-4 sm:px-6 py-4 shadow-lg backdrop-blur-md">
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-primary/15 via-transparent to-transparent opacity-75" />
+                    <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="flex flex-col gap-3 text-center lg:text-start">
+                            <div className="flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start lg:gap-3">
+                                {currentRouteLabel && (
+                                    <TypingAnimation className="text-lg font-extrabold tracking-tight leading-tight">
+                                        {currentRouteLabel}
+                                    </TypingAnimation>
+                                )}
+                                <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                                    <span className="size-1.5 rounded-full bg-primary" />
+                                    {panelBadgeLabel}
+                                </span>
                             </div>
-                            {!modalView && <ChevronDown className="cursor-pointer" size={12} />}
-                            {modalView && <ChevronUp className="cursor-pointer" size={12} />}
                         </div>
-                        {modalView && <div
-                            ref={moreRef}
-                            className="absolute top-full left-0 z-50 min-w-[180px] w-max rounded-xl backdrop-blur-md shadow-xl border border-border text-sm p-2 flex flex-col gap-1 animate-in fade-in slide-in-from-top-1"
-                        >
-                            <div className="flex flex-col divide-y divide-border">
-                                <div className="flex items-center gap-2 px-3 py-2 hover:bg-muted rounded-md cursor-pointer transition-colors">
-                                    <PlusCircle size={16} className="text-primary" />
-                                    <span className="text-sm">{t('walletCharge')}</span>
+
+                        <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-end lg:flex-wrap">
+                            {(role === "admin" || role === "seller") && panelOptions.length > 0 && (
+                                <div className="flex w-full flex-col gap-2 rounded-xl bg-background px-3 py-3 shadow-sm backdrop-blur sm:w-auto sm:flex-row sm:items-center sm:gap-3 sm:py-2">
+                                    <span className="hidden text-xs uppercase tracking-[0.12em] text-muted-foreground lg:inline">
+                                        {t('panelSwitchLabel')}
+                                    </span>
+                                    <Select value={activePanel} onValueChange={(value) => handlePanelSelect(value as PanelKey)}>
+                                        <SelectTrigger size="sm" className="w-full min-w-0 justify-between bg-transparent text-sm font-medium sm:w-[180px] sm:min-w-[180px]">
+                                            <SelectValue placeholder={t('panelSwitchPlaceholder')} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {panelOptions.map((option) => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
+                            )}
 
-                                <NotifModal />
+                            <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end">
+                                <button
+                                    onClick={() => router.push("/dashboard/notifications")}
+                                    className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-background/60 text-muted-foreground transition-all hover:-translate-y-0.5 hover:text-primary hover:shadow-md"
+                                    type="button"
+                                >
+                                    <Bell className="h-5 w-5" />
+                                    <span className="sr-only">{t('notificationsButton')}</span>
+                                </button>
 
-                                <CommonModal
-                                    handleClick={t('logout')}
-                                    buttonTitle={t('logoutAccount')}
-                                    buttonIcon={<LogOut size={16} className="text-destructive" />}
-                                    onClick={handleLogout(signOut, "/login")}
-                                    title={t('logoutConfirm')}
-                                />
+                                <div className="relative flex-1 sm:flex-none">
+                                    <button
+                                        onClick={() => setModalView(!modalView)}
+                                        className="flex w-full items-center gap-3 rounded-xl bg-background/50 px-3 py-2 shadow-sm transition hover:border-primary/40 hover:bg-background/80"
+                                        type="button"
+                                    >
+                                        <Image
+                                            src={session?.user?.image || profile?.profilePicture || "/"}
+                                            alt=""
+                                            width={40}
+                                            height={40}
+                                            className="size-10 rounded-lg border border-border/40 object-cover"
+                                        />
+                                        <div className="hidden min-w-0 flex-1 flex-col gap-1 text-left md:flex">
+                                            <h2 className="truncate text-sm font-semibold leading-none text-foreground">
+                                                {session?.user?.name || (profile?.firstName ?? "") + " " + (profile?.lastName ?? "")}
+                                            </h2>
+                                            <span className="text-xs text-muted-foreground">{typeRole(profile?.role ?? "")}</span>
+                                        </div>
+                                        {!modalView && <ChevronDown className="size-4 text-muted-foreground" />}
+                                        {modalView && <ChevronUp className="size-4 text-muted-foreground" />}
+                                    </button>
+                                    {modalView && (
+                                        <div
+                                            ref={moreRef}
+                                            className="absolute right-0 top-[calc(100%+12px)] z-50 min-w-[220px] rounded-xl border border-border bg-background/95 p-2 shadow-xl backdrop-blur-md"
+                                        >
+                                            <div className="flex flex-col gap-1">
+                                                <div className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-subBg2">
+                                                    <PlusCircle size={16} className="text-primary" />
+                                                    <span className="text-sm">{t('walletCharge')}</span>
+                                                </div>
+
+                                                <NotifModal />
+
+                                                <CommonModal
+                                                    handleClick={t('logout')}
+                                                    onClick={handleLogout(signOut, "/login")}
+                                                    title={t('logoutConfirm')}
+                                                    button={
+                                                        <div
+                                                            role="button"
+                                                            tabIndex={0}
+                                                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-destructive transition hover:bg-subBg2 focus:outline-none focus:ring-2 focus:ring-destructive/40"
+                                                        >
+                                                            <LogOut size={16} className="text-destructive" />
+                                                            <span>{t('logoutAccount')}</span>
+                                                        </div>
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                        }
                     </div>
                 </div>
             </div>
