@@ -20,7 +20,7 @@ import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
 import { useSession } from "next-auth/react";
 import { getProfileById } from "@/utils/service/api/profile/getProfileById";
-import { routes, sellerRoutes } from "../routes/routes";
+import { routes, sellerRoutes, adminRoutes } from "../routes/routes";
 
 const SidebarDashboard = ({
   view,
@@ -41,11 +41,17 @@ const SidebarDashboard = ({
         description: "noBalance",
         icon: CreditCard,
     }
-    : {
-        title: "newComments",
-        description: "commentsCount",
-        icon: SquaresSubtract,
-    };
+    : role === "admin"
+      ? {
+          title: "systemAlerts",
+          description: "alertsCount",
+          icon: SquaresSubtract,
+        }
+      : {
+          title: "newComments",
+          description: "commentsCount",
+          icon: SquaresSubtract,
+        };
   const Icon = footerSidebarSelect.icon;
 
   const { data: session } = useSession() as any
@@ -94,6 +100,8 @@ const SidebarDashboard = ({
     }
   }, [setView]);
 
+  const routeSelect = role === "admin" ? adminRoutes : role === "seller" ? sellerRoutes : routes;
+
   return (
     <>
       <div
@@ -114,7 +122,7 @@ const SidebarDashboard = ({
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className="flex flex-col gap-2">
-            {((role === "seller" || role === "admin") ? sellerRoutes : routes).map(({ label, href, icon: Icon, children }) => {
+            {routeSelect.map(({ label, href, icon: Icon, children }) => {
               const isActive = pathname === href;
               const isDropdownOpen = openDropdown === href;
 

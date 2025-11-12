@@ -46,6 +46,16 @@ export const getAdminUsers = async (params?: GetAdminUsersParams) => {
   }
 };
 
+export const getAdminUserById = async (id: number) => {
+  try {
+    const response = await fetchApi.get(`/admin/users/${id}`) as AdminUser;
+    return response;
+  } catch (error) {
+    console.error("Error fetching admin user:", error);
+    throw error;
+  }
+};
+
 export const updateAdminUser = async (id: number, payload: UpdateAdminUserPayload) => {
   try {
     const response = await fetchApi.put(`/admin/users/${id}`, payload) as AdminUser;

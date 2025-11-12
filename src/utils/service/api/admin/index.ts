@@ -2,6 +2,7 @@ export { getAdminDashboard } from './getAdminDashboard';
 
 export {
   getAdminUsers,
+  getAdminUserById,
   updateAdminUser,
   deleteAdminUser,
   updateAdminUserRole,
@@ -16,6 +17,7 @@ export {
 
 export {
   getAdminHouses,
+  getAdminHouseById,
   updateAdminHouse,
   deleteAdminHouse,
 } from './houses';

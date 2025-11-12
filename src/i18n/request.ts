@@ -29,7 +29,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       dashboardHeader: (await import(`../../messages/${locale}/dashboard/header.json`)).default,
       dashboardSidebar: (await import(`../../messages/${locale}/dashboard/sidebar.json`)).default,
       dashboardBuyer: (await import(`../../messages/${locale}/dashboard/buyer.json`)).default,
-      dashboardSeller: (await import(`../../messages/${locale}/dashboard/seller.json`)).default,
+      dashboardSeller: (await import(`../../messages/${locale}/dashboard/seller.json`)).default
     }
   };
 });

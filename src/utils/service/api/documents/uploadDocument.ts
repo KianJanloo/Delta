@@ -1,4 +1,4 @@
-import { axiosApi } from "@/core/interceptore/axiosApi";
+import axiosApi from "@/core/interceptore/axiosApi";
 
 export interface UploadDocumentPayload {
   houseId: number;

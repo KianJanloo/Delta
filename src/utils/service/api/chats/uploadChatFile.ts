@@ -1,4 +1,4 @@
-import { axiosApi } from "@/core/interceptore/axiosApi";
+import axiosApi from "@/core/interceptore/axiosApi";
 import { IChatMessage } from "./getChatRoom";
 
 export const uploadChatFile = async (room: string, files: File[]) => {

@@ -17,6 +17,7 @@ export interface GetAdminHousesParams {
   order?: "ASC" | "DESC";
   sellerId?: number;
   price?: number;
+  status?: string;
 }
 
 export const getAdminHouses = async (params?: GetAdminHousesParams) => {
@@ -28,6 +29,7 @@ export const getAdminHouses = async (params?: GetAdminHousesParams) => {
     if (params?.order) queryParams.append('order', params.order);
     if (params?.sellerId) queryParams.append('sellerId', params.sellerId.toString());
     if (params?.price) queryParams.append('price', params.price.toString());
+    if (params?.status) queryParams.append('status', params.status);
 
     const query = queryParams.toString();
     const url = query ? `/admin/houses?${query}` : '/admin/houses';
@@ -36,6 +38,16 @@ export const getAdminHouses = async (params?: GetAdminHousesParams) => {
     return response;
   } catch (error) {
     console.error("Error fetching admin houses:", error);
+    throw error;
+  }
+};
+
+export const getAdminHouseById = async (id: number) => {
+  try {
+    const response = await fetchApi.get(`/admin/houses/${id}`) as AdminHouse;
+    return response;
+  } catch (error) {
+    console.error("Error fetching admin house:", error);
     throw error;
   }
 };

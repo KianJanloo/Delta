@@ -15,5 +15,16 @@
     "newComments": "نظرات جدید",
     "commentsCount": "5 نظر",
     "chargeWallet": "شارژ کیف پول",
-    "withdraw": "برداشت"
+    "withdraw": "برداشت",
+    "adminOverview": "پنل مدیریت",
+    "adminUsers": "کاربران",
+    "adminProperties": "املاک",
+    "adminBookings": "رزروها",
+    "adminPayments": "تسویه حساب ها",
+    "adminContent": "اطلاعیه ها",
+    "adminReports": "گزارش ها",
+    "adminModeration": "نظارت",
+    "adminSettings": "تنظیمات سیستم",
+    "systemAlerts": "هشدارهای سیستم",
+    "alertsCount": "3 مورد بحرانی"
 }

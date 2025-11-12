@@ -97,10 +97,16 @@ const LoginForm = () => {
 
         if (res?.ok) {
           showToast("success", t("successTitle"), t("close"), "");
-          if (decoded?.role == "seller" || decoded?.role == "admin") {
-            router.push("/dashboard/seller");
-          } else if (decoded?.role === "buyer") {
-            router.push("/dashboard");
+          switch (decoded?.role as string) {
+            case "seller":
+              router.push("/dashboard/seller");
+              break;
+            case "admin":
+              router.push("/dashboard/admin");
+              break;
+            default:
+              router.push("/dashboard");
+              break;
           }
           reset();
         }

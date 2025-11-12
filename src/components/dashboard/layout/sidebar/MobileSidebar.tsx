@@ -12,7 +12,7 @@ import useClearPathname from '@/utils/helper/clearPathname/clearPathname';
 import { useTranslations } from 'next-intl';
 import { getProfileById } from '@/utils/service/api/profile/getProfileById';
 import { useSession } from 'next-auth/react';
-import { routes, sellerRoutes } from '../routes/routes';
+import { routes, sellerRoutes, adminRoutes } from '../routes/routes';
 
 const MobileSidebar = () => {
 
@@ -22,7 +22,7 @@ const MobileSidebar = () => {
     const moreRef = useRef<HTMLDivElement | null>(null);
 
     const [role, setRole] = useState("");
-    const routeSelect = (role === "seller" || role === "admin") ? sellerRoutes : routes;
+    const routeSelect = role === "admin" ? adminRoutes : role === "seller" ? sellerRoutes : routes;
 
     const { data: session } = useSession() as any
 

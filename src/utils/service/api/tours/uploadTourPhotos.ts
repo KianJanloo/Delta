@@ -1,4 +1,4 @@
-import { axiosApi } from "@/core/interceptore/axiosApi";
+import axiosApi from "@/core/interceptore/axiosApi";
 
 export const uploadTourPhotos = async (tourId: string, files: File[]) => {
   try {

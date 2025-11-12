@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl';
 import { useDirection } from '@/utils/hooks/useDirection';
 import { useSession } from 'next-auth/react';
 import { getProfileById } from '@/utils/service/api/profile/getProfileById';
-import { routes, sellerRoutes } from '../routes/routes';
+import { routes, sellerRoutes, adminRoutes } from '../routes/routes';
 
 const TabletSidebar = ({
     view,
@@ -37,11 +37,17 @@ const TabletSidebar = ({
             description: "noBalance",
             icon: CreditCard,
         }
-        : {
-            title: "newComments",
-            description: "commentsCount",
-            icon: SquaresSubtract,
-        };
+        : role === "admin"
+            ? {
+                title: "systemAlerts",
+                description: "alertsCount",
+                icon: SquaresSubtract,
+            }
+            : {
+                title: "newComments",
+                description: "commentsCount",
+                icon: SquaresSubtract,
+            };
 
     const { data: session } = useSession() as any
 
@@ -70,7 +76,7 @@ const TabletSidebar = ({
         };
     }, [setView]);
 
-    const routeSelect = (role === "seller" || role === "admin") ? sellerRoutes : routes;
+    const routeSelect = role === "admin" ? adminRoutes : role === "seller" ? sellerRoutes : routes;
 
     return (
         <div
