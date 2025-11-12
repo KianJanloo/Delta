@@ -5,11 +5,13 @@ import { CalendarClock, ClipboardList } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import AdminPageHeader from "@/components/dashboard/admin/shared/AdminPageHeader";
 import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboard/admin/shared/AdminResourceTable";
 import { normalizeList } from "@/components/dashboard/admin/shared/normalize";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
-import { getAdminBookings, type AdminBooking } from "@/utils/service/api/admin";
+import { showToast } from "@/core/toast/toast";
+import { deleteAdminBooking, getAdminBookings, updateAdminBooking, type AdminBooking } from "@/utils/service/api/admin";
 import { cn } from "@/lib/utils";
 import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
@@ -19,27 +21,14 @@ const PAGE_SIZE = 10;
 
 const BOOKING_STATUS_LABELS: Record<string, string> = {
   pending: "در انتظار بررسی",
-  processing: "در حال پردازش",
-  on_hold: "متوقف موقت",
   confirmed: "تایید شده",
-  completed: "تکمیل شده",
-  approved: "تایید شده",
-  cancelled: "لغو شده",
-  rejected: "رد شده",
-  failed: "ناموفق",
+  canceled: "لغو شده",
 };
 
 const STATUS_COLORS: Record<string, string> = {
   confirmed: "bg-emerald-500/10 text-emerald-600 border-transparent",
-  completed: "bg-emerald-500/10 text-emerald-600 border-transparent",
-  approved: "bg-emerald-500/10 text-emerald-600 border-transparent",
   pending: "bg-amber-500/10 text-amber-600 border-transparent",
-  processing: "bg-amber-500/10 text-amber-600 border-transparent",
-  on_hold: "bg-amber-500/10 text-amber-600 border-transparent",
-  cancelled: "bg-rose-500/10 text-rose-600 border-transparent",
-  rejected: "bg-rose-500/10 text-rose-600 border-transparent",
-  failed: "bg-rose-500/10 text-rose-600 border-transparent",
-  default: "bg-muted text-muted-foreground border-dashed",
+  canceled: "bg-rose-500/10 text-rose-600 border-transparent",
 };
 
 const AdminBookingsContent = () => {
@@ -53,55 +42,11 @@ const AdminBookingsContent = () => {
   const [userFilterDraft, setUserFilterDraft] = useState("");
   const [userFilter, setUserFilter] = useState("");
   const [order, setOrder] = useState<"ASC" | "DESC">("DESC");
-
-  const columns = useMemo<AdminTableColumn<AdminBooking>[]>(() => [
-    {
-      key: "id",
-      header: "شناسه رزرو",
-      className: "whitespace-nowrap",
-      cell: (item) => (
-        <span className="font-medium text-foreground">
-          #{formatNumber(item.id)}
-        </span>
-      ),
-    },
-    {
-      key: "userId",
-      header: "کاربر",
-      className: "whitespace-nowrap",
-      cell: (item) => formatNumber(item.userId),
-    },
-    {
-      key: "houseId",
-      header: "شناسه ملک",
-      className: "whitespace-nowrap",
-      cell: (item) => formatNumber(item.houseId),
-    },
-    {
-      key: "status",
-      header: "وضعیت",
-      className: "whitespace-nowrap",
-      cell: (item) => {
-        const statusKey = item.status?.toLowerCase() ?? "default";
-        return (
-          <span
-            className={cn(
-              "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium",
-              STATUS_COLORS[statusKey] ?? STATUS_COLORS.default,
-            )}
-          >
-            {BOOKING_STATUS_LABELS[statusKey] ?? item.status ?? "نامشخص"}
-          </span>
-        );
-      },
-    },
-    {
-      key: "createdAt",
-      header: "تاریخ ایجاد",
-      className: "whitespace-nowrap",
-      cell: (item) => formatDateTime(item.createdAt),
-    },
-  ], [formatDateTime, formatNumber]);
+  const [selectedBooking, setSelectedBooking] = useState<AdminBooking | null>(null);
+  const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [statusDraft, setStatusDraft] = useState<string>("pending");
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   const handleFetchBookings = useCallback(async () => {
     setIsLoading(true);
@@ -131,6 +76,22 @@ const AdminBookingsContent = () => {
   useEffect(() => {
     handleFetchBookings();
   }, [handleFetchBookings]);
+
+  const handleOpenStatusDialog = useCallback((item: AdminBooking) => {
+    const normalized = item.status?.toLowerCase();
+    setSelectedBooking(item);
+    setStatusDraft(
+      normalized && BOOKING_STATUS_LABELS[normalized]
+        ? normalized
+        : "pending",
+    );
+    setIsStatusDialogOpen(true);
+  }, []);
+
+  const handleOpenDeleteDialog = useCallback((item: AdminBooking) => {
+    setSelectedBooking(item);
+    setIsDeleteDialogOpen(true);
+  }, []);
 
   const handleApplyFilters = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -184,6 +145,113 @@ const AdminBookingsContent = () => {
     }
     return tags;
   }, [userFilter, statusFilter, order]);
+
+  const handleUpdateBookingStatus = async () => {
+    if (!selectedBooking) return;
+    setIsActionLoading(true);
+    try {
+      await updateAdminBooking(selectedBooking.id, { status: statusDraft } as Partial<AdminBooking>);
+      showToast("success", "وضعیت رزرو با موفقیت به‌روزرسانی شد.");
+      setIsStatusDialogOpen(false);
+      setSelectedBooking(null);
+      await handleFetchBookings();
+    } catch (err) {
+      console.error("Failed to update booking status", err);
+      showToast("error", "به‌روزرسانی وضعیت رزرو با خطا مواجه شد.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const handleDeleteBooking = async () => {
+    if (!selectedBooking) return;
+    setIsActionLoading(true);
+    try {
+      await deleteAdminBooking(selectedBooking.id);
+      showToast("success", "رزرو با موفقیت حذف شد.");
+      setIsDeleteDialogOpen(false);
+      setSelectedBooking(null);
+      const shouldGoPrevPage = bookings.length === 1 && page > 1 && !hasNextPage;
+      if (shouldGoPrevPage) {
+        setPage((prev) => Math.max(prev - 1, 1));
+      } else {
+        await handleFetchBookings();
+      }
+    } catch (err) {
+      console.error("Failed to delete booking", err);
+      showToast("error", "حذف رزرو با خطا مواجه شد.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const columns = useMemo<AdminTableColumn<AdminBooking>[]>(() => [
+    {
+      key: "id",
+      header: "شناسه رزرو",
+      className: "whitespace-nowrap",
+      cell: (item) => (
+        <span className="font-medium text-foreground">
+          #{formatNumber(item.id)}
+        </span>
+      ),
+    },
+    {
+      key: "userId",
+      header: "کاربر",
+      className: "whitespace-nowrap",
+      cell: (item) => formatNumber(item.userId),
+    },
+    {
+      key: "houseId",
+      header: "شناسه ملک",
+      className: "whitespace-nowrap",
+      cell: (item) => formatNumber(item.houseId),
+    },
+    {
+      key: "status",
+      header: "وضعیت",
+      className: "whitespace-nowrap",
+      cell: (item) => {
+        const statusKey = item.status?.toLowerCase() ?? "default";
+        return (
+          <span
+            className={cn(
+              "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium",
+              STATUS_COLORS[statusKey] ?? STATUS_COLORS.default,
+            )}
+          >
+            {BOOKING_STATUS_LABELS[statusKey] ?? item.status ?? "نامشخص"}
+          </span>
+        );
+      },
+    },
+    {
+      key: "createdAt",
+      header: "تاریخ ایجاد",
+      className: "whitespace-nowrap",
+      cell: (item) => formatDateTime(item.createdAt),
+    },
+    {
+      key: "actions",
+      header: "عملیات",
+      className: "w-[210px]",
+      cell: (item) => (
+        <div className="flex items-center justify-end gap-2">
+          <Button size="sm" variant="outline" onClick={() => handleOpenStatusDialog(item)}>
+            تغییر وضعیت
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => handleOpenDeleteDialog(item)}
+          >
+            حذف
+          </Button>
+        </div>
+      ),
+    },
+  ], [formatNumber, formatDateTime, handleOpenStatusDialog, handleOpenDeleteDialog]);
 
   const summaryLabel =
     bookings.length > 0
@@ -245,9 +313,7 @@ const AdminBookingsContent = () => {
                 <SelectContent>
                   <SelectItem value="all">همه وضعیت‌ها</SelectItem>
                   <SelectItem value="pending">در انتظار بررسی</SelectItem>
-                  <SelectItem value="processing">در حال پردازش</SelectItem>
                   <SelectItem value="confirmed">تایید شده</SelectItem>
-                  <SelectItem value="completed">تکمیل شده</SelectItem>
                   <SelectItem value="cancelled">لغو شده</SelectItem>
                 </SelectContent>
               </Select>
@@ -315,6 +381,94 @@ const AdminBookingsContent = () => {
           </span>
         </CardHeader>
       </Card>
+
+      <Dialog
+        open={isStatusDialogOpen}
+        onOpenChange={(open) => {
+          setIsStatusDialogOpen(open);
+          if (!open) {
+            setIsActionLoading(false);
+            setSelectedBooking(null);
+          }
+        }}
+      >
+        <DialogContent className="text-right" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>تغییر وضعیت رزرو</DialogTitle>
+            <DialogDescription>
+              {selectedBooking
+                ? `وضعیت رزرو شماره ${formatNumber(selectedBooking.id)} را انتخاب کنید.`
+                : "وضعیت جدید رزرو را انتخاب کنید."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Select value={statusDraft} onValueChange={setStatusDraft}>
+              <SelectTrigger className="justify-between">
+                <SelectValue placeholder="انتخاب وضعیت" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(BOOKING_STATUS_LABELS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter className="gap-2 sm:flex-row-reverse sm:space-x-reverse sm:space-x-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsStatusDialogOpen(false)}
+              disabled={isActionLoading}
+            >
+              انصراف
+            </Button>
+            <Button onClick={handleUpdateBookingStatus} disabled={isActionLoading}>
+              {isActionLoading ? "در حال ذخیره..." : "ثبت تغییرات"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => {
+          setIsDeleteDialogOpen(open);
+          if (!open) {
+            setIsActionLoading(false);
+            setSelectedBooking(null);
+          }
+        }}
+      >
+        <DialogContent className="text-right" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>حذف رزرو</DialogTitle>
+            <DialogDescription>
+              {selectedBooking
+                ? `آیا از حذف رزرو شماره ${formatNumber(selectedBooking.id)} مطمئن هستید؟`
+                : "این عملیات بازگشت‌پذیر نیست."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:flex-row-reverse sm:space-x-reverse sm:space-x-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isActionLoading}
+            >
+              انصراف
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteBooking}
+              disabled={isActionLoading}
+            >
+              {isActionLoading ? "در حال حذف..." : "حذف رزرو"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

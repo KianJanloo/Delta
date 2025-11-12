@@ -23857,10 +23857,10 @@
 													]
 												}
 											},
-											"_postman_previewlanguage": "",
-											"header": [],
+											"_postman_previewlanguage": null,
+											"header": null,
 											"cookie": [],
-											"body": ""
+											"body": null
 										}
 									]
 								},
@@ -25560,8 +25560,7 @@
 		},
 		{
 			"key": "bearerToken",
-			"value": "",
-			"type": "default"
+			"value": ""
 		}
 	]
 }

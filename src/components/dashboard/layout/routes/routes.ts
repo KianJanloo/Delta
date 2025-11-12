@@ -11,7 +11,6 @@ import {
   Megaphone,
   PlusCircle,
   Settings,
-  Settings2,
   ShieldCheck,
   SquaresSubtract,
   User,
@@ -69,5 +68,4 @@ export const adminRoutes = [
   { label: "adminPayments", href: "/dashboard/admin/payments", icon: Coins },
   { label: "adminContent", href: "/dashboard/admin/content", icon: Megaphone },
   { label: "adminModeration", href: "/dashboard/admin/moderation", icon: ShieldCheck },
-  { label: "adminSettings", href: "/dashboard/admin/settings", icon: Settings2 },
 ] as Routes[];

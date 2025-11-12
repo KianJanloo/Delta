@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
-import { AlertTriangle, CheckCircle2, Eye, ShieldAlert } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -260,21 +260,6 @@ const AdminModerationContent = () => {
           </CardContent>
         </Card>
       </div>
-
-      <Card className="border-dashed border-border/60 bg-subBg/40 text-right dark:bg-muted/10">
-        <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div>
-            <CardTitle className="text-base font-semibold">سیاست‌های نظارت</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              فرایند نظارت شامل بررسی دستی نظرات حساس و تایید نهایی املاک توسط تیم حقوقی است.
-            </p>
-          </div>
-          <Button variant="outline" size="sm" className="gap-2">
-            <Eye className="size-4" />
-            مشاهده دستورالعمل‌ها
-          </Button>
-        </CardHeader>
-      </Card>
     </div>
   );
 };

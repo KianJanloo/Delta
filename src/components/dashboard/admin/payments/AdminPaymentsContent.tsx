@@ -5,11 +5,13 @@ import { Coins, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import AdminPageHeader from "@/components/dashboard/admin/shared/AdminPageHeader";
 import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboard/admin/shared/AdminResourceTable";
 import { normalizeList } from "@/components/dashboard/admin/shared/normalize";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
-import { getAdminPayments, type AdminPayment } from "@/utils/service/api/admin";
+import { showToast } from "@/core/toast/toast";
+import { deleteAdminPayment, getAdminPayments, updateAdminPayment, type AdminPayment } from "@/utils/service/api/admin";
 import { cn } from "@/lib/utils";
 import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
@@ -57,55 +59,11 @@ const AdminPaymentsContent = () => {
   const [userFilterDraft, setUserFilterDraft] = useState("");
   const [userFilter, setUserFilter] = useState("");
   const [order, setOrder] = useState<"ASC" | "DESC">("DESC");
-
-  const columns = useMemo<AdminTableColumn<AdminPayment>[]>(() => [
-    {
-      key: "id",
-      header: "شماره تراکنش",
-      className: "whitespace-nowrap",
-      cell: (item) => (
-        <span className="font-medium text-foreground">
-          #{formatNumber(item.id)}
-        </span>
-      ),
-    },
-    {
-      key: "user",
-      header: "شناسه کاربر",
-      className: "whitespace-nowrap",
-      cell: (item) => formatNumber(item.userId),
-    },
-    {
-      key: "amount",
-      header: "مبلغ",
-      className: "whitespace-nowrap",
-      cell: (item) => formatCurrency(item.amount),
-    },
-    {
-      key: "status",
-      header: "وضعیت",
-      className: "whitespace-nowrap",
-      cell: (item) => {
-        const statusKey = item.status?.toLowerCase() ?? "default";
-        return (
-          <span
-            className={cn(
-              "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium",
-              STATUS_COLORS[statusKey] ?? STATUS_COLORS.default,
-            )}
-          >
-            {PAYMENT_STATUS_LABELS[statusKey] ?? item.status ?? "نامشخص"}
-          </span>
-        );
-      },
-    },
-    {
-      key: "createdAt",
-      header: "تاریخ پرداخت",
-      className: "whitespace-nowrap",
-      cell: (item) => formatDateTime(item.createdAt),
-    },
-  ], [formatCurrency, formatDateTime, formatNumber]);
+  const [selectedPayment, setSelectedPayment] = useState<AdminPayment | null>(null);
+  const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [statusDraft, setStatusDraft] = useState<string>("pending");
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   const handleFetchPayments = useCallback(async () => {
     setIsLoading(true);
@@ -135,6 +93,20 @@ const AdminPaymentsContent = () => {
   useEffect(() => {
     handleFetchPayments();
   }, [handleFetchPayments]);
+
+  const handleOpenStatusDialog = useCallback((item: AdminPayment) => {
+    const normalized = item.status?.toLowerCase();
+    setSelectedPayment(item);
+    setStatusDraft(
+      normalized && PAYMENT_STATUS_LABELS[normalized] ? normalized : "pending",
+    );
+    setIsStatusDialogOpen(true);
+  }, []);
+
+  const handleOpenDeleteDialog = useCallback((item: AdminPayment) => {
+    setSelectedPayment(item);
+    setIsDeleteDialogOpen(true);
+  }, []);
 
   const handleApplyFilters = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -188,6 +160,113 @@ const AdminPaymentsContent = () => {
     }
     return tags;
   }, [userFilter, statusFilter, order]);
+
+  const handleUpdatePaymentStatus = async () => {
+    if (!selectedPayment) return;
+    setIsActionLoading(true);
+    try {
+      await updateAdminPayment(selectedPayment.id, { status: statusDraft } as Partial<AdminPayment>);
+      showToast("success", "وضعیت پرداخت با موفقیت به‌روزرسانی شد.");
+      setIsStatusDialogOpen(false);
+      setSelectedPayment(null);
+      await handleFetchPayments();
+    } catch (err) {
+      console.error("Failed to update payment status", err);
+      showToast("error", "به‌روزرسانی وضعیت پرداخت با خطا مواجه شد.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const handleDeletePayment = async () => {
+    if (!selectedPayment) return;
+    setIsActionLoading(true);
+    try {
+      await deleteAdminPayment(selectedPayment.id);
+      showToast("success", "پرداخت با موفقیت حذف شد.");
+      setIsDeleteDialogOpen(false);
+      setSelectedPayment(null);
+      const shouldGoPrevPage = payments.length === 1 && page > 1 && !hasNextPage;
+      if (shouldGoPrevPage) {
+        setPage((prev) => Math.max(prev - 1, 1));
+      } else {
+        await handleFetchPayments();
+      }
+    } catch (err) {
+      console.error("Failed to delete payment", err);
+      showToast("error", "حذف پرداخت با خطا مواجه شد.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const columns = useMemo<AdminTableColumn<AdminPayment>[]>(() => [
+    {
+      key: "id",
+      header: "شماره تراکنش",
+      className: "whitespace-nowrap",
+      cell: (item) => (
+        <span className="font-medium text-foreground">
+          #{formatNumber(item.id)}
+        </span>
+      ),
+    },
+    {
+      key: "user",
+      header: "شناسه کاربر",
+      className: "whitespace-nowrap",
+      cell: (item) => formatNumber(item.userId),
+    },
+    {
+      key: "amount",
+      header: "مبلغ",
+      className: "whitespace-nowrap",
+      cell: (item) => formatCurrency(item.amount),
+    },
+    {
+      key: "status",
+      header: "وضعیت",
+      className: "whitespace-nowrap",
+      cell: (item) => {
+        const statusKey = item.status?.toLowerCase() ?? "default";
+        return (
+          <span
+            className={cn(
+              "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium",
+              STATUS_COLORS[statusKey] ?? STATUS_COLORS.default,
+            )}
+          >
+            {PAYMENT_STATUS_LABELS[statusKey] ?? item.status ?? "نامشخص"}
+          </span>
+        );
+      },
+    },
+    {
+      key: "createdAt",
+      header: "تاریخ پرداخت",
+      className: "whitespace-nowrap",
+      cell: (item) => formatDateTime(item.createdAt),
+    },
+    {
+      key: "actions",
+      header: "عملیات",
+      className: "w-[200px]",
+      cell: (item) => (
+        <div className="flex items-center justify-end gap-2">
+          <Button size="sm" variant="outline" onClick={() => handleOpenStatusDialog(item)}>
+            تغییر وضعیت
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => handleOpenDeleteDialog(item)}
+          >
+            حذف
+          </Button>
+        </div>
+      ),
+    },
+  ], [formatCurrency, formatDateTime, formatNumber, handleOpenStatusDialog, handleOpenDeleteDialog]);
 
   const summaryLabel =
     payments.length > 0
@@ -322,6 +401,94 @@ const AdminPaymentsContent = () => {
           </span>
         </CardHeader>
       </Card>
+
+      <Dialog
+        open={isStatusDialogOpen}
+        onOpenChange={(open) => {
+          setIsStatusDialogOpen(open);
+          if (!open) {
+            setIsActionLoading(false);
+            setSelectedPayment(null);
+          }
+        }}
+      >
+        <DialogContent className="text-right" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>تغییر وضعیت پرداخت</DialogTitle>
+            <DialogDescription>
+              {selectedPayment
+                ? `وضعیت تراکنش شماره ${formatNumber(selectedPayment.id)} را انتخاب کنید.`
+                : "وضعیت جدید پرداخت را انتخاب کنید."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Select value={statusDraft} onValueChange={setStatusDraft}>
+              <SelectTrigger className="justify-between">
+                <SelectValue placeholder="انتخاب وضعیت" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(PAYMENT_STATUS_LABELS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter className="gap-2 sm:flex-row-reverse sm:space-x-reverse sm:space-x-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsStatusDialogOpen(false)}
+              disabled={isActionLoading}
+            >
+              انصراف
+            </Button>
+            <Button onClick={handleUpdatePaymentStatus} disabled={isActionLoading}>
+              {isActionLoading ? "در حال ذخیره..." : "ثبت تغییرات"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => {
+          setIsDeleteDialogOpen(open);
+          if (!open) {
+            setIsActionLoading(false);
+            setSelectedPayment(null);
+          }
+        }}
+      >
+        <DialogContent className="text-right" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>حذف پرداخت</DialogTitle>
+            <DialogDescription>
+              {selectedPayment
+                ? `آیا از حذف پرداخت شماره ${formatNumber(selectedPayment.id)} به مبلغ ${formatCurrency(selectedPayment.amount)} مطمئن هستید؟`
+                : "این عملیات بازگشت‌پذیر نیست."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:flex-row-reverse sm:space-x-reverse sm:space-x-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isActionLoading}
+            >
+              انصراف
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeletePayment}
+              disabled={isActionLoading}
+            >
+              {isActionLoading ? "در حال حذف..." : "حذف پرداخت"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
