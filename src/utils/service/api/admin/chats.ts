@@ -1,7 +1,17 @@
 import { fetchApi } from "@/core/interceptore/fetchApi";
 import { IChatMessage } from "../chats/getChatRoom";
 
-export const updateAdminChatMessage = async (id: number, payload: Partial<IChatMessage>) => {
+export interface UpdateAdminChatMessagePayload {
+  message?: string;
+  getterId?: number;
+  room?: string;
+  files?: (File | Blob | string)[];
+  attachments?: string[];
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+export const updateAdminChatMessage = async (id: number, payload: UpdateAdminChatMessagePayload) => {
   try {
     const response = await fetchApi.put(`/admin/chats/${id}`, payload) as IChatMessage;
     return response;
@@ -34,6 +44,7 @@ export const clearAdminChatRoom = async (room: string) => {
 export interface AdminChatRoom {
   room: string;
   participants: number;
+  lastMessage?: string | null;
   lastMessageAt?: string;
 }
 

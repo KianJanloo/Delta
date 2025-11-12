@@ -6,6 +6,13 @@ export interface AdminPayment {
   amount: number;
   status: string;
   transactionType?: string;
+  description?: string | null;
+  transactionId?: string | null;
+  currency?: string;
+  paymentMethod?: string;
+  processor?: string;
+  statusReason?: string | null;
+  metadata?: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
@@ -18,6 +25,21 @@ export interface GetAdminPaymentsParams {
   status?: string;
   userId?: number;
   amount?: number;
+  transactionType?: string;
+  paymentMethod?: string;
+  fromDate?: string;
+  toDate?: string;
+}
+
+export interface UpdateAdminPaymentPayload {
+  amount?: number;
+  status?: string;
+  description?: string;
+  transactionId?: string;
+  transactionType?: string;
+  paymentMethod?: string;
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 export const getAdminPayments = async (params?: GetAdminPaymentsParams) => {
@@ -30,6 +52,10 @@ export const getAdminPayments = async (params?: GetAdminPaymentsParams) => {
     if (params?.status) queryParams.append('status', params.status);
     if (params?.userId) queryParams.append('userId', params.userId.toString());
     if (params?.amount) queryParams.append('amount', params.amount.toString());
+    if (params?.transactionType) queryParams.append('transactionType', params.transactionType);
+    if (params?.paymentMethod) queryParams.append('paymentMethod', params.paymentMethod);
+    if (params?.fromDate) queryParams.append('fromDate', params.fromDate);
+    if (params?.toDate) queryParams.append('toDate', params.toDate);
 
     const query = queryParams.toString();
     const url = query ? `/admin/payments?${query}` : '/admin/payments';
@@ -52,7 +78,7 @@ export const getAdminPaymentById = async (id: number) => {
   }
 };
 
-export const updateAdminPayment = async (id: number, payload: Partial<AdminPayment>) => {
+export const updateAdminPayment = async (id: number, payload: UpdateAdminPaymentPayload) => {
   try {
     const response = await fetchApi.put(`/admin/payments/${id}`, payload) as AdminPayment;
     return response;

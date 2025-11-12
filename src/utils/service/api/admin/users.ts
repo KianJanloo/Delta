@@ -4,6 +4,11 @@ export interface AdminUser {
   id: number;
   email: string;
   role: string;
+  status?: string;
+  fullName?: string | null;
+  phoneNumber?: string | null;
+  membershipDate?: string | null;
+  lastLoginAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +21,7 @@ export interface GetAdminUsersParams {
   email?: string;
   role?: string;
   membershipDate?: string;
+  status?: string;
 }
 
 export interface UpdateAdminUserPayload {
@@ -34,6 +40,7 @@ export const getAdminUsers = async (params?: GetAdminUsersParams) => {
     if (params?.email) queryParams.append('email', params.email);
     if (params?.role) queryParams.append('role', params.role);
     if (params?.membershipDate) queryParams.append('membershipDate', params.membershipDate);
+    if (params?.status) queryParams.append('status', params.status);
 
     const query = queryParams.toString();
     const url = query ? `/admin/users?${query}` : '/admin/users';

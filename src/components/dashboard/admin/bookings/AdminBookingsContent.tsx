@@ -11,7 +11,7 @@ import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboar
 import { normalizeList } from "@/components/dashboard/admin/shared/normalize";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { showToast } from "@/core/toast/toast";
-import { deleteAdminBooking, getAdminBookings, updateAdminBooking, type AdminBooking } from "@/utils/service/api/admin";
+import { deleteAdminBooking, getAdminBookings, updateAdminBooking, UpdateAdminBookingPayload, type AdminBooking } from "@/utils/service/api/admin";
 import { cn } from "@/lib/utils";
 import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
@@ -150,7 +150,7 @@ const AdminBookingsContent = () => {
     if (!selectedBooking) return;
     setIsActionLoading(true);
     try {
-      await updateAdminBooking(selectedBooking.id, { status: statusDraft } as Partial<AdminBooking>);
+      await updateAdminBooking(selectedBooking.id, { status: statusDraft } as UpdateAdminBookingPayload);
       showToast("success", "وضعیت رزرو با موفقیت به‌روزرسانی شد.");
       setIsStatusDialogOpen(false);
       setSelectedBooking(null);

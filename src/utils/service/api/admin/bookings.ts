@@ -5,6 +5,18 @@ export interface AdminBooking {
   userId: number;
   houseId: number;
   status: string;
+  paymentStatus?: string;
+  referenceCode?: string;
+  totalAmount?: number;
+  currency?: string;
+  checkIn?: string;
+  checkOut?: string;
+  sharedEmail?: string | null;
+  sharedMobile?: string | null;
+  reservedDates?: string[];
+  travelerDetails?: AdminTravelerDetail[];
+  notes?: string | null;
+  metadata?: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,6 +29,30 @@ export interface GetAdminBookingsParams {
   status?: string;
   user_id?: number;
   house_id?: string;
+  payment_status?: string;
+}
+
+export interface AdminTravelerDetail {
+  firstName?: string;
+  lastName?: string;
+  gender?: string;
+  birthDate?: string;
+  nationalId?: string;
+  [key: string]: unknown;
+}
+
+export interface UpdateAdminBookingPayload {
+  houseId?: number;
+  status?: string;
+  paymentStatus?: string;
+  sharedEmail?: string;
+  sharedMobile?: string;
+  reservedDates?: string[];
+  traveler_details?: AdminTravelerDetail[];
+  travelerDetails?: AdminTravelerDetail[];
+  notes?: string;
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 export const getAdminBookings = async (params?: GetAdminBookingsParams) => {
@@ -29,6 +65,7 @@ export const getAdminBookings = async (params?: GetAdminBookingsParams) => {
     if (params?.status) queryParams.append('status', params.status);
     if (params?.user_id) queryParams.append('user_id', params.user_id.toString());
     if (params?.house_id) queryParams.append('house_id', params.house_id);
+    if (params?.payment_status) queryParams.append('payment_status', params.payment_status);
 
     const query = queryParams.toString();
     const url = query ? `/admin/bookings?${query}` : '/admin/bookings';
@@ -51,7 +88,7 @@ export const getAdminBookingById = async (id: number) => {
   }
 };
 
-export const updateAdminBooking = async (id: number, payload: Partial<AdminBooking>) => {
+export const updateAdminBooking = async (id: number, payload: UpdateAdminBookingPayload) => {
   try {
     const response = await fetchApi.put(`/admin/bookings/${id}`, payload) as AdminBooking;
     return response;

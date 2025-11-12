@@ -13,14 +13,16 @@ const Layout = ({
     const [view, setView] = React.useState(1);
     const dir = useDirection()
 
+    const desktopDirection = dir === "rtl" ? "md:flex-row" : "md:flex-row-reverse";
+
     return (
-        <div className={`bg-bgDash h-dvh p-4 gap-5 flex ${dir === "rtl" ? "flex-row" : "flex-row-reverse"} `}>
+        <div className={`bg-bgDash min-h-dvh w-full p-3 sm:p-4 gap-5 flex flex-col ${desktopDirection}`}>
             <SidebarDashboard view={view} setView={setView} />
 
-            <div className={`w-full max-xl:w-full flex flex-col gap-5`}>
+            <div className="w-full flex flex-col gap-5">
                 <HeaderDashboard />
 
-                <div className="flex-1 max-md:mb-[50px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="flex-1 max-md:mb-[64px] overflow-y-auto pr-1 sm:pr-2 custom-scrollbar">
                     {children}
                 </div>
             </div>

@@ -61,7 +61,7 @@ const AdminPropertiesContent = () => {
         sort: "createdAt",
         sellerId: sellerFilter.trim() ? Number(sellerFilter.trim()) : undefined,
         status: statusFilter !== "all" ? statusFilter : undefined,
-      } as any);
+      });
       const list = normalizeList<AdminHouse>(payload);
       setProperties(list);
       setHasNextPage(list.length === PAGE_SIZE);
@@ -202,18 +202,21 @@ const AdminPropertiesContent = () => {
       key: "seller",
       header: "شناسه فروشنده",
       className: "whitespace-nowrap",
+      mobileClassName: "text-sm font-medium text-foreground",
       cell: (item) => formatNumber(item.sellerId),
     },
     {
       key: "price",
       header: "قیمت",
       className: "whitespace-nowrap",
+      mobileClassName: "text-sm font-semibold text-primary",
       cell: (item) => formatCurrency(item.price),
     },
     {
       key: "status",
       header: "وضعیت",
       className: "whitespace-nowrap",
+      mobileClassName: "text-sm",
       cell: (item) => {
         const statusKey = item.status?.toLowerCase() ?? "draft";
         return (
@@ -232,12 +235,14 @@ const AdminPropertiesContent = () => {
       key: "createdAt",
       header: "تاریخ ایجاد",
       className: "whitespace-nowrap",
+      mobileClassName: "text-xs text-muted-foreground",
       cell: (item) => formatDateTime(item.createdAt),
     },
     {
       key: "actions",
       header: "عملیات",
       className: "w-[200px]",
+      hideOnMobile: true,
       cell: (item) => (
         <div className="flex items-center justify-end gap-2">
           <Button size="sm" variant="outline" onClick={() => handleOpenStatusDialog(item)}>

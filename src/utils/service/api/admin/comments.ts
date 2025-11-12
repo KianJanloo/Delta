@@ -6,6 +6,11 @@ export interface AdminComment {
   houseId: number;
   rating: number;
   comment: string;
+  title?: string | null;
+  status?: string;
+  response?: string | null;
+  reportedReason?: string | null;
+  houseTitle?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -18,6 +23,17 @@ export interface GetAdminCommentsParams {
   user_id?: number;
   house_id?: number;
   rating?: number;
+  status?: string;
+}
+
+export interface UpdateAdminCommentPayload {
+  rating?: number;
+  comment?: string;
+  title?: string;
+  status?: string;
+  response?: string;
+  reportedReason?: string;
+  [key: string]: unknown;
 }
 
 export const getAdminComments = async (params?: GetAdminCommentsParams) => {
@@ -30,6 +46,7 @@ export const getAdminComments = async (params?: GetAdminCommentsParams) => {
     if (params?.user_id) queryParams.append('user_id', params.user_id.toString());
     if (params?.house_id) queryParams.append('house_id', params.house_id.toString());
     if (params?.rating) queryParams.append('rating', params.rating.toString());
+    if (params?.status) queryParams.append('status', params.status);
 
     const query = queryParams.toString();
     const url = query ? `/admin/comments?${query}` : '/admin/comments';
@@ -52,7 +69,7 @@ export const getAdminCommentById = async (id: number) => {
   }
 };
 
-export const updateAdminComment = async (id: number, payload: Partial<AdminComment>) => {
+export const updateAdminComment = async (id: number, payload: UpdateAdminCommentPayload) => {
   try {
     const response = await fetchApi.put(`/admin/comments/${id}`, payload) as AdminComment;
     return response;

@@ -46,8 +46,27 @@ export {
 
 export type { IAdminDashboardSummary } from './getAdminDashboard';
 export type { AdminUser, GetAdminUsersParams, UpdateAdminUserPayload } from './users';
-export type { AdminBooking, GetAdminBookingsParams } from './bookings';
-export type { AdminHouse, GetAdminHousesParams } from './houses';
-export type { AdminComment, GetAdminCommentsParams } from './comments';
-export type { AdminPayment, GetAdminPaymentsParams } from './payments';
-export type { AdminChatRoom } from './chats';
+export type {
+  AdminBooking,
+  GetAdminBookingsParams,
+  AdminTravelerDetail,
+  UpdateAdminBookingPayload,
+} from './bookings';
+export type {
+  AdminHouse,
+  GetAdminHousesParams,
+  AdminHouseLocation,
+  AdminHouseCategory,
+  UpdateAdminHousePayload,
+} from './houses';
+export type {
+  AdminComment,
+  GetAdminCommentsParams,
+  UpdateAdminCommentPayload,
+} from './comments';
+export type {
+  AdminPayment,
+  GetAdminPaymentsParams,
+  UpdateAdminPaymentPayload,
+} from './payments';
+export type { AdminChatRoom, UpdateAdminChatMessagePayload } from './chats';

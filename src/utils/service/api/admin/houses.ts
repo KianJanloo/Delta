@@ -6,6 +6,25 @@ export interface AdminHouse {
   title: string;
   price: number;
   status?: string;
+  transactionType?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  capacity?: number;
+  bathrooms?: number;
+  rooms?: number;
+  parking?: number;
+  yardType?: string;
+  rating?: number;
+  numComments?: number;
+  coverImage?: string;
+  photos?: string[];
+  tags?: string[];
+  categories?: AdminHouseCategory[] | AdminHouseCategory | null;
+  location?: AdminHouseLocation | null;
+  lastUpdated?: string;
+  summary?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -18,6 +37,47 @@ export interface GetAdminHousesParams {
   sellerId?: number;
   price?: number;
   status?: string;
+  transactionType?: string;
+  city?: string;
+  title?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+export interface AdminHouseLocation {
+  lat?: number;
+  lng?: number;
+  [key: string]: unknown;
+}
+
+export interface AdminHouseCategory {
+  id?: number;
+  name?: string;
+  [key: string]: unknown;
+}
+
+export interface UpdateAdminHousePayload {
+  title?: string;
+  address?: string;
+  status?: string;
+  price?: number;
+  transactionType?: string;
+  capacity?: number;
+  bathrooms?: number;
+  rooms?: number;
+  parking?: number;
+  yard_type?: string;
+  yardType?: string;
+  photos?: string[];
+  tags?: string[];
+  last_updated?: string;
+  lastUpdated?: string;
+  location?: AdminHouseLocation;
+  categories?: AdminHouseCategory[] | number[] | null;
+  description?: string;
+  summary?: string | null;
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 export const getAdminHouses = async (params?: GetAdminHousesParams) => {
@@ -30,6 +90,11 @@ export const getAdminHouses = async (params?: GetAdminHousesParams) => {
     if (params?.sellerId) queryParams.append('sellerId', params.sellerId.toString());
     if (params?.price) queryParams.append('price', params.price.toString());
     if (params?.status) queryParams.append('status', params.status);
+    if (params?.transactionType) queryParams.append('transactionType', params.transactionType);
+    if (params?.city) queryParams.append('city', params.city);
+    if (params?.title) queryParams.append('title', params.title);
+    if (params?.minPrice) queryParams.append('minPrice', params.minPrice.toString());
+    if (params?.maxPrice) queryParams.append('maxPrice', params.maxPrice.toString());
 
     const query = queryParams.toString();
     const url = query ? `/admin/houses?${query}` : '/admin/houses';
@@ -52,7 +117,7 @@ export const getAdminHouseById = async (id: number) => {
   }
 };
 
-export const updateAdminHouse = async (id: number, payload: Partial<AdminHouse>) => {
+export const updateAdminHouse = async (id: number, payload: UpdateAdminHousePayload) => {
   try {
     const response = await fetchApi.put(`/admin/houses/${id}`, payload) as AdminHouse;
     return response;
