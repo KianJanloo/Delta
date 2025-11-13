@@ -1,17 +1,9 @@
 import { fetchApi } from "@/core/interceptore/fetchApi";
+import type { IWishlistItem } from "./getWishlist";
 
 export interface AddToWishlistPayload {
   houseId: number;
   note?: string;
-}
-
-export interface IWishlistItem {
-  id: number;
-  userId: number;
-  houseId: number;
-  note?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export const addToWishlist = async (payload: AddToWishlistPayload) => {

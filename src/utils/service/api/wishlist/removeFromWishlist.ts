@@ -3,7 +3,7 @@ import { fetchApi } from "@/core/interceptore/fetchApi";
 export const removeFromWishlist = async (userId: string, houseId: number) => {
   try {
     const response = await fetchApi.delete(`/wishlist/${userId}`, {
-      houseId
+      body: JSON.stringify({ houseId }),
     }) as { message: string };
     return response;
   } catch (error) {
