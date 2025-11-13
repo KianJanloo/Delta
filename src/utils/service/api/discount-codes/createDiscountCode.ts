@@ -2,20 +2,24 @@ import { fetchApi } from "@/core/interceptore/fetchApi";
 
 export interface CreateDiscountCodePayload {
   code: string;
+  house_id: number;
   discount_percentage: number;
-  expiresAt?: string;
-  usageLimit?: number;
+  valid_until?: string | null;
 }
 
 export interface IDiscountCode {
   id: number;
   code: string;
   discount_percentage: number;
+  house_id?: number | null;
+  valid_until?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
   expiresAt?: string;
   usageLimit?: number;
-  usedCount: number;
-  createdAt: string;
-  updatedAt: string;
+  usedCount?: number;
 }
 
 export const createDiscountCode = async (payload: CreateDiscountCodePayload) => {

@@ -5,8 +5,7 @@ export interface IDocument {
   houseId: number;
   userId: number;
   documentType?: string;
-  description?: string;
-  fileUrl: string;
+  filePath: string;
   signed: boolean;
   createdAt: string;
   updatedAt: string;

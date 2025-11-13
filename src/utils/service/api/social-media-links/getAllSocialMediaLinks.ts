@@ -29,7 +29,7 @@ export const getAllSocialMediaLinks = async (params?: GetAllSocialMediaLinksPara
     const query = queryParams.toString();
     const url = query ? `/social-media-links?${query}` : '/social-media-links';
     
-    const response = await fetchApi.get(url) as ISocialMediaLink[];
+    const response = await fetchApi.get(url) as { totalCount: number, data: ISocialMediaLink[] };
     return response;
   } catch (error) {
     console.error("Error fetching social media links:", error);

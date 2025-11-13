@@ -72,7 +72,7 @@ const SidebarDashboard = ({
     <>
       <div
         dir={dir}
-        className={`bg-subBg md:flex hidden transition-all duration-300 ease-in-out px-4 border py-8 gap-8 rounded-xl w-fit flex-col shadow-md ${view === 1
+        className={`bg-subBg md:flex hidden transition-all duration-300 ease-in-out px-4 border py-8 gap-8 rounded-xl w-fit flex-col shadow-md max-h-[calc(100vh-2rem)] overflow-hidden ${view === 1
           ? "opacity-100 scale-100 pointer-events-auto"
           : "opacity-0 scale-95 pointer-events-none absolute"
           }`}
@@ -86,8 +86,8 @@ const SidebarDashboard = ({
             className={`cursor-pointer hover:text-accent transition-colors ${dir === 'rtl' ? "rotate-0" : "rotate-180"}`}
           />
         </div>
-        <div className="flex flex-col justify-between h-full">
-          <div className="flex flex-col gap-2">
+        <div className="flex h-full flex-col gap-6 overflow-hidden">
+          <div className="flex flex-1 flex-col gap-2 overflow-y-auto pr-1">
             {routeSelect.map(({ label, href, icon: Icon, children }) => {
               const isActive = pathname === href;
               const isDropdownOpen = openDropdown === href;

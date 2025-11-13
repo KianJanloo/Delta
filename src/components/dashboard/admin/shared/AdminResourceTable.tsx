@@ -52,7 +52,7 @@ const AdminResourceTable = <T,>({
   }
 
   const renderDesktop = (
-    <ScrollArea className="hidden max-h-[560px] w-full overflow-auto md:block" dir="rtl">
+    <ScrollArea className="hidden max-h-[560px] w-full overflow-auto lg:block" dir="rtl">
       <div className="min-w-[720px]">
         <Table className="text-right">
           <TableHeader className="sticky top-0 bg-background">
@@ -103,7 +103,7 @@ const AdminResourceTable = <T,>({
   const renderMobileColumns = columns.filter((column) => !column.hideOnMobile);
 
   const renderMobile = (
-    <div className="flex flex-col gap-3 md:hidden" dir="rtl">
+    <div className="flex flex-col gap-3 lg:hidden" dir="rtl">
       {isLoading
         ? Array.from({ length: loadingRows }).map((_, skeletonIndex) => (
             <div

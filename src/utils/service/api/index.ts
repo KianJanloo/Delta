@@ -58,6 +58,7 @@ export * from './seller-finance/getAllCustomersPayments';
 export * from './seller-finance/getDashboardFinance';
 
 export * from './contact-us/createContactMessage';
+export * from './contact-us/getContactMessages';
 
 export * from './seller-upgrade/upgradeToSeller';
 export * from './seller-upgrade/verifySellerUpgrade';

@@ -3,9 +3,9 @@ import { IDiscountCode } from "./createDiscountCode";
 
 export interface UpdateDiscountCodePayload {
   code?: string;
+  house_id?: number;
   discount_percentage?: number;
-  expiresAt?: string;
-  usageLimit?: number;
+  valid_until?: string | null;
 }
 
 export const updateDiscountCode = async (id: number, payload: UpdateDiscountCodePayload) => {

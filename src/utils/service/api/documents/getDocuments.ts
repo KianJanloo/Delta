@@ -22,8 +22,8 @@ export const getDocuments = async (params?: GetDocumentsParams) => {
 
     const query = queryParams.toString();
     const url = query ? `/documents?${query}` : '/documents';
-
-    const response = await fetchApi.get(url) as IDocument[];
+    
+    const response = await fetchApi.get(url) as { documents: IDocument[], total: number };
     return response;
   } catch (error) {
     console.error("Error fetching documents:", error);
