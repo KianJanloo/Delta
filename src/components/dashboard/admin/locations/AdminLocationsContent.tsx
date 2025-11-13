@@ -31,7 +31,7 @@ type LocationItem = ILocation & {
 const PAGE_SIZE = 10;
 
 const AdminLocationsContent = () => {
-  const { formatDateTime, formatNumber } = useAdminFormatters();
+  const { formatNumber } = useAdminFormatters();
   const [locations, setLocations] = useState<LocationItem[]>([]);
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -262,7 +262,7 @@ const AdminLocationsContent = () => {
         </div>
       ),
     },
-  ], [formatDateTime, openDialog]);
+  ], [openDialog]);
 
   const totalPages =
     totalCount !== null ? Math.max(Math.ceil(totalCount / PAGE_SIZE), 1) : null;
