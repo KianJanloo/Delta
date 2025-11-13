@@ -2,17 +2,14 @@ import { fetchApi } from "@/core/interceptore/fetchApi";
 
 export interface AdminComment {
   id: number;
-  userId: number;
-  houseId: number;
-  rating: number;
-  comment: string;
+  house_id: number;
+  user_id: number;
   title?: string | null;
-  status?: string;
-  response?: string | null;
-  reportedReason?: string | null;
-  houseTitle?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  caption?: string | null;
+  rating: number | string;
+  created_at: string;
+  updated_at?: string;
+  parent_comment_id?: number | string | null;
 }
 
 export interface GetAdminCommentsParams {

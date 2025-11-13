@@ -288,7 +288,7 @@ const AdminPropertiesContent = () => {
         <CardHeader className="space-y-4 pb-4 text-right">
           <CardTitle className="text-base font-semibold">فیلتر املاک</CardTitle>
           <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="grid gap-3 md:grid-cols-4">
+            <div className="flex flex-wrap gap-3">
               <div className="md:col-span-2">
                 <AdminSearchInput
                   placeholder="شناسه فروشنده"

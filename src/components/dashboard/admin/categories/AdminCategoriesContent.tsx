@@ -263,7 +263,7 @@ const AdminCategoriesContent = () => {
             </div>
           </div>
           <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="grid gap-3 lg:grid-cols-2">
+            <div className="flex flex-wrap gap-3">
               <AdminSearchInput
                 placeholder="جستجو بر اساس عنوان، توضیحات یا شناسه"
                 value={searchDraft}

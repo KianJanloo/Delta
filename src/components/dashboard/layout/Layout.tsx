@@ -48,7 +48,7 @@ const Layout = ({
 
     return (
         <div className={`bg-bgDash min-h-dvh h-dvh w-full overflow-hidden p-3 sm:p-4 gap-5 flex flex-col ${desktopDirection}`}>
-            <div className="md:h-full md:flex md:flex-col md:justify-between lg:relative absolute max-lg:-top-20">
+            <div className="md:h-full md:flex md:flex-col md:justify-between md:relative absolute max-md:-top-20">
                 <SidebarDashboard
                     view={view}
                     setView={setView}

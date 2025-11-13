@@ -11,6 +11,8 @@ import {
   ListChecks,
   Mail,
   MapPin,
+  MessageCircle,
+  MessageSquare,
   Percent,
   PlusCircle,
   Settings,
@@ -82,6 +84,8 @@ export const adminRoutes = [
     icon: ListChecks,
   },
   { label: "adminPayments", href: "/dashboard/admin/payments", icon: Coins },
+  { label: "adminComments", href: "/dashboard/admin/comments", icon: MessageSquare },
+  { label: "adminChats", href: "/dashboard/admin/chats", icon: MessageCircle },
   {
     label: "adminDocuments",
     href: "/dashboard/admin/documents",

@@ -294,7 +294,7 @@ const AdminDocumentsContent = () => {
             </div>
           </div>
           <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-4">
+            <div className="flex flex-wrap gap-3">
               <AdminSearchInput
                 placeholder="جستجو بر اساس شناسه، کاربر، ملک یا توضیحات"
                 value={searchDraft}

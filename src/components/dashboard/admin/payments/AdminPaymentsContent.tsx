@@ -11,7 +11,7 @@ import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboar
 import { normalizeList } from "@/components/dashboard/admin/shared/normalize";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { showToast } from "@/core/toast/toast";
-import { deleteAdminPayment, getAdminPayments, updateAdminPayment, type AdminPayment } from "@/utils/service/api/admin";
+import { deleteAdminPayment, getAdminPayments, updateAdminPayment, UpdateAdminPaymentPayload, type AdminPayment } from "@/utils/service/api/admin";
 import { cn } from "@/lib/utils";
 import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
@@ -165,7 +165,7 @@ const AdminPaymentsContent = () => {
     if (!selectedPayment) return;
     setIsActionLoading(true);
     try {
-      await updateAdminPayment(selectedPayment.id, { status: statusDraft } as Partial<AdminPayment>);
+      await updateAdminPayment(selectedPayment.id, { status: statusDraft } as UpdateAdminPaymentPayload);
       showToast("success", "وضعیت پرداخت با موفقیت به‌روزرسانی شد.");
       setIsStatusDialogOpen(false);
       setSelectedPayment(null);
@@ -299,7 +299,7 @@ const AdminPaymentsContent = () => {
         <CardHeader className="space-y-4 pb-4 text-right">
           <CardTitle className="text-base font-semibold">جستجوی پیشرفته</CardTitle>
           <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="grid gap-3 md:grid-cols-4">
+            <div className="flex flex-wrap gap-3">
               <div className="md:col-span-2">
                 <AdminSearchInput
                   placeholder="شناسه کاربر"

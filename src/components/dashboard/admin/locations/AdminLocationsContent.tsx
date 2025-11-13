@@ -397,7 +397,7 @@ const AdminLocationsContent = () => {
                 required
               />
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-3">
               <div className="space-y-2">
                 <Label htmlFor="location-lat">عرض جغرافیایی (Latitude)</Label>
                 <Input
