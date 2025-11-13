@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { fetchApi } from "@/core/interceptore/fetchApi"
 import { IHouse } from "@/types/houses-type/house-type";
 

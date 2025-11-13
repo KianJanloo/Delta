@@ -1,3 +1,4 @@
+import type { Session } from "next-auth";
 import { getSession, signIn, signOut } from "next-auth/react";
 import { jwtDecode } from "jwt-decode";
 import { API_BASE_URL } from "@/core/config/constants";
@@ -7,6 +8,16 @@ interface RefreshResult {
   accessToken: string;
   refreshToken: string;
   accessTokenExpires?: number;
+}
+
+interface ExtendedSession extends Omit<Session, "refreshToken" | "password"> {
+  refreshToken?: string;
+  password?: string;
+}
+
+interface DecodedToken {
+  exp?: number;
+  [key: string]: unknown;
 }
 
 let refreshPromise: Promise<RefreshResult | null> | null = null;
@@ -34,17 +45,18 @@ const requestNewAccessToken = async (refreshToken: string) => {
 
 const performRefresh = async (): Promise<RefreshResult | null> => {
   try {
-    const session = (await getSession()) as any;
-    const refreshToken = session?.refreshToken as string | undefined;
-    const password = session?.password as string | undefined;
+    const session = (await getSession()) as ExtendedSession | null;
+    const refreshToken = session?.refreshToken;
+    const password = session?.password;
 
     if (!refreshToken) {
       await performSignOut();
       return null;
     }
 
-    const { accessToken, refreshToken: newRefreshToken } = await requestNewAccessToken(refreshToken);
-    const decoded: any = jwtDecode(accessToken);
+    const { accessToken, refreshToken: newRefreshToken } =
+      await requestNewAccessToken(refreshToken);
+    const decoded = jwtDecode<DecodedToken>(accessToken);
     const accessTokenExpires = decoded?.exp ? decoded.exp * 1000 : undefined;
 
     await signIn("credentials", {
