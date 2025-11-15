@@ -11,6 +11,7 @@ import AdminPageHeader from "@/components/dashboard/admin/shared/AdminPageHeader
 import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboard/admin/shared/AdminResourceTable";
 import AdminSearchInput from "@/components/dashboard/admin/shared/AdminSearchInput";
 import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
+import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { normalizeList } from "@/components/dashboard/admin/shared/normalize";
 import { showToast } from "@/core/toast/toast";
@@ -19,6 +20,8 @@ import { updateCategory } from "@/utils/service/api/categories/updateCategory";
 import { deleteCategory } from "@/utils/service/api/categories/deleteCategory";
 import { getAllCategories } from "@/utils/service/api/categories/getAllCategories";
 import type { Category } from "@/types/categories-type/categories-type";
+
+const PAGE_SIZE = 20;
 
 type CategoryWithMeta = Category & {
   description?: string | null;
@@ -34,6 +37,9 @@ const AdminCategoriesContent = () => {
   const [categories, setCategories] = useState<CategoryWithMeta[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [totalCount, setTotalCount] = useState<number | null>(null);
   const [searchDraft, setSearchDraft] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [dialogMode, setDialogMode] = useState<DialogMode>(null);
@@ -46,34 +52,49 @@ const AdminCategoriesContent = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const payload = await getAllCategories();
-      const list = normalizeList<CategoryWithMeta>(payload);
+      const payload = await getAllCategories({
+        page,
+        limit: PAGE_SIZE,
+        sort: "id",
+        order: "DESC",
+        name: searchValue.trim() || undefined,
+      });
+      
+      let list: CategoryWithMeta[] = [];
+      let rawTotal = 0;
+      
+      if (Array.isArray(payload)) {
+        list = payload;
+      } else if (payload && typeof payload === 'object') {
+        if ('data' in payload && Array.isArray(payload.data)) {
+          list = payload.data;
+          rawTotal = (payload as { totalCount?: number }).totalCount || list.length;
+        } else {
+          list = normalizeList<CategoryWithMeta>(payload);
+          rawTotal = list.length;
+        }
+      } else {
+        list = normalizeList<CategoryWithMeta>(payload);
+        rawTotal = list.length;
+      }
+      
       setCategories(list);
+      setTotalCount(rawTotal);
+      setHasNextPage(page * PAGE_SIZE < rawTotal);
     } catch (err) {
       console.error("Failed to fetch categories", err);
       setCategories([]);
+      setTotalCount(null);
+      setHasNextPage(false);
       setError("بارگذاری دسته‌بندی‌ها با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [page, searchValue]);
 
   useEffect(() => {
     handleFetchCategories();
   }, [handleFetchCategories]);
-
-  const filteredCategories = useMemo(() => {
-    if (!searchValue.trim()) {
-      return categories;
-    }
-    const query = searchValue.trim().toLowerCase();
-    return categories.filter((category) => {
-      const nameMatch = category.name?.toLowerCase().includes(query);
-      const descriptionMatch = category.description?.toLowerCase().includes(query) ?? false;
-      const slugMatch = category.slug?.toLowerCase().includes(query) ?? false;
-      return Boolean(nameMatch || descriptionMatch || slugMatch);
-    });
-  }, [categories, searchValue]);
 
   const activeFilterTags = useMemo<AdminFilterTag[]>(() => {
     const tags: AdminFilterTag[] = [];
@@ -117,12 +138,26 @@ const AdminCategoriesContent = () => {
 
   const handleApplyFilters = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
+    setPage(1);
     setSearchValue(searchDraft.trim());
   };
 
   const handleResetFilters = () => {
     setSearchDraft("");
     setSearchValue("");
+    setPage(1);
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setPage(page + 1);
+    }
   };
 
   const handleSubmitCategory = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -148,7 +183,12 @@ const AdminCategoriesContent = () => {
         showToast("success", "دسته‌بندی با موفقیت بروزرسانی شد.");
       }
       closeDialog();
-      await handleFetchCategories();
+      const shouldGoPrevPage = categories.length === 1 && page > 1 && !hasNextPage;
+      if (shouldGoPrevPage) {
+        setPage(page - 1);
+      } else {
+        await handleFetchCategories();
+      }
     } catch (err) {
       console.error("Failed to submit category", err);
       showToast("error", "عملیات ذخیره دسته‌بندی با خطا مواجه شد.");
@@ -163,7 +203,12 @@ const AdminCategoriesContent = () => {
       await deleteCategory(Number(selectedCategory.id));
       showToast("success", "دسته‌بندی با موفقیت حذف شد.");
       closeDialog();
-      await handleFetchCategories();
+      const shouldGoPrevPage = categories.length === 1 && page > 1 && !hasNextPage;
+      if (shouldGoPrevPage) {
+        setPage(page - 1);
+      } else {
+        await handleFetchCategories();
+      }
     } catch (err) {
       console.error("Failed to delete category", err);
       showToast("error", "حذف دسته‌بندی با خطا مواجه شد.");
@@ -213,10 +258,10 @@ const AdminCategoriesContent = () => {
     },
   ], [formatNumber, openDialog]);
 
-  const summaryLabel =
-    filteredCategories.length > 0
-      ? `نمایش ${formatNumber(filteredCategories.length)} دسته‌بندی`
-      : "دسته‌بندی ثبت شده‌ای وجود ندارد.";
+  const totalPages = totalCount ? Math.ceil(totalCount / PAGE_SIZE) : 1;
+  const summaryLabel = totalCount !== null
+    ? `صفحه ${formatNumber(page)} از ${formatNumber(totalPages)} • مجموع ${formatNumber(totalCount)} دسته‌بندی`
+    : `نمایش ${formatNumber(categories.length)} دسته‌بندی در صفحه ${formatNumber(page)}`;
 
   const isFormDialogOpen = dialogMode === "create" || dialogMode === "edit";
   const isDeleteDialogOpen = dialogMode === "delete";
@@ -288,12 +333,20 @@ const AdminCategoriesContent = () => {
         <CardContent className="space-y-4 text-right">
           <AdminResourceTable
             columns={columns}
-            data={filteredCategories}
+            data={categories}
             isLoading={isLoading}
             emptyMessage="دسته‌بندی مطابق جستجو یافت نشد."
             getKey={(item) => `category-${item.id}`}
           />
-          <div className="text-xs text-muted-foreground">{summaryLabel}</div>
+          <AdminPaginationControls
+            page={page}
+            hasNextPage={hasNextPage}
+            isLoading={isLoading}
+            onPrevious={handlePreviousPage}
+            onNext={handleNextPage}
+            formatNumber={formatNumber}
+            summary={summaryLabel}
+          />
         </CardContent>
       </Card>
 
