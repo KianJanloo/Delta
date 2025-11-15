@@ -1,29 +1,28 @@
-'use client';
+"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MapPin, Pencil, Plus, RefreshCcw, Trash2 } from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import AdminPageHeader from "@/components/dashboard/admin/shared/AdminPageHeader";
-import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboard/admin/shared/AdminResourceTable";
-import AdminSearchInput from "@/components/dashboard/admin/shared/AdminSearchInput";
-import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
+import AdminResourceTable from "@/components/dashboard/admin/shared/AdminResourceTable";
 import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
-import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { normalizeList } from "@/components/dashboard/admin/shared/normalize";
+import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { showToast } from "@/core/toast/toast";
 import { getallLocations } from "@/utils/service/api/locations/getAllLocations";
 import { createLocation } from "@/utils/service/api/locations/createLocation";
 import { editLocation } from "@/utils/service/api/locations/editLocation";
 import { removeLocation } from "@/utils/service/api/locations/removeLocation";
 import type { ICreateLocation, ILocation } from "@/types/locations-type/locations-type";
+import AdminLocationsFilters from "./AdminLocationsFilters";
+import { useLocationsTableColumns } from "./AdminLocationsTableColumns";
+import AdminLocationsFormDialog from "./AdminLocationsFormDialog";
+import AdminLocationsDeleteDialog from "./AdminLocationsDeleteDialog";
 
 type DialogMode = "create" | "edit" | "delete" | null;
 
-type LocationItem = ILocation & {
+export type LocationItem = ILocation & {
   createdAt?: string | null;
   updatedAt?: string | null;
 };
@@ -96,23 +95,6 @@ const AdminLocationsContent = () => {
       return nameMatch || idMatch || latMatch || lngMatch;
     });
   }, [areaFilter, locations]);
-
-  const activeFilterTags = useMemo<AdminFilterTag[]>(() => {
-    const tags: AdminFilterTag[] = [];
-    if (areaFilter.trim()) {
-      tags.push({
-        key: "area",
-        label: "منطقه",
-        value: areaFilter.trim(),
-        onRemove: () => {
-          setAreaFilter("");
-          setAreaFilterDraft("");
-          setPage(1);
-        },
-      });
-    }
-    return tags;
-  }, [areaFilter]);
 
   const openDialog = useCallback(
     (mode: Exclude<DialogMode, null>, location?: LocationItem) => {
@@ -210,59 +192,10 @@ const AdminLocationsContent = () => {
     }
   };
 
-  const columns = useMemo<AdminTableColumn<LocationItem>[]>(() => [
-    {
-      key: "id",
-      header: "شناسه",
-      className: "w-24 whitespace-nowrap",
-      cell: (item) => `#${item.id}`,
-    },
-    {
-      key: "area_name",
-      header: "نام منطقه",
-      className: "w-64 whitespace-nowrap font-medium text-foreground",
-      cell: (item) => item.area_name ?? "—",
-    },
-    {
-      key: "lat",
-      header: "عرض جغرافیایی",
-      className: "w-40 whitespace-nowrap text-muted-foreground",
-      cell: (item) => item.lat ?? "—",
-    },
-    {
-      key: "lng",
-      header: "طول جغرافیایی",
-      className: "w-40 whitespace-nowrap text-muted-foreground",
-      cell: (item) => item.lng ?? "—",
-    },
-    {
-      key: "actions",
-      header: "عملیات",
-      className: "w-48 whitespace-nowrap",
-      cell: (item) => (
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => openDialog("edit", item)}
-          >
-            <Pencil className="size-4" />
-            ویرایش
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 text-destructive hover:bg-destructive/10"
-            onClick={() => openDialog("delete", item)}
-          >
-            <Trash2 className="size-4" />
-            حذف
-          </Button>
-        </div>
-      ),
-    },
-  ], [openDialog]);
+  const columns = useLocationsTableColumns({
+    onEdit: (item) => openDialog("edit", item),
+    onDelete: (item) => openDialog("delete", item),
+  });
 
   const totalPages =
     totalCount !== null ? Math.max(Math.ceil(totalCount / PAGE_SIZE), 1) : null;
@@ -306,42 +239,22 @@ const AdminLocationsContent = () => {
         </div>
       ) : null}
 
+      <AdminLocationsFilters
+        areaFilterDraft={areaFilterDraft}
+        setAreaFilterDraft={setAreaFilterDraft}
+        areaFilter={areaFilter}
+        setAreaFilter={setAreaFilter}
+        setPage={setPage}
+        onApplyFilters={handleApplyFilters}
+      />
+
       <Card className="border-border/70">
-        <CardHeader className="space-y-4 text-right">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle className="text-base font-semibold">فیلتر و مرتب‌سازی</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                نتایج را بر اساس نام منطقه فیلتر کرده و ترتیب نمایش را مدیریت کنید.
-              </p>
-            </div>
-          </div>
-
-          <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              <AdminSearchInput
-                placeholder="جستجو بر اساس نام منطقه یا شناسه"
-                value={areaFilterDraft}
-                onChange={(event) => setAreaFilterDraft(event.target.value)}
-                onClear={() => {
-                  setAreaFilterDraft("");
-                  setAreaFilter("");
-                  setPage(1);
-                }}
-              />
-            </div>
-
-            
-          </form>
-
-          <AdminFiltersBar tags={activeFilterTags} />
-        </CardHeader>
-
-        <CardContent className="space-y-4 text-right">
+        <CardContent className="space-y-4 text-right pt-6">
           <AdminResourceTable
             columns={columns}
             data={filteredLocations}
             isLoading={isLoading}
+            errorMessage={error}
             emptyMessage="موقعیتی با این مشخصات یافت نشد."
             getKey={(item) => `location-${item.id}`}
           />
@@ -358,115 +271,29 @@ const AdminLocationsContent = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-dashed border-border/60 bg-subBg/40 text-right dark:bg-muted/10">
-        <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <MapPin className="size-5" />
-            </div>
-            <div>
-              <CardTitle className="text-base font-semibold">راهنمای دقت مختصات</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                مختصات را بر حسب درجه اعشاری و با دقت حداقل چهار رقم اعشار وارد کنید تا جستجو و نمایش در نقشه دقیق باشد.
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+      <AdminLocationsFormDialog
+        open={isFormDialogOpen}
+        onOpenChange={(open) => (!open ? closeDialog() : null)}
+        mode={dialogMode === "edit" ? "edit" : "create"}
+        nameDraft={nameDraft}
+        setNameDraft={setNameDraft}
+        latDraft={latDraft}
+        setLatDraft={setLatDraft}
+        lngDraft={lngDraft}
+        setLngDraft={setLngDraft}
+        isActionLoading={isActionLoading}
+        onSubmit={handleSubmitLocation}
+      />
 
-      <Dialog open={isFormDialogOpen} onOpenChange={(open) => (!open ? closeDialog() : null)}>
-        <DialogContent className="max-w-lg text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>{dialogMode === "edit" ? "ویرایش موقعیت" : "موقعیت جدید"}</DialogTitle>
-            <DialogDescription>
-              {dialogMode === "edit"
-                ? "اطلاعات موقعیت را بروزرسانی کنید. مختصات صحیح را با دقت وارد کنید."
-                : "برای افزودن موقعیت جدید، نام منطقه و مختصات جغرافیایی را وارد کنید."}
-            </DialogDescription>
-          </DialogHeader>
-          <form className="space-y-4" onSubmit={handleSubmitLocation}>
-            <div className="space-y-2">
-              <Label htmlFor="location-name">نام منطقه</Label>
-              <Input
-                className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl remove-number-spin"
-                id="location-name"
-                placeholder="مثلاً: نیاوران"
-                value={nameDraft}
-                onChange={(event) => setNameDraft(event.target.value)}
-                disabled={isActionLoading}
-                required
-              />
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="location-lat">عرض جغرافیایی (Latitude)</Label>
-                <Input
-                  className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl remove-number-spin"
-                  id="location-lat"
-                  type="number"
-                  step="0.0001"
-                  placeholder="مثلاً: 35.7476"
-                  value={latDraft}
-                  onChange={(event) => setLatDraft(event.target.value)}
-                  disabled={isActionLoading}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="location-lng">طول جغرافیایی (Longitude)</Label>
-                <Input
-                  className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl remove-number-spin"
-                  id="location-lng"
-                  type="number"
-                  step="0.0001"
-                  placeholder="مثلاً: 51.4244"
-                  value={lngDraft}
-                  onChange={(event) => setLngDraft(event.target.value)}
-                  disabled={isActionLoading}
-                  required
-                />
-              </div>
-            </div>
-            <DialogFooter className="gap-2 sm:flex-row-reverse">
-              <Button type="submit" disabled={isActionLoading}>
-                {isActionLoading ? "در حال ذخیره..." : "ذخیره تغییرات"}
-              </Button>
-              <Button type="button" variant="outline" onClick={closeDialog} disabled={isActionLoading}>
-                انصراف
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isDeleteDialogOpen} onOpenChange={(open) => (!open ? closeDialog() : null)}>
-        <DialogContent className="max-w-md text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>حذف موقعیت</DialogTitle>
-            <DialogDescription>
-              {selectedLocation
-                ? `آیا از حذف موقعیت «${selectedLocation.area_name}» مطمئن هستید؟ این عملیات قابل بازگشت نیست.`
-                : "آیا از حذف این موقعیت مطمئن هستید؟"}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:flex-row-reverse">
-            <Button
-              variant="destructive"
-              onClick={handleDeleteLocation}
-              disabled={isActionLoading}
-            >
-              {isActionLoading ? "در حال حذف..." : "حذف موقعیت"}
-            </Button>
-            <Button type="button" variant="outline" onClick={closeDialog} disabled={isActionLoading}>
-              انصراف
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AdminLocationsDeleteDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => (!open ? closeDialog() : null)}
+        selectedLocation={selectedLocation}
+        isActionLoading={isActionLoading}
+        onDelete={handleDeleteLocation}
+      />
     </div>
   );
 };
 
 export default AdminLocationsContent;
-
-

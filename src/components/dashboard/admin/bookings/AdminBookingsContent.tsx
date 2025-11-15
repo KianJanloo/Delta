@@ -1,21 +1,20 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { CalendarClock, ClipboardList } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCallback, useEffect, useState } from "react";
+import { CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 import AdminPageHeader from "@/components/dashboard/admin/shared/AdminPageHeader";
-import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboard/admin/shared/AdminResourceTable";
+import AdminResourceTable from "@/components/dashboard/admin/shared/AdminResourceTable";
+import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import { normalizeList } from "@/components/dashboard/admin/shared/normalize";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { showToast } from "@/core/toast/toast";
 import { deleteAdminBooking, getAdminBookings, updateAdminBooking, UpdateAdminBookingPayload, type AdminBooking } from "@/utils/service/api/admin";
-import { cn } from "@/lib/utils";
-import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
-import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
-import AdminSearchInput from "@/components/dashboard/admin/shared/AdminSearchInput";
+import AdminBookingsFilters from "./AdminBookingsFilters";
+import { useBookingsTableColumns } from "./AdminBookingsTableColumns";
+import AdminBookingsStatusDialog from "./AdminBookingsStatusDialog";
+import AdminBookingsDeleteDialog from "./AdminBookingsDeleteDialog";
 
 const PAGE_SIZE = 10;
 
@@ -23,12 +22,6 @@ const BOOKING_STATUS_LABELS: Record<string, string> = {
   pending: "در انتظار بررسی",
   confirmed: "تایید شده",
   canceled: "لغو شده",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  confirmed: "bg-emerald-500/10 text-emerald-600 border-transparent",
-  pending: "bg-amber-500/10 text-amber-600 border-transparent",
-  canceled: "bg-rose-500/10 text-rose-600 border-transparent",
 };
 
 const AdminBookingsContent = () => {
@@ -107,45 +100,6 @@ const AdminBookingsContent = () => {
     setPage(1);
   };
 
-  const activeFilterTags = useMemo<AdminFilterTag[]>(() => {
-    const tags: AdminFilterTag[] = [];
-    if (userFilter.trim()) {
-      tags.push({
-        key: "userId",
-        label: "شناسه کاربر",
-        value: userFilter.trim(),
-        onRemove: () => {
-          setUserFilter("");
-          setUserFilterDraft("");
-          setPage(1);
-        },
-      });
-    }
-    if (statusFilter !== "all") {
-      tags.push({
-        key: "status",
-        label: "وضعیت",
-        value: BOOKING_STATUS_LABELS[statusFilter] ?? statusFilter,
-        onRemove: () => {
-          setStatusFilter("all");
-          setPage(1);
-        },
-      });
-    }
-    if (order === "ASC") {
-      tags.push({
-        key: "order",
-        label: "مرتب‌سازی",
-        value: "قدیمی‌ترین‌ها",
-        onRemove: () => {
-          setOrder("DESC");
-          setPage(1);
-        },
-      });
-    }
-    return tags;
-  }, [userFilter, statusFilter, order]);
-
   const handleUpdateBookingStatus = async () => {
     if (!selectedBooking) return;
     setIsActionLoading(true);
@@ -185,73 +139,12 @@ const AdminBookingsContent = () => {
     }
   };
 
-  const columns = useMemo<AdminTableColumn<AdminBooking>[]>(() => [
-    {
-      key: "id",
-      header: "شناسه رزرو",
-      className: "whitespace-nowrap",
-      cell: (item) => (
-        <span className="font-medium text-foreground">
-          #{formatNumber(item.id)}
-        </span>
-      ),
-    },
-    {
-      key: "userId",
-      header: "کاربر",
-      className: "whitespace-nowrap",
-      cell: (item) => formatNumber(item.userId),
-    },
-    {
-      key: "houseId",
-      header: "شناسه ملک",
-      className: "whitespace-nowrap",
-      cell: (item) => formatNumber(item.houseId),
-    },
-    {
-      key: "status",
-      header: "وضعیت",
-      className: "whitespace-nowrap",
-      cell: (item) => {
-        const statusKey = item.status?.toLowerCase() ?? "default";
-        return (
-          <span
-            className={cn(
-              "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium",
-              STATUS_COLORS[statusKey] ?? STATUS_COLORS.default,
-            )}
-          >
-            {BOOKING_STATUS_LABELS[statusKey] ?? item.status ?? "نامشخص"}
-          </span>
-        );
-      },
-    },
-    {
-      key: "createdAt",
-      header: "تاریخ ایجاد",
-      className: "whitespace-nowrap",
-      cell: (item) => formatDateTime(item.createdAt),
-    },
-    {
-      key: "actions",
-      header: "عملیات",
-      className: "w-[210px]",
-      cell: (item) => (
-        <div className="flex items-center justify-end gap-2">
-          <Button size="sm" variant="outline" onClick={() => handleOpenStatusDialog(item)}>
-            تغییر وضعیت
-          </Button>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => handleOpenDeleteDialog(item)}
-          >
-            حذف
-          </Button>
-        </div>
-      ),
-    },
-  ], [formatNumber, formatDateTime, handleOpenStatusDialog, handleOpenDeleteDialog]);
+  const columns = useBookingsTableColumns({
+    formatDateTime,
+    formatNumber,
+    onStatusChange: handleOpenStatusDialog,
+    onDelete: handleOpenDeleteDialog,
+  });
 
   const summaryLabel =
     bookings.length > 0
@@ -277,75 +170,23 @@ const AdminBookingsContent = () => {
         hint={`رزروهای نمایش داده شده: ${formatNumber(bookings.length)}`}
       />
 
+      <AdminBookingsFilters
+        userFilterDraft={userFilterDraft}
+        setUserFilterDraft={setUserFilterDraft}
+        userFilter={userFilter}
+        setUserFilter={setUserFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        order={order}
+        setOrder={setOrder}
+        setPage={setPage}
+        isLoading={isLoading}
+        onApplyFilters={handleApplyFilters}
+        onResetFilters={handleResetFilters}
+      />
+
       <Card className="border-border/70">
-        <CardHeader className="space-y-4 pb-4 text-right">
-          <CardTitle className="text-base font-semibold">فیلتر رزروها</CardTitle>
-          <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="flex flex-wrap gap-3">
-              <div className="md:col-span-2">
-                <AdminSearchInput
-                  placeholder="شناسه کاربر"
-                  value={userFilterDraft}
-                  onChange={(event) => {
-                    if (/^\d*$/.test(event.target.value)) {
-                      setUserFilterDraft(event.target.value);
-                    }
-                  }}
-                  inputMode="numeric"
-                  onClear={() => {
-                    setUserFilterDraft("");
-                    setUserFilter("");
-                    setPage(1);
-                  }}
-                />
-              </div>
-
-              <Select
-                value={statusFilter}
-                onValueChange={(value) => {
-                  setStatusFilter(value);
-                  setPage(1);
-                }}
-              >
-                <SelectTrigger className="justify-between text-right">
-                  <SelectValue placeholder="وضعیت" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">همه وضعیت‌ها</SelectItem>
-                  <SelectItem value="pending">در انتظار بررسی</SelectItem>
-                  <SelectItem value="confirmed">تایید شده</SelectItem>
-                  <SelectItem value="cancelled">لغو شده</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select
-                value={order}
-                onValueChange={(value: "ASC" | "DESC") => {
-                  setOrder(value);
-                  setPage(1);
-                }}
-              >
-                <SelectTrigger className="justify-between text-right">
-                  <SelectValue placeholder="مرتب‌سازی" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="DESC">جدیدترین‌ها</SelectItem>
-                  <SelectItem value="ASC">قدیمی‌ترین‌ها</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Button type="submit" variant="secondary" disabled={isLoading}>
-                {isLoading ? "در حال اعمال..." : "اعمال فیلترها"}
-              </Button>
-              <Button type="button" variant="ghost" onClick={handleResetFilters} disabled={isLoading}>
-                حذف فیلترها
-              </Button>
-            </div>
-          </form>
-          <AdminFiltersBar tags={activeFilterTags} />
-        </CardHeader>
-        <CardContent className="space-y-4 text-right">
+        <CardContent className="space-y-4 text-right pt-6">
           <AdminResourceTable
             columns={columns}
             data={bookings}
@@ -367,22 +208,7 @@ const AdminBookingsContent = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-dashed border-border/60 bg-subBg/40 text-right dark:bg-muted/10">
-        <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <CardTitle className="text-base font-semibold">یادداشت‌های عملیات</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              روند رسیدگی به رزروها بر اساس اولویت وضعیت انجام می‌شود. رزروهای در انتظار بررسی در اولویت هستند.
-            </p>
-          </div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground">
-            <ClipboardList className="size-4" />
-            وضعیت فعال: {statusFilter === "all" ? "همه" : BOOKING_STATUS_LABELS[statusFilter] ?? statusFilter}
-          </span>
-        </CardHeader>
-      </Card>
-
-      <Dialog
+      <AdminBookingsStatusDialog
         open={isStatusDialogOpen}
         onOpenChange={(open) => {
           setIsStatusDialogOpen(open);
@@ -391,47 +217,15 @@ const AdminBookingsContent = () => {
             setSelectedBooking(null);
           }
         }}
-      >
-        <DialogContent className="text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>تغییر وضعیت رزرو</DialogTitle>
-            <DialogDescription>
-              {selectedBooking
-                ? `وضعیت رزرو شماره ${formatNumber(selectedBooking.id)} را انتخاب کنید.`
-                : "وضعیت جدید رزرو را انتخاب کنید."}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Select value={statusDraft} onValueChange={setStatusDraft}>
-              <SelectTrigger className="justify-between">
-                <SelectValue placeholder="انتخاب وضعیت" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(BOOKING_STATUS_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <DialogFooter className="gap-2 sm:flex-row-reverse sm:space-x-reverse sm:space-x-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsStatusDialogOpen(false)}
-              disabled={isActionLoading}
-            >
-              انصراف
-            </Button>
-            <Button onClick={handleUpdateBookingStatus} disabled={isActionLoading}>
-              {isActionLoading ? "در حال ذخیره..." : "ثبت تغییرات"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        selectedBooking={selectedBooking}
+        statusDraft={statusDraft}
+        setStatusDraft={setStatusDraft}
+        isActionLoading={isActionLoading}
+        formatNumber={formatNumber}
+        onUpdate={handleUpdateBookingStatus}
+      />
 
-      <Dialog
+      <AdminBookingsDeleteDialog
         open={isDeleteDialogOpen}
         onOpenChange={(open) => {
           setIsDeleteDialogOpen(open);
@@ -440,38 +234,13 @@ const AdminBookingsContent = () => {
             setSelectedBooking(null);
           }
         }}
-      >
-        <DialogContent className="text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>حذف رزرو</DialogTitle>
-            <DialogDescription>
-              {selectedBooking
-                ? `آیا از حذف رزرو شماره ${formatNumber(selectedBooking.id)} مطمئن هستید؟`
-                : "این عملیات بازگشت‌پذیر نیست."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:flex-row-reverse sm:space-x-reverse sm:space-x-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-              disabled={isActionLoading}
-            >
-              انصراف
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDeleteBooking}
-              disabled={isActionLoading}
-            >
-              {isActionLoading ? "در حال حذف..." : "حذف رزرو"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        selectedBooking={selectedBooking}
+        isActionLoading={isActionLoading}
+        formatNumber={formatNumber}
+        onDelete={handleDeleteBooking}
+      />
     </div>
   );
 };
 
 export default AdminBookingsContent;
-
