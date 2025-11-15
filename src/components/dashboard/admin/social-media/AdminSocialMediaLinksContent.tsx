@@ -1,17 +1,11 @@
-'use client';
+"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link2, Pencil, Plus, RefreshCcw, Trash2 } from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 import AdminPageHeader from "@/components/dashboard/admin/shared/AdminPageHeader";
-import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboard/admin/shared/AdminResourceTable";
-import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
-import AdminSearchInput from "@/components/dashboard/admin/shared/AdminSearchInput";
+import AdminResourceTable from "@/components/dashboard/admin/shared/AdminResourceTable";
 import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { showToast } from "@/core/toast/toast";
@@ -20,6 +14,10 @@ import { createSocialMediaLink, type CreateSocialMediaLinkPayload } from "@/util
 import { updateSocialMediaLink, type UpdateSocialMediaLinkPayload } from "@/utils/service/api/social-media-links/updateSocialMediaLink";
 import { deleteSocialMediaLink } from "@/utils/service/api/social-media-links/deleteSocialMediaLink";
 import { normalizeList } from "../shared/normalize";
+import AdminSocialMediaFilters from "./AdminSocialMediaFilters";
+import { useSocialMediaTableColumns } from "./AdminSocialMediaTableColumns";
+import AdminSocialMediaFormDialog from "./AdminSocialMediaFormDialog";
+import AdminSocialMediaDeleteDialog from "./AdminSocialMediaDeleteDialog";
 
 type DialogMode = "create" | "edit" | "delete" | null;
 
@@ -29,43 +27,6 @@ type SocialLinkItem = ISocialMediaLink & {
 };
 
 const PAGE_SIZE = 10;
-
-const PLATFORM_OPTIONS = [
-  "instagram",
-  "telegram",
-  "whatsapp",
-  "linkedin",
-  "facebook",
-  "twitter",
-  "youtube",
-  "aparat",
-  "website",
-];
-
-const formatPlatformLabel = (platform: string) => {
-  switch (platform.toLowerCase()) {
-    case "instagram":
-      return "اینستاگرام";
-    case "telegram":
-      return "تلگرام";
-    case "whatsapp":
-      return "واتساپ";
-    case "linkedin":
-      return "لینکدین";
-    case "facebook":
-      return "فیس‌بوک";
-    case "twitter":
-      return "توئیتر";
-    case "youtube":
-      return "یوتیوب";
-    case "aparat":
-      return "آپارات";
-    case "website":
-      return "وب‌سایت";
-    default:
-      return platform;
-  }
-};
 
 const AdminSocialMediaLinksContent = () => {
   const { formatNumber } = useAdminFormatters();
@@ -118,34 +79,6 @@ const AdminSocialMediaLinksContent = () => {
     const query = searchValue.trim().toLowerCase();
     return links.filter((item) => item.url.toLowerCase().includes(query));
   }, [links, searchValue]);
-
-  const activeFilterTags = useMemo<AdminFilterTag[]>(() => {
-    const tags: AdminFilterTag[] = [];
-    if (platformFilter !== "all") {
-      tags.push({
-        key: "platform",
-        label: "پلتفرم",
-        value: formatPlatformLabel(platformFilter),
-        onRemove: () => {
-          setPlatformFilter("all");
-          setPage(1);
-        },
-      });
-    }
-    if (searchValue.trim()) {
-      tags.push({
-        key: "url",
-        label: "آدرس",
-        value: searchValue.trim(),
-        onRemove: () => {
-          setSearchValue("");
-          setSearchDraft("");
-          setPage(1);
-        },
-      });
-    }
-    return tags;
-  }, [platformFilter, searchValue]);
 
   const openDialog = useCallback(
     (mode: Exclude<DialogMode, null>, link?: SocialLinkItem) => {
@@ -249,57 +182,10 @@ const AdminSocialMediaLinksContent = () => {
     }
   };
 
-  const columns = useMemo<AdminTableColumn<SocialLinkItem>[]>(() => [
-    {
-      key: "platform",
-      header: "پلتفرم",
-      className: "w-36 whitespace-nowrap font-semibold text-foreground",
-      cell: (item) => formatPlatformLabel(item.platform),
-    },
-    {
-      key: "url",
-      header: "آدرس",
-      className: "max-w-[320px]",
-      cell: (item) => (
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-primary underline underline-offset-4 hover:text-primary/80"
-        >
-          {item.url}
-        </a>
-      ),
-      mobileClassName: "text-sm leading-6 break-all",
-    },
-    {
-      key: "actions",
-      header: "عملیات",
-      className: "w-48 whitespace-nowrap",
-      cell: (item) => (
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => openDialog("edit", item)}
-          >
-            <Pencil className="size-4" />
-            ویرایش
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 text-destructive hover:bg-destructive/10"
-            onClick={() => openDialog("delete", item)}
-          >
-            <Trash2 className="size-4" />
-            حذف
-          </Button>
-        </div>
-      ),
-    },
-  ], [openDialog]);
+  const columns = useSocialMediaTableColumns({
+    onEdit: (item) => openDialog("edit", item),
+    onDelete: (item) => openDialog("delete", item),
+  });
 
   const summaryLabel =
     filteredLinks.length > 0
@@ -340,65 +226,21 @@ const AdminSocialMediaLinksContent = () => {
         </div>
       ) : null}
 
+      <AdminSocialMediaFilters
+        platformFilter={platformFilter}
+        setPlatformFilter={setPlatformFilter}
+        searchDraft={searchDraft}
+        setSearchDraft={setSearchDraft}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        setPage={setPage}
+        isLoading={isLoading}
+        onApplyFilters={handleApplyFilters}
+        onResetFilters={handleResetFilters}
+      />
+
       <Card className="border-border/70">
-        <CardHeader className="space-y-4 text-right">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle className="text-base font-semibold">فیلتر و جستجو</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                لینک‌ها را بر اساس پلتفرم یا آدرس فیلتر و مرتب‌سازی کنید.
-              </p>
-            </div>
-          </div>
-
-          <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="flex flex-wrap gap-3">
-              <Select
-                value={platformFilter}
-                onValueChange={(value) => {
-                  setPlatformFilter(value);
-                  setPage(1);
-                }}
-              >
-                <SelectTrigger className="justify-between text-right">
-                  <SelectValue placeholder="انتخاب پلتفرم" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">همه پلتفرم‌ها</SelectItem>
-                  {PLATFORM_OPTIONS.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {formatPlatformLabel(option)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <AdminSearchInput
-                placeholder="جستجو بر اساس آدرس لینک"
-                value={searchDraft}
-                onChange={(event) => setSearchDraft(event.target.value)}
-                onClear={() => {
-                  setSearchDraft("");
-                  setSearchValue("");
-                  setPage(1);
-                }}
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Button type="submit" variant="secondary" disabled={isLoading}>
-                {isLoading ? "در حال اعمال..." : "اعمال فیلتر"}
-              </Button>
-              <Button type="button" variant="ghost" onClick={handleResetFilters} disabled={isLoading}>
-                حذف فیلترها
-              </Button>
-            </div>
-          </form>
-
-          <AdminFiltersBar tags={activeFilterTags} />
-        </CardHeader>
-
-        <CardContent className="space-y-4 text-right">
+        <CardContent className="space-y-4 text-right pt-6">
           <AdminResourceTable
             columns={columns}
             data={filteredLinks}
@@ -419,119 +261,27 @@ const AdminSocialMediaLinksContent = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-dashed border-border/60 bg-subBg/40 text-right dark:bg-muted/10">
-        <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Link2 className="size-5" />
-            </div>
-            <div>
-              <CardTitle className="text-base font-semibold">یکپارچگی برند</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                لینک‌ها را به صورت ماهانه بررسی کنید تا از صحت و به‌روز بودن مسیرها و تطابق با استراتژی برند اطمینان حاصل شود.
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+      <AdminSocialMediaFormDialog
+        open={isFormDialogOpen}
+        onOpenChange={(open) => (!open ? closeDialog() : null)}
+        mode={dialogMode === "edit" ? "edit" : "create"}
+        platformDraft={platformDraft}
+        setPlatformDraft={setPlatformDraft}
+        urlDraft={urlDraft}
+        setUrlDraft={setUrlDraft}
+        isActionLoading={isActionLoading}
+        onSubmit={handleSubmitLink}
+      />
 
-      <Dialog open={isFormDialogOpen} onOpenChange={(open) => (!open ? closeDialog() : null)}>
-        <DialogContent className="max-w-lg text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>{dialogMode === "edit" ? "ویرایش لینک" : "لینک جدید"}</DialogTitle>
-            <DialogDescription>
-              {dialogMode === "edit"
-                ? "پلتفرم و آدرس لینک را بروزرسانی کنید."
-                : "برای افزودن لینک جدید، پلتفرم مربوطه و آدرس کامل را وارد کنید."}
-            </DialogDescription>
-          </DialogHeader>
-          <form className="space-y-4" onSubmit={handleSubmitLink}>
-            <div className="space-y-2">
-              <Label htmlFor="social-platform">پلتفرم</Label>
-              <Select
-                value={platformDraft || "custom"}
-                onValueChange={(value) => {
-                  if (value === "custom") {
-                    setPlatformDraft("");
-                  } else {
-                    setPlatformDraft(value);
-                  }
-                }}
-              >
-                <SelectTrigger className="justify-between text-right">
-                  <SelectValue placeholder="انتخاب پلتفرم" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="custom">پلتفرم دلخواه</SelectItem>
-                  {PLATFORM_OPTIONS.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {formatPlatformLabel(option)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Input
-                className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl remove-number-spin"
-                id="social-platform"
-                placeholder="مثلاً: instagram"
-                value={platformDraft}
-                onChange={(event) => setPlatformDraft(event.target.value)}
-                disabled={isActionLoading}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="social-url">آدرس لینک</Label>
-              <Input
-                className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl remove-number-spin"
-                id="social-url"
-                placeholder="https://instagram.com/delta"
-                value={urlDraft}
-                onChange={(event) => setUrlDraft(event.target.value)}
-                disabled={isActionLoading}
-                required
-              />
-            </div>
-            <DialogFooter className="gap-2 sm:flex-row-reverse">
-              <Button type="submit" disabled={isActionLoading}>
-                {isActionLoading ? "در حال ذخیره..." : "ذخیره تغییرات"}
-              </Button>
-              <Button type="button" variant="outline" onClick={closeDialog} disabled={isActionLoading}>
-                انصراف
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isDeleteDialogOpen} onOpenChange={(open) => (!open ? closeDialog() : null)}>
-        <DialogContent className="max-w-md text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>حذف لینک</DialogTitle>
-            <DialogDescription>
-              {selectedLink
-                ? `آیا از حذف لینک مربوط به «${formatPlatformLabel(selectedLink.platform)}» مطمئن هستید؟`
-                : "آیا از حذف این لینک مطمئن هستید؟"}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:flex-row-reverse">
-            <Button
-              variant="destructive"
-              onClick={handleDeleteLink}
-              disabled={isActionLoading}
-            >
-              {isActionLoading ? "در حال حذف..." : "حذف لینک"}
-            </Button>
-            <Button type="button" variant="outline" onClick={closeDialog} disabled={isActionLoading}>
-              انصراف
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AdminSocialMediaDeleteDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => (!open ? closeDialog() : null)}
+        selectedLink={selectedLink}
+        isActionLoading={isActionLoading}
+        onDelete={handleDeleteLink}
+      />
     </div>
   );
 };
 
 export default AdminSocialMediaLinksContent;
-
-
