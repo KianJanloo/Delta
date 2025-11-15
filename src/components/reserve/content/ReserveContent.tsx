@@ -1,5 +1,5 @@
 import CommonInput from '@/components/common/inputs/common/CommonInput'
-import React, { useState } from 'react'
+import React from 'react'
 import ReserveCard from '../card/ReserveCard'
 import ReserveMap from '../map/ReserveMap'
 import { IHouse } from '@/types/houses-type/house-type'
@@ -29,22 +29,32 @@ interface IReserveContent {
   marker: MarkerType | null
   setMarker: React.Dispatch<React.SetStateAction<MarkerType | null>>
   totalCount: number
+  currentPage?: number
+  onPageChange?: (page: number) => void
+  error?: string | null
 }
 
-const ReserveContent: React.FC<IReserveContent> = ({ totalCount, houses, isLoading, setMaxPrice, setMinPrice, marker, setMarker }) => {
+const ReserveContent: React.FC<IReserveContent> = ({ 
+  totalCount, 
+  houses, 
+  isLoading, 
+  setMaxPrice, 
+  setMinPrice, 
+  marker, 
+  setMarker,
+  currentPage = 1,
+  onPageChange,
+  error
+}) => {
   const t = useTranslations('reserve.content');
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 3
+  const itemsPerPage = 4
   const totalPages = Math.ceil(totalCount / itemsPerPage)
-
-  const paginatedHouses = houses.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  )
 
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return
-    setCurrentPage(page)
+    if (onPageChange) {
+      onPageChange(page)
+    }
   }
 
   return (
@@ -73,42 +83,83 @@ const ReserveContent: React.FC<IReserveContent> = ({ totalCount, houses, isLoadi
         <div className="w-full border dark:border-[#4E4E4E] border-[#9E9E9E]" />
 
         <div className='flex flex-col justify-between h-full'>
-          <div className="flex flex-col gap-6" id='items'>
-            {isLoading ? (
-              Array.from({ length: itemsPerPage }).map((_, idx) => (
+          <div className="flex flex-col gap-2" id='items'>
+            {error ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-4">
+                <span className='text-danger text-lg font-semibold'>
+                  {t('errorTitle') || 'خطا در دریافت اطلاعات'}
+                </span>
+                <span className='text-subText text-sm text-center'>
+                  {error}
+                </span>
+              </div>
+            ) : isLoading ? (
+              Array.from({ length: Math.min(itemsPerPage, 3) }).map((_, idx) => (
                 <ReserveCardSkeleton key={idx} />
               ))
+            ) : houses.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-4">
+                <span className='text-lg font-semibold mx-auto'>
+                  {t('noAds')}
+                </span>
+                <span className='text-subText text-sm text-center'>
+                  {t('noAdsDescription') || 'لطفا فیلترهای جستجو را تغییر دهید'}
+                </span>
+              </div>
             ) : (
-              paginatedHouses.map((item, idx) => (
-                <ReserveCard key={idx} items={item} />
+              houses.map((item, idx) => (
+                <ReserveCard key={item.id || idx} items={item} />
               ))
             )}
           </div>
-          {paginatedHouses.length === 0 && (
-            <span className='text-sm font-semibold mx-auto'>
-              {t('noAds')}
-            </span>
-          )}
 
-          <Pagination>
-            <PaginationContent className="justify-center my-6">
-              <PaginationItem>
-                <PaginationPrevious onClick={() => goToPage(currentPage - 1)} />
-              </PaginationItem>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page} onClick={() => goToPage(page)}>
-                  <PaginationLink isActive={page === currentPage} className={` ${page === currentPage && "bg-primary text-primary-foreground"} `} href="#items">
-                    {page}
-                  </PaginationLink>
+          {totalPages > 1 && !isLoading && !error && (
+            <Pagination>
+              <PaginationContent className="justify-center my-6">
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => goToPage(currentPage - 1)} 
+                    className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
                 </PaginationItem>
-              ))}
 
-              <PaginationItem>
-                <PaginationNext onClick={() => goToPage(currentPage + 1)} />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+                {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => {
+                  let page: number;
+                  if (totalPages <= 10) {
+                    page = i + 1;
+                  } else if (currentPage <= 5) {
+                    page = i + 1;
+                  } else if (currentPage >= totalPages - 4) {
+                    page = totalPages - 9 + i;
+                  } else {
+                    page = currentPage - 5 + i;
+                  }
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationLink 
+                        isActive={page === currentPage} 
+                        className={`cursor-pointer ${page === currentPage && "bg-primary text-primary-foreground"}`} 
+                        href="#items"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          goToPage(page);
+                        }}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
+
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => goToPage(currentPage + 1)} 
+                    className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </div>
       </div>
 

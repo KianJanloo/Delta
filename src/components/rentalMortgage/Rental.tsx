@@ -12,19 +12,33 @@ import {
   PaginationContent,
   PaginationItem,
   PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
 } from '@/components/ui/pagination'
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useDebounce } from '@/utils/hooks/useDebounce';
+import { showToast } from '@/core/toast/toast';
+import { useTranslations } from 'next-intl';
 
 const RentalComponent = () => {
+  const t = useTranslations('rental');
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const searchParams = useSearchParams()
+  const getParam = (key: string, defaultValue: string | number = "") => {
+    try {
+      return searchParams.get(key) || defaultValue;
+    } catch {
+      return defaultValue;
+    }
+  };
 
-  const urlTransactionType = searchParams.get('transactionType') || "[rental, mortgage, direct_purchase]"
-  const urlLocation = searchParams.get('location') || ''
-  const urlMinArea = Number(searchParams.get('minRent')) || ''
-  const urlMaxArea = Number(searchParams.get('maxRent')) || ''
-  const urlProperty = searchParams.get("propertyType") || ''
-
+  const urlTransactionType = getParam('transactionType', "[rental, mortgage, direct_purchase]") as string
+  const urlLocation = getParam('location', '') as string
+  const urlMinArea = Number(getParam('minRent')) || ''
+  const urlMaxArea = Number(getParam('maxRent')) || ''
+  const urlProperty = getParam("propertyType", '') as string
+  const urlPage = Number(getParam('page', '1')) || 1
 
   const [search, setSearch] = useState<string>('')
   const [order, setOrder] = useState<'DESC' | 'ASC'>('DESC')
@@ -38,48 +52,90 @@ const RentalComponent = () => {
   const [minArea, setMinArea] = useState<number | "">(urlMinArea)
   const [maxArea, setMaxArea] = useState<number | "">(urlMaxArea)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
   const [transactionType, setTransactionType] = useState<string>(urlTransactionType || "[rental, mortgage, direct_purchase]")
   const [location, setLocation] = useState<string>(urlLocation)
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(urlPage)
 
-  const [currentPage, setCurrentPage] = useState(1)
+  const debouncedSearch = useDebounce(search, 500);
   const itemsPerPage = 10
   const totalPages = Math.ceil(totalCount / itemsPerPage)
 
-  const paginatedHouses = houses.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  )
+  const updateURLParams = useCallback((updates: Record<string, string | number | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null || value === "" || value === undefined) {
+        params.delete(key);
+      } else {
+        params.set(key, String(value));
+      }
+    });
 
-  const goToPage = (page: number) => {
+    if (!updates.page && Object.keys(updates).some(k => k !== "page")) {
+      params.set("page", "1");
+      setCurrentPage(1);
+    }
+
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [searchParams, router]);
+
+  const handlePageChange = useCallback((page: number) => {
     if (page < 1 || page > totalPages) return
     setCurrentPage(page)
-  }
+    updateURLParams({ page })
+    const itemsElement = document.getElementById('rental-items');
+    if (itemsElement) {
+      itemsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [totalPages, updateURLParams])
 
   const fetchHouses = useCallback(async () => {
     setIsLoading(true)
+    setError(null)
     try {
       const response = await getHouses(
-        transactionType, search, order, sort, location,
-        propertyType, '', '', minRent, maxRent, minMortgage, maxMortgage, minArea, maxArea
+        transactionType, 
+        debouncedSearch || '', 
+        order, 
+        sort, 
+        location,
+        propertyType, 
+        '', 
+        '', 
+        minRent, 
+        maxRent, 
+        minMortgage, 
+        maxMortgage, 
+        minArea, 
+        maxArea,
+        currentPage,
+        itemsPerPage
       )
       setHouses(response.houses);
       setTotalCount(response.totalCount);
-      setCurrentPage(1)
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : t('errorMessage') || 'خطا در دریافت اطلاعات';
+      setError(errorMessage);
+      showToast('error', t('errorTitle') || 'خطا', undefined, errorMessage);
       console.error('Error fetching houses:', error)
     } finally {
       setIsLoading(false)
     }
-  }, [search, order, sort, location, minRent, maxRent, minMortgage, maxMortgage, minArea, maxArea, propertyType, transactionType])
+  }, [debouncedSearch, order, sort, location, minRent, maxRent, minMortgage, maxMortgage, minArea, maxArea, propertyType, transactionType, currentPage, itemsPerPage, t])
 
   useEffect(() => {
     fetchHouses()
   }, [fetchHouses])
 
   useEffect(() => {
-    fetchHouses()
-  }, [fetchHouses])
+    updateURLParams({ search: debouncedSearch });
+  }, [debouncedSearch, updateURLParams]);
+
+  useEffect(() => {
+    updateURLParams({ order, sort, location, propertyType, transactionType, minRent, maxRent, minMortgage, maxMortgage, minArea, maxArea });
+  }, [order, sort, location, propertyType, transactionType, minRent, maxRent, minMortgage, maxMortgage, minArea, maxArea, updateURLParams]);
 
   useEffect(() => {
     setPropertyType(urlProperty)
@@ -92,7 +148,7 @@ const RentalComponent = () => {
         setOrder={setOrder}
         setSort={setSort}
         setSearch={setSearch}
-        houseLength={houses.length}
+        houseLength={totalCount}
         setLocation={setLocation}
         setPropertyType={setPropertyType}
         setTransactionType={setTransactionType}
@@ -106,35 +162,83 @@ const RentalComponent = () => {
         setMaxArea={setMaxArea}
       />
       <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8 mt-[20px] w-full' id="rental-items">
-        {isLoading ? (
+        {error ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-12 gap-4">
+            <span className='text-danger text-lg font-semibold'>
+              {t('errorTitle') || 'خطا در دریافت اطلاعات'}
+            </span>
+            <span className='text-subText text-sm text-center'>
+              {error}
+            </span>
+          </div>
+        ) : isLoading ? (
           Array.from({ length: itemsPerPage }).map((_, idx) => (
             <RentalCardSkeleton key={idx} />
           ))
+        ) : houses.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-12 gap-4">
+            <span className='text-lg font-semibold'>
+              {t('noHouses') || 'درحال حاضر هیچ خانه‌ای مطابق با فیلتر وجود ندارد'}
+            </span>
+            <span className='text-subText text-sm text-center'>
+              {t('noHousesDescription') || 'لطفا فیلترهای جستجو را تغییر دهید'}
+            </span>
+          </div>
         ) : (
-          paginatedHouses.map((item, idx) => (
-            <RentalCard key={idx} items={item} />
+          houses.map((item) => (
+            <RentalCard key={item.id} items={item} />
           ))
         )}
       </div>
 
-      {!isLoading && houses.length > 0 && (
+      {totalPages > 1 && !isLoading && !error && (
         <Pagination>
           <PaginationContent className='justify-center mt-6'>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page} onClick={() => goToPage(page)}>
-                <PaginationLink isActive={page === currentPage} className={`bg-secondary-light4 ${page === currentPage && "bg-primary text-primary-foreground"}`} href="#rental-items">
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => handlePageChange(currentPage - 1)} 
+                className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                href="#rental-items"
+              />
+            </PaginationItem>
+
+            {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => {
+              let page: number;
+              if (totalPages <= 10) {
+                page = i + 1;
+              } else if (currentPage <= 5) {
+                page = i + 1;
+              } else if (currentPage >= totalPages - 4) {
+                page = totalPages - 9 + i;
+              } else {
+                page = currentPage - 5 + i;
+              }
+              return (
+                <PaginationItem key={page}>
+                  <PaginationLink 
+                    isActive={page === currentPage} 
+                    className={`cursor-pointer ${page === currentPage && "bg-primary text-primary-foreground"}`} 
+                    href="#rental-items"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(page);
+                    }}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
+
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => handlePageChange(currentPage + 1)} 
+                className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                href="#rental-items"
+              />
+            </PaginationItem>
           </PaginationContent>
         </Pagination>
-      )}
-
-      {!isLoading && paginatedHouses.length === 0 && (
-        <span className='text-sm font-semibold mx-auto mt-4'>
-          درحال حاضر هیچ خانه‌ای مطابق با فیلتر وجود ندارد
-        </span>
       )}
     </div>
   )

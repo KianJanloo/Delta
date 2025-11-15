@@ -20,12 +20,18 @@ interface IReserveFilter {
     houseLength?: number
     marker: MarkerType | null
     setMarker: React.Dispatch<React.SetStateAction<MarkerType | null>>
+    search?: string
+    location?: string
 }
 
-const ReserveFilter: FC<IReserveFilter> = ({ setOrder, setSort, setSearch, houseLength, setLocation, marker, setMarker }) => {
+const ReserveFilter: FC<IReserveFilter> = ({ setOrder, setSort, setSearch, houseLength, setLocation, marker, setMarker, search = "", location = "" }) => {
     const t = useTranslations('reserve.filter');
     const [isOpen, setIsOpen] = useState<boolean>(false)
-    const [value, setValue] = React.useState("")
+    const [value, setValue] = React.useState(location)
+
+    React.useEffect(() => {
+        setValue(location)
+    }, [location])
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} className='bg-secondary-light4 w-full lg:flex-nowrap flex-wrap gap-4 rounded-[24px] px-4 py-3 flex justify-between'>
@@ -75,6 +81,7 @@ const ReserveFilter: FC<IReserveFilter> = ({ setOrder, setSort, setSearch, house
                 />
                 <CommonInput
                     onchange={(e) => setSearch(e.target.value)}
+                    value={search}
                     label={t('search')}
                     classname='px-4 py-2 border-subText xl:w-[600px] w-full dark:group-hover:placeholder:text-white placeholder:text-subText dark:group-hover:text-white dark:group-hover:border-white outline-none'
                     color='text-subText dark:group-hover:text-white'

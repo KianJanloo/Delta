@@ -6,13 +6,14 @@ import { MapPin, Clock, Star, Hotel } from "lucide-react";
 import CommonButton from "@/components/common/buttons/common/CommonButton";
 import { IHouse } from "@/types/houses-type/house-type";
 import { SplitNumber } from "@/utils/helper/spliter/SplitNumber";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 interface IReserveContent {
   items: IHouse;
 }
 const ReserveCard: FC<IReserveContent> = ({ items }) => {
+  const router = useRouter();
   const hasDiscount =
     items.discounted_price && items.discounted_price < items.price;
   const discountPercent = hasDiscount
@@ -81,7 +82,7 @@ const ReserveCard: FC<IReserveContent> = ({ items }) => {
         )}
 
         <CommonButton
-          onclick={() => redirect(`/reserve/reserve-house/${items.id}`)}
+          onclick={() => router.push(`/reserve/reserve-house/${items.id}`)}
           icon={<Hotel />}
           title="بررسی و رزرو هتل"
           classname="flex-row-reverse py-3 md:py-5 bg-transparent group-hover:bg-primary text-primary group-hover:text-primary-foreground border border-primary w-full md:w-auto"

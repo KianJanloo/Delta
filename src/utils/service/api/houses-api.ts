@@ -16,9 +16,11 @@ export const getHouses = async (
     maxMortgage?: number | "",
     minArea?: number | "",
     maxArea?: number | "",
+    page?: number,
+    limit?: number,
 ) => {
     const url =
-        `/houses?limit=10&transactionType=${transactionType}` +
+        `/houses?limit=${limit || 10}&transactionType=${transactionType}` +
         `&search=${encodeURIComponent(search)}` +
         `&order=${order}` +
         `&sort=${sort}` +
@@ -31,7 +33,8 @@ export const getHouses = async (
         (minMortgage !== '' ? `&minMortgage=${minMortgage}` : '') +
         (maxMortgage !== '' ? `&maxMortgage=${maxMortgage}` : '') +
         (minArea !== '' ? `&minArea=${minArea}` : '') +
-        (maxArea !== '' ? `&maxArea=${maxArea}` : '');
+        (maxArea !== '' ? `&maxArea=${maxArea}` : '') +
+        (page ? `&page=${page}` : '');
     const response = await fetchApi.get(url) as { houses: IHouse[], totalCount: number };
     return response
 }

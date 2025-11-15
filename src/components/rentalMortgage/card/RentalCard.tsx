@@ -5,7 +5,7 @@ import { MapPin, Star, Hotel, Bed, Car, Bath, Heart } from "lucide-react";
 import CommonButton from "@/components/common/buttons/common/CommonButton";
 import { IHouse } from "@/types/houses-type/house-type";
 import { SplitNumber } from "@/utils/helper/spliter/SplitNumber";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 interface IReserveContent {
@@ -15,6 +15,7 @@ interface IReserveContent {
 }
 
 const RentalCard: FC<IReserveContent> = ({ items, onFavorite, isFavorite }) => {
+  const router = useRouter();
   const hasDiscount =
     items.discounted_price && items.discounted_price < items.price;
   const discountPercent = hasDiscount
@@ -148,7 +149,7 @@ const RentalCard: FC<IReserveContent> = ({ items, onFavorite, isFavorite }) => {
 
           {/* CTA Button */}
           <CommonButton
-            onclick={() => redirect(`/rent/${items.id}`)}
+            onclick={() => router.push(`/rent/${items.id}`)}
             icon={<Hotel size={18} />}
             title="مشاهده"
             classname="flex-row-reverse gap-2 py-2.5 px-5 bg-transparent group-hover:bg-primary text-primary group-hover:text-primary-foreground border-2 border-primary rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 whitespace-nowrap text-sm"

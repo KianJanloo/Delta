@@ -48,20 +48,24 @@ const Rent = () => {
   }, [fetchHouse]);
 
   const nextSlide = useCallback(() => {
-    if (house) {
+    if (house && house.photos && Array.isArray(house.photos) && house.photos.length > 0) {
       setCurrentSlideIndex((prev) =>
-        prev === house?.photos.length - 1 ? 0 : prev + 1
+        prev === house.photos.length - 1 ? 0 : prev + 1
       );
     }
   }, [house]);
 
   useEffect(() => {
+    if (!house || !house.photos || house.photos.length <= 1) {
+      return;
+    }
+
     const interval = setInterval(() => {
       nextSlide();
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [nextSlide]);
+  }, [nextSlide, house]);
 
   const handleCopy = async () => {
     if (typeof window === "undefined") return;
@@ -127,7 +131,7 @@ const Rent = () => {
         {house && <SellerDetail house={house} />}
         {house && (
           <Photo
-            images={house?.photos}
+            images={house?.photos || null}
             nextSlide={nextSlide}
             currentSlideIndex={currentSlideIndex}
           />
@@ -142,15 +146,19 @@ const Rent = () => {
             <StarIcon size={16} />
             {house.rate || 0} {t("star")}
           </button>
-          <div className="h-8 w-px bg-subText"></div>
-          {house.tags.map((item, idx) => (
-            <button
-              key={idx}
-              className="w-[120px] h-[36px] rounded-xl bg-secondary-light2"
-            >
-              <p className="text-ring"> {item}# </p>
-            </button>
-          ))}
+          {house.tags && house.tags.length > 0 && (
+            <>
+              <div className="h-8 w-px bg-subText"></div>
+              {house.tags.slice(0, 4).map((item, idx) => (
+                <button
+                  key={idx}
+                  className="w-[120px] h-[36px] rounded-xl bg-secondary-light2"
+                >
+                  <p className="text-ring"> {item}# </p>
+                </button>
+              ))}
+            </>
+          )}
         </div>
 
         <div

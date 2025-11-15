@@ -10,7 +10,16 @@
         "shareText": "یه رزرو عالی ببین!",
         "shareSuccess": "اشتراک گذاری با موفقیت انجام شد",
         "shareError": "خطا در اشتراک گذاری",
-        "noShareSupport": "مرورگر شما از اشتراک‌گذاری پشتیبانی نمی‌کند"
+        "noShareSupport": "مرورگر شما از اشتراک‌گذاری پشتیبانی نمی‌کند",
+        "seller": "فروشنده",
+        "lastUpdated": "آخرین بروزرسانی",
+        "comments": "نظر",
+        "loginRequired": "لطفا ابتدا وارد حساب کاربری خود شوید",
+        "addedToFavorites": "به علاقه‌مندی‌ها اضافه شد",
+        "removedFromFavorites": "از علاقه‌مندی‌ها حذف شد",
+        "favoriteError": "خطا در تغییر وضعیت علاقه‌مندی",
+        "addToFavorites": "افزودن به علاقه‌مندی‌ها",
+        "removeFromFavorites": "حذف از علاقه‌مندی‌ها"
     },
     "tab": {
         "about": "درباره ملک",
@@ -26,10 +35,24 @@
         "passengerCount": "تعداد مسافران",
         "reservePrices": "قیمت های رزرو",
         "currency": "ت",
-        "reserveNow": "همین الان رزرو کن"
+        "reserveNow": "همین الان رزرو کن",
+        "loading": "در حال بارگزاری",
+        "dateRequired": "لطفا تاریخ رفت و برگشت را انتخاب کنید",
+        "passengerRequired": "لطفا تعداد مسافران را وارد کنید",
+        "dateInvalid": "تاریخ برگشت باید بعد از تاریخ رفت باشد",
+        "datePast": "تاریخ رفت نمی‌تواند در گذشته باشد",
+        "bookingError": "خطا در ثبت رزرو. لطفا دوباره تلاش کنید",
+        "capacityExceeded": "حداکثر ظرفیت {capacity} نفر است",
+        "maxCapacity": "حداکثر",
+        "passenger": "نفر",
+        "discount": "تخفیف",
+        "perNight": "برای هر شب"
     },
     "about": {
-        "aboutProperty": "درباره این ملک"
+        "aboutProperty": "درباره این ملک",
+        "noDescription": "توضیحاتی برای این ملک ثبت نشده است.",
+        "gallery": "گالری تصاویر",
+        "galleryImage": "تصویر گالری"
     },
     "footer": {
         "similarAds": "آگهی های متشابه",
@@ -42,5 +65,7 @@
     "capacity": "ظرفیت",
     "capacityValue": "{count} نفر",
     "noCapacity": "ندارد",
-    "noInfo": "هیچ اطلاعاتی موجود نیست"
+    "noInfo": "هیچ اطلاعاتی موجود نیست",
+    "errorTitle": "خطا در دریافت اطلاعات",
+    "errorMessage": "متاسفانه اطلاعات ملک یافت نشد"
 }
