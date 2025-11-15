@@ -58,9 +58,14 @@ export const getAdminChatRooms = async () => {
   }
 };
 
+export interface AdminChatRoomMessagesResponse {
+  chats?: IChatMessage[];
+  [key: string]: unknown;
+}
+
 export const getAdminChatRoomMessages = async (room: string) => {
   try {
-    const response = await fetchApi.get(`/admin/chat-rooms/${room}/chats`) as IChatMessage[];
+    const response = await fetchApi.get(`/admin/chat-rooms/${room}/chats`) as IChatMessage[] | AdminChatRoomMessagesResponse;
     return response;
   } catch (error) {
     console.error("Error fetching admin chat room messages:", error);

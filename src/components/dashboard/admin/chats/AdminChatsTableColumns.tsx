@@ -24,7 +24,7 @@ export function useChatsTableColumns({
         key: "room",
         header: "شناسه اتاق",
         cell: (item) => (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-1">
             <span className="font-semibold text-foreground">{item.room}</span>
             {item.lastMessage && (
               <span className="text-xs text-muted-foreground line-clamp-1">

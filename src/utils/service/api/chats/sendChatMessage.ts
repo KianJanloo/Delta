@@ -4,6 +4,7 @@ import { IChatMessage } from "./getChatRoom";
 export interface SendChatMessagePayload {
   room: string;
   message: string;
+  getterId: number;
   attachments?: string[];
 }
 

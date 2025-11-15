@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import { useDirection } from "@/utils/hooks/useDirection";
 import { IProfile } from "@/types/profile-type/profile-type";
 import { getProfileById } from "@/utils/service/api/profile/getProfileById";
+import ChatButton from "@/components/chat/ChatButton";
 
 const LoginSection = () => {
   const { checkAuthStatus } = useUserStore();
@@ -66,7 +67,9 @@ const LoginSection = () => {
           <span> {t("signin")} </span>
         </Link>
       ) : (
-        <div className="relative group" ref={dropdownRef}>
+        <>
+          <ChatButton />
+          <div className="relative group" ref={dropdownRef}>
           <div
             className="flex items-center gap-2 py-2 rounded-2lg hover:bg-subBg text-foreground cursor-pointer transition-colors rounded-full"
             onClick={() => setDropdownVisible(!isDropdownVisible)}
@@ -111,6 +114,7 @@ const LoginSection = () => {
             </div>
           )}
         </div>
+        </>
       )}
     </div>
   );

@@ -1,11 +1,20 @@
 import { fetchApi } from "@/core/interceptore/fetchApi";
 
+export interface IChatSender {
+  id: string;
+  fullName: string;
+  email: string;
+  avatar?: string;
+}
+
 export interface IChatMessage {
-  id: number;
+  id: string;
   room: string;
-  userId: number;
+  senderId: number;
+  getterId: number;
   message: string;
-  attachments?: string[];
+  files?: string[] | null;
+  sender?: IChatSender;
   createdAt: string;
   updatedAt: string;
 }

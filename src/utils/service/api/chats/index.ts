@@ -6,7 +6,7 @@ export { getUsersInRoom } from './getUsersInRoom';
 export { editChatMessage } from './editChatMessage';
 export { deleteChatMessage } from './deleteChatMessage';
 
-export type { IChatMessage } from './getChatRoom';
+export type { IChatMessage, IChatSender } from './getChatRoom';
 export type { SendChatMessagePayload } from './sendChatMessage';
 export type { IChatUser } from './getUsersInRoom';
 export type { EditChatMessagePayload } from './editChatMessage';
