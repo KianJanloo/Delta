@@ -25,7 +25,7 @@ const NavbarSection = () => {
         </Link>
       </div>
 
-      {/* <div className="group flex items-center h-full relative">
+      <div className="group flex items-center h-full relative">
         <Link
           href="/about"
           className="flex items-center h-full text-subText transition-colors pb-1 group-hover:text-primary"
@@ -33,7 +33,7 @@ const NavbarSection = () => {
           {t("navbar.aboutUs")}
           <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-bottom group-hover:origin-bottom z-20"></span>
         </Link>
-      </div> */}
+      </div>
       {/* <div className="group flex items-center h-full relative">
         <Link
           href="/articles"

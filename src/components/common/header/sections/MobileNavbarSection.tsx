@@ -29,14 +29,16 @@ const MobileNavbarSection = () => {
         </Link>
       </div>
 
-      {/* <div>
+      <div className="relative">
         <Link
-          href="/about"
-          className="text-subText transition-colors hover:text-primary block"
+          className="flex items-center justify-between w-full mb-2 cursor-pointer"
+          href={`/about`}
         >
-          {t("navbar.aboutUs")}
+          <span className="text-subText hover:text-primary transition-colors flex items-center gap-1">
+            {t("navbar.aboutUs")}
+          </span>
         </Link>
-      </div> */}
+      </div>
 
       {/* <div>
         <Link
