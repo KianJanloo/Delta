@@ -1,17 +1,11 @@
-'use client';
+"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CalendarClock, Home, Pencil, Plus, RefreshCcw, TicketPercent, Trash2 } from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 import AdminPageHeader from "@/components/dashboard/admin/shared/AdminPageHeader";
-import AdminResourceTable, { type AdminTableColumn } from "@/components/dashboard/admin/shared/AdminResourceTable";
-import AdminFiltersBar, { type AdminFilterTag } from "@/components/dashboard/admin/shared/AdminFiltersBar";
-import AdminSearchInput from "@/components/dashboard/admin/shared/AdminSearchInput";
+import AdminResourceTable from "@/components/dashboard/admin/shared/AdminResourceTable";
 import AdminPaginationControls from "@/components/dashboard/admin/shared/AdminPaginationControls";
 import { useAdminFormatters } from "@/components/dashboard/admin/shared/useAdminFormatters";
 import { showToast } from "@/core/toast/toast";
@@ -20,6 +14,10 @@ import { createDiscountCode, type CreateDiscountCodePayload, type IDiscountCode 
 import { updateDiscountCode, type UpdateDiscountCodePayload } from "@/utils/service/api/discount-codes/updateDiscountCode";
 import { deleteDiscountCode } from "@/utils/service/api/discount-codes/deleteDiscountCode";
 import { getAdminHouses, type AdminHouse } from "@/utils/service/api/admin/houses";
+import AdminDiscountCodesFilters from "./AdminDiscountCodesFilters";
+import { useDiscountCodesTableColumns } from "./AdminDiscountCodesTableColumns";
+import AdminDiscountCodesFormDialog from "./AdminDiscountCodesFormDialog";
+import AdminDiscountCodesDeleteDialog from "./AdminDiscountCodesDeleteDialog";
 
 type DialogMode = "create" | "edit" | "delete" | null;
 
@@ -98,23 +96,6 @@ const AdminDiscountCodesContent = () => {
     const query = searchValue.trim().toLowerCase();
     return discountCodes.filter((item) => item.code.toLowerCase().includes(query));
   }, [discountCodes, searchValue]);
-
-  const activeFilterTags = useMemo<AdminFilterTag[]>(() => {
-    const tags: AdminFilterTag[] = [];
-    if (searchValue.trim()) {
-      tags.push({
-        key: "search",
-        label: "کد تخفیف",
-        value: searchValue.trim(),
-        onRemove: () => {
-          setSearchValue("");
-          setSearchDraft("");
-          setPage(1);
-        },
-      });
-    }
-    return tags;
-  }, [searchValue]);
 
   const openDialog = useCallback(
     (mode: Exclude<DialogMode, null>, discountCode?: IDiscountCode) => {
@@ -253,92 +234,13 @@ const AdminDiscountCodesContent = () => {
     }, {});
   }, [houses]);
 
-  const columns = useMemo<AdminTableColumn<IDiscountCode>[]>(() => [
-    {
-      key: "code",
-      header: "کد",
-      className: "w-36 whitespace-nowrap font-semibold text-foreground",
-      cell: (item) => item.code,
-    },
-    {
-      key: "house",
-      header: "اقامتگاه",
-      className: "w-60 whitespace-nowrap text-muted-foreground",
-      cell: (item) => {
-        const houseId = item.house_id ?? null;
-        const houseTitle = houseId ? houseLookup[houseId] : undefined;
-        if (!houseId) {
-          return "ثبت نشده";
-        }
-        return (
-          <span className="inline-flex items-center gap-2">
-            <Home className="size-4 text-muted-foreground" />
-            <span className="flex flex-col leading-tight">
-              <span className="font-medium text-foreground">{houseTitle ?? `شناسه ${houseId}`}</span>
-              <span className="text-xs text-muted-foreground">ID: {houseId}</span>
-            </span>
-          </span>
-        );
-      },
-    },
-    {
-      key: "discount_percentage",
-      header: "درصد تخفیف",
-      className: "w-32 whitespace-nowrap text-muted-foreground",
-      cell: (item) => `${formatDecimal(item.discount_percentage)}٪`,
-    },
-    {
-      key: "valid_until",
-      header: "انقضا",
-      className: "w-48 whitespace-nowrap text-muted-foreground",
-      cell: (item) => {
-        const validUntil = item.valid_until ?? item.expiresAt ?? null;
-        if (!validUntil) {
-          return "بدون محدودیت";
-        }
-        const isExpired = new Date(validUntil) < new Date();
-        return (
-          <span
-            className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs ${
-              isExpired
-                ? "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-300"
-                : "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
-            }`}
-          >
-            <CalendarClock className="size-3.5" />
-            {formatDateTime(validUntil)}
-          </span>
-        );
-      },
-    },
-    {
-      key: "actions",
-      header: "عملیات",
-      className: "w-48 whitespace-nowrap",
-      cell: (item) => (
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => openDialog("edit", item)}
-          >
-            <Pencil className="size-4" />
-            ویرایش
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 text-destructive hover:bg-destructive/10"
-            onClick={() => openDialog("delete", item)}
-          >
-            <Trash2 className="size-4" />
-            حذف
-          </Button>
-        </div>
-      ),
-    },
-  ], [formatDateTime, formatDecimal, houseLookup, openDialog]);
+  const columns = useDiscountCodesTableColumns({
+    formatDateTime,
+    formatDecimal,
+    houseLookup,
+    onEdit: (item) => openDialog("edit", item),
+    onDelete: (item) => openDialog("delete", item),
+  });
 
   const summaryLabel =
     filteredDiscountCodes.length > 0
@@ -379,45 +281,19 @@ const AdminDiscountCodesContent = () => {
         </div>
       ) : null}
 
+      <AdminDiscountCodesFilters
+        searchDraft={searchDraft}
+        setSearchDraft={setSearchDraft}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        setPage={setPage}
+        isLoading={isLoading}
+        onApplyFilters={handleApplyFilters}
+        onResetFilters={handleResetFilters}
+      />
+
       <Card className="border-border/70">
-        <CardHeader className="space-y-4 text-right">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle className="text-base font-semibold">جستجو و مرتب‌سازی</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                کدهای تخفیف را بر اساس کد، تاریخ ایجاد یا میزان تخفیف مدیریت کنید.
-              </p>
-            </div>
-          </div>
-
-          <form className="space-y-3" onSubmit={handleApplyFilters}>
-            <div className="flex flex-wrap gap-3">
-              <AdminSearchInput
-                placeholder="جستجو بر اساس کد تخفیف"
-                value={searchDraft}
-                onChange={(event) => setSearchDraft(event.target.value)}
-                onClear={() => {
-                  setSearchDraft("");
-                  setSearchValue("");
-                  setPage(1);
-                }}
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Button type="submit" variant="secondary" disabled={isLoading}>
-                {isLoading ? "در حال اعمال..." : "اعمال فیلتر"}
-              </Button>
-              <Button type="button" variant="ghost" onClick={handleResetFilters} disabled={isLoading}>
-                حذف فیلترها
-              </Button>
-            </div>
-          </form>
-
-          <AdminFiltersBar tags={activeFilterTags} />
-        </CardHeader>
-
-        <CardContent className="space-y-4 text-right">
+        <CardContent className="space-y-4 text-right pt-6">
           <AdminResourceTable
             columns={columns}
             data={filteredDiscountCodes}
@@ -438,172 +314,39 @@ const AdminDiscountCodesContent = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-dashed border-border/60 bg-subBg/40 text-right dark:bg-muted/10">
-        <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <TicketPercent className="size-5" />
-            </div>
-            <div>
-              <CardTitle className="text-base font-semibold">راهنمای استفاده</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                برای جلوگیری از سوءاستفاده، کدهای تاریخ گذشته را حذف و ظرفیت مصرف‌شده را به‌صورت دوره‌ای بررسی کنید.
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+      <AdminDiscountCodesFormDialog
+        open={isFormDialogOpen}
+        onOpenChange={(open) => (!open ? closeDialog() : null)}
+        mode={dialogMode === "edit" ? "edit" : "create"}
+        selectedCode={selectedCode}
+        codeDraft={codeDraft}
+        setCodeDraft={setCodeDraft}
+        percentageDraft={percentageDraft}
+        setPercentageDraft={setPercentageDraft}
+        expirationDraft={expirationDraft}
+        setExpirationDraft={setExpirationDraft}
+        houseDraft={houseDraft}
+        setHouseDraft={setHouseDraft}
+        houses={houses}
+        isHousesLoading={isHousesLoading}
+        isActionLoading={isActionLoading}
+        onSubmit={handleSubmitDiscountCode}
+      />
 
-      <Dialog open={isFormDialogOpen} onOpenChange={(open) => (!open ? closeDialog() : null)}>
-        <DialogContent className="max-w-lg text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>{dialogMode === "edit" ? "ویرایش کد تخفیف" : "کد تخفیف جدید"}</DialogTitle>
-            <DialogDescription>
-              {dialogMode === "edit"
-                ? "مشخصات کد تخفیف را بروزرسانی کنید. تغییرات فوراً اعمال خواهند شد."
-                : "برای ایجاد کد تخفیف جدید، کد، درصد تخفیف و در صورت نیاز تاریخ انقضا یا محدودیت استفاده را مشخص کنید."}
-            </DialogDescription>
-          </DialogHeader>
-          <form className="space-y-4" onSubmit={handleSubmitDiscountCode}>
-            <div className="space-y-2">
-              <Label htmlFor="discount-code">کد تخفیف</Label>
-              <Input
-                className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl"
-                id="discount-code"
-                placeholder="مثلاً: DELTA25"
-                value={codeDraft}
-                onChange={(event) => setCodeDraft(event.target.value.toUpperCase())}
-                disabled={isActionLoading}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="discount-house">اقامتگاه مرتبط</Label>
-              {houses.length > 0 ? (
-                <Select
-                  value={houseDraft || undefined}
-                  onValueChange={setHouseDraft}
-                  disabled={isActionLoading || isHousesLoading}
-                >
-                  <SelectTrigger className="border-border bg-subBg px-4 py-2 text-right">
-                    <SelectValue
-                      placeholder={
-                        isHousesLoading
-                          ? "در حال بارگذاری..."
-                          : "اقامتگاه مورد نظر را انتخاب کنید"
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-72" position="popper" sideOffset={8}>
-                    {houses.map((house) => (
-                      <SelectItem key={house.id} value={house.id.toString()}>
-                        <div className="flex flex-col text-right">
-                          <span className="font-medium">{house.title ?? `شناسه ${house.id}`}</span>
-                          <span className="text-xs text-muted-foreground">ID: {house.id}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <div className="rounded-xl border border-dashed border-border/60 bg-subBg px-3 py-2 text-sm text-muted-foreground">
-                  {isHousesLoading
-                    ? "در حال بارگذاری فهرست اقامتگاه‌ها..."
-                    : "هیچ اقامتگاهی برای انتخاب یافت نشد. می‌توانید شناسه را به صورت دستی وارد کنید."}
-                </div>
-              )}
-              <Input
-                className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl remove-number-spin"
-                id="discount-house"
-                type="number"
-                min="1"
-                placeholder="شناسه اقامتگاه را وارد کنید"
-                value={houseDraft}
-                onChange={(event) => setHouseDraft(event.target.value)}
-                disabled={isActionLoading}
-                autoComplete="off"
-                required
-              />
-              <p className="text-xs text-muted-foreground">
-                برای انتخاب سریع یکی از اقامتگاه‌های ثبت‌شده، از فهرست بالا استفاده کنید.
-              </p>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="discount-percentage">درصد تخفیف</Label>
-                <Input
-                  className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl remove-number-spin"
-                  id="discount-percentage"
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.5"
-                  placeholder="مثلاً: 15"
-                  value={percentageDraft}
-                  onChange={(event) => setPercentageDraft(event.target.value)}
-                  disabled={isActionLoading}
-                  required
-                  autoComplete="off"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="discount-expiration">تاریخ انقضا (اختیاری)</Label>
-                <Input
-                  className="border w-full outline-none border-border bg-subBg px-4 py-2 placeholder:text-muted-foreground rounded-2xl"
-                  id="discount-expiration"
-                  type="date"
-                  value={expirationDraft}
-                  onChange={(event) => setExpirationDraft(event.target.value)}
-                  disabled={isActionLoading}
-                />
-              </div>
-            </div>
-            <DialogFooter className="gap-2 sm:flex-row-reverse">
-              <Button type="submit" disabled={isActionLoading}>
-                {isActionLoading ? "در حال ذخیره..." : "ذخیره تغییرات"}
-              </Button>
-              <Button type="button" variant="outline" onClick={closeDialog} disabled={isActionLoading}>
-                انصراف
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <AdminDiscountCodesDeleteDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => (!open ? closeDialog() : null)}
+        selectedCode={selectedCode}
+        isActionLoading={isActionLoading}
+        onDelete={handleDeleteDiscountCode}
+      />
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={(open) => (!open ? closeDialog() : null)}>
-        <DialogContent className="max-w-md text-right" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>حذف کد تخفیف</DialogTitle>
-            <DialogDescription>
-              {selectedCode
-                ? `آیا از حذف کد تخفیف «${selectedCode.code}» مطمئن هستید؟`
-                : "آیا از حذف این کد تخفیف مطمئن هستید؟"}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:flex-row-reverse">
-            <Button
-              variant="destructive"
-              onClick={handleDeleteDiscountCode}
-              disabled={isActionLoading}
-            >
-              {isActionLoading ? "در حال حذف..." : "حذف کد"}
-            </Button>
-            <Button type="button" variant="outline" onClick={closeDialog} disabled={isActionLoading}>
-              انصراف
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Custom style for removing number input spinners */}
       <style jsx global>{`
-        /* Chrome, Safari, Edge, Opera */
         .remove-number-spin::-webkit-inner-spin-button,
         .remove-number-spin::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
-        /* Firefox */
         .remove-number-spin[type="number"] {
           -moz-appearance: textfield;
         }
@@ -613,5 +356,3 @@ const AdminDiscountCodesContent = () => {
 };
 
 export default AdminDiscountCodesContent;
-
-
