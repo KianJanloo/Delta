@@ -3,11 +3,10 @@
 import { useMemo } from "react";
 import { CalendarClock, Home, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import AdminResourceTable, {
+import {
   type AdminTableColumn,
 } from "@/components/dashboard/admin/shared/AdminResourceTable";
 import type { IDiscountCode } from "@/utils/service/api/discount-codes/createDiscountCode";
-import type { AdminHouse } from "@/utils/service/api/admin/houses";
 
 interface AdminDiscountCodesTableColumnsProps {
   formatDateTime: (value: string) => string;

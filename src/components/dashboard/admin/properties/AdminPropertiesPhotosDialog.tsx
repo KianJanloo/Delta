@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import type { AdminHouse } from "@/utils/service/api/admin";
+import Image from "next/image";
 
 interface AdminPropertiesPhotosDialogProps {
   open: boolean;
@@ -101,7 +102,7 @@ export default function AdminPropertiesPhotosDialog({
               <div className="grid grid-cols-3 gap-4">
                 {uploadedFiles.map((file, index) => (
                   <div key={index} className="relative group">
-                    <img
+                    <Image
                       src={URL.createObjectURL(file)}
                       alt={`عکس جدید ${index + 1}`}
                       className="w-full h-32 object-cover rounded-lg border"
@@ -131,7 +132,7 @@ export default function AdminPropertiesPhotosDialog({
               <div className="grid grid-cols-3 gap-4">
                 {photosDraft.map((photo, index) => (
                   <div key={index} className="relative group">
-                    <img
+                    <Image
                       src={photo}
                       alt={`عکس ${index + 1}`}
                       className="w-full h-32 object-cover rounded-lg border"
