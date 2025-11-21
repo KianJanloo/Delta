@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import AdminCommentsContent from "@/components/dashboard/admin/comments/AdminCommentsContent";
 
 export const metadata: Metadata = {
-  title: "مدیریت نظرات | دلتا",
+  title: "مدیریت نظرات",
   description: "نمایش و مدیریت کامل نظرات کاربران در سامانه دلتا",
 };
 

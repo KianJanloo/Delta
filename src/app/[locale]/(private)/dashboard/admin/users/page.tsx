@@ -2,7 +2,7 @@ import AdminUsersContent from "@/components/dashboard/admin/users/AdminUsersCont
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "مدیریت کاربران | دلتا",
+  title: "مدیریت کاربران",
   description: "کنترل کامل بر کاربران سامانه دلتا، نقش‌ها و وضعیت فعالیت آن‌ها",
 };
 

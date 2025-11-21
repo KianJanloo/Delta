@@ -2,7 +2,7 @@ import AdminSocialMediaLinksContent from "@/components/dashboard/admin/social-me
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "شبکه‌های اجتماعی دلتا | پنل مدیریت",
+  title: "شبکه‌های اجتماعی دلتا",
   description: "مدیریت لینک‌های شبکه‌های اجتماعی دلتا در پنل مدیریت.",
 };
 

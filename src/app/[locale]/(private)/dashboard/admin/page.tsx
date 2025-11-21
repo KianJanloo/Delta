@@ -2,7 +2,7 @@ import AdminDashboardContent from "@/components/dashboard/admin/AdminDashboardCo
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "پنل مدیریت دلتا",
+  title: "پنل مدیریت",
   description: "مرکز کنترل کامل برای مدیران سامانه دلتا",
 };
 

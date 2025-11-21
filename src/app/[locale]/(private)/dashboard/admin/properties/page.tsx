@@ -2,7 +2,7 @@ import AdminPropertiesContent from "@/components/dashboard/admin/properties/Admi
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "مدیریت املاک | دلتا",
+  title: "مدیریت املاک",
   description: "نظارت بر املاک ثبت شده، وضعیت انتشار و قیمت‌گذاری فروشندگان",
 };
 

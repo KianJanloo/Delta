@@ -2,7 +2,7 @@ import AdminPaymentsContent from "@/components/dashboard/admin/payments/AdminPay
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "مدیریت پرداخت‌ها | دلتا",
+  title: "مدیریت پرداخت‌ها",
   description: "ردیابی وضعیت تراکنش‌ها، تسویه‌ها و کنترل مالی کاربران",
 };
 

@@ -2,7 +2,7 @@ import AdminBookingsContent from "@/components/dashboard/admin/bookings/AdminBoo
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "مدیریت رزروها | دلتا",
+  title: "مدیریت رزروها",
   description: "پیگیری وضعیت رزروهای کاربران و رسیدگی به درخواست‌های در انتظار",
 };
 

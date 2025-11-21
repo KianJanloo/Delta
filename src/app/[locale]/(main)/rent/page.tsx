@@ -3,7 +3,7 @@ import React from 'react'
 
 export const metadata = {
   title: 'رهن و اجاره',
-  description: 'یافتن املاک اجاره‌ای و اطلاعات وام مسکن.',
+  description: 'یافتن املاک اجاره‌ای و اطلاعات وام دلتا.',
 };
 
 const RentPage = () => {

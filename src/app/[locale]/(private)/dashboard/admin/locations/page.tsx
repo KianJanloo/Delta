@@ -2,7 +2,7 @@ import AdminLocationsContent from "@/components/dashboard/admin/locations/AdminL
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "مدیریت موقعیت‌ها | دلتا",
+  title: "مدیریت موقعیت‌ها",
   description: "کنترل و بروزرسانی موقعیت‌های جغرافیایی در پنل مدیریت دلتا.",
 };
 

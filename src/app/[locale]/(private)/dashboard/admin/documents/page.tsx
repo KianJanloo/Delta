@@ -2,7 +2,7 @@ import AdminDocumentsContent from "@/components/dashboard/admin/documents/AdminD
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "مدیریت مدارک | دلتا",
+  title: "مدیریت مدارک",
   description: "بازبینی و تایید مدارک کاربران و املاک در پنل مدیریت دلتا.",
 };
 

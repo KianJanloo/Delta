@@ -9,7 +9,7 @@ import { routing } from '@/i18n/routing';
 import { ToastContainer } from 'react-toastify';
 
 export const metadata: Metadata = {
-  title: { template: "%s | پروژه مسکن", default: "پروژه مسکن" },
+  title: { template: "%s | دلتا", default: "دلتا" },
   description: " املاک دلتا دوست خوب بچه ها ",
 };
 
