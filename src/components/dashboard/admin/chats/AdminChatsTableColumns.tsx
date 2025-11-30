@@ -54,13 +54,22 @@ export function useChatsTableColumns({
         key: "actions",
         header: "عملیات",
         className: "w-[160px]",
-        hideOnMobile: true,
         cell: (item) => (
           <div className="flex items-center justify-end gap-2">
             <Button size="sm" variant="outline" onClick={() => onOpenRoom(item)}>
               مشاهده گفتگو
             </Button>
           </div>
+        ),
+        renderMobile: (item) => (
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="w-full justify-center"
+            onClick={() => onOpenRoom(item)}
+          >
+            مشاهده گفتگو
+          </Button>
         ),
       },
     ],

@@ -40,7 +40,7 @@ const MobileSidebar = ({ activePanel }: { activePanel: PanelKey }) => {
 
     return (
         <div
-            className={`w-dvw fixed bottom-0 right-0 z-50 justify-around items-center bg-subBg border-t py-3 md:hidden flex`}
+            className={`w-full fixed bottom-0 right-0 z-50 justify-around items-center bg-subBg border-t py-3 md:hidden flex`}
         >
             {mainRoutes.map(({ href, icon: Icon, label }) => {
                 const isActive = pathname === href;

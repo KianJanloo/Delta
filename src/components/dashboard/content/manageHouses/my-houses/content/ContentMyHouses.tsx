@@ -105,8 +105,8 @@ const ContentMyHouses = ({ houses, fetchReserve, reset }: {
             </Table>
             <div className='flex flex-col gap-4 w-full lg:hidden'>
                 {houses.map((house, idx) => (
-                    <div key={idx} className='w-full max-sm:flex-col bg-subBg2 px-4 py-2 rounded-xl flex gap-4 relative'>
-                        <img src={house.photos !== null ? house.photos[0] : " "} alt='' className='w-1/3 max-sm:w-full max-sm:h-[200px] bg-secondary-light3 rounded-xl' />
+                    <div key={idx} className='w-full max-sm:flex-col bg-subBg2 px-4 py-2 rounded-xl flex gap-4 relative overflow-hidden'>
+                        <img src={house.photos !== null ? house.photos[0] : " "} alt='' className='w-1/3 max-sm:w-full max-sm:h-[200px] bg-secondary-light3 rounded-xl object-cover flex-shrink-0' />
                         <div className='h-full flex flex-col gap-2 max-sm:gap-4 text-base flex-grow'>
                             <div className='flex items-center text-base gap-4 my-2 max-sm:text-lg justify-between flex-wrap'>
                                 <span>{house.title}</span>

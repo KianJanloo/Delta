@@ -240,7 +240,7 @@ const HeaderDashboard: React.FC<HeaderDashboardProps> = ({
                   {modalView && (
                     <div
                       ref={moreRef}
-                      className="absolute right-0 top-[calc(100%+12px)] z-50 min-w-[220px] rounded-xl border border-border bg-background p-2 shadow-xl backdrop-blur-md"
+                      className="absolute right-0 max-md:right-40 top-[calc(100%+12px)] z-50 min-w-[220px] rounded-xl border border-border bg-background p-2 shadow-xl backdrop-blur-md"
                     >
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-foreground transition hover:bg-subBg2">

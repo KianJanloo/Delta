@@ -136,7 +136,7 @@ const ReserveComponent = () => {
   }, [updateURLParams]);
 
   return (
-    <div className="px-8 mt-[120px] flex flex-col gap-4">
+    <div className="px-4 sm:px-6 md:px-8 mt-[80px] sm:mt-[100px] md:mt-[120px] flex flex-col gap-4">
       <ReserveHeader />
       <ReserveFilter
         marker={marker}

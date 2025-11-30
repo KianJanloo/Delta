@@ -55,7 +55,6 @@ export function usePropertiesTableColumns({
         key: "actions",
         header: "عملیات",
         className: "w-[320px]",
-        hideOnMobile: true,
         cell: (item) => (
           <div className="flex items-center justify-end gap-2 flex-wrap">
             <Button
@@ -80,6 +79,37 @@ export function usePropertiesTableColumns({
               size="sm"
               variant="destructive"
               className="gap-2"
+              onClick={() => onDelete(item)}
+            >
+              <Trash2 className="size-4" />
+              حذف
+            </Button>
+          </div>
+        ),
+        renderMobile: (item) => (
+          <div className="flex flex-col gap-2 w-full">
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-2 w-full justify-center"
+              onClick={() => onEdit(item)}
+            >
+              <Pencil className="size-4" />
+              ویرایش
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-2 w-full justify-center"
+              onClick={() => onPhotos(item)}
+            >
+              <ImageIcon className="size-4" />
+              عکس‌ها
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="gap-2 w-full justify-center"
               onClick={() => onDelete(item)}
             >
               <Trash2 className="size-4" />

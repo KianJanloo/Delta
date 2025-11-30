@@ -58,7 +58,7 @@ const ReserveContent: React.FC<IReserveContent> = ({
   }
 
   return (
-    <div className="flex xl:flex-row flex-col gap-4 justify-between w-full xl:h-[1080px] overflow-hidden rounded-[40px] bg-secondary-light4 p-4">
+    <div className="flex xl:flex-row flex-col gap-4 justify-between w-full xl:h-[1080px] overflow-hidden rounded-[20px] sm:rounded-[30px] md:rounded-[40px] bg-secondary-light4 p-3 sm:p-4">
       <div className="flex gap-6 flex-col xl:w-3/5 w-full">
         <div className="flex gap-4 w-full">
           <div className="w-1/2">
@@ -166,7 +166,7 @@ const ReserveContent: React.FC<IReserveContent> = ({
       <motion.div
         initial={{ opacity: 0, x: -100 }}
         whileInView={{ opacity: 1, x: 0 }}
-        className="bg-secondary-light3 rounded-[40px] xl:w-2/5 w-full h-[1032px] xl:block hidden"
+        className="bg-secondary-light3 rounded-[20px] sm:rounded-[30px] md:rounded-[40px] xl:w-2/5 w-full h-[400px] sm:h-[500px] md:h-[600px] xl:h-[1032px] xl:block hidden"
       >
         <ReserveMap marker={marker} setMarker={setMarker} />
       </motion.div>

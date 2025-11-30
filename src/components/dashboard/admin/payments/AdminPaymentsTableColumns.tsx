@@ -118,6 +118,26 @@ export function usePaymentsTableColumns({
             </Button>
           </div>
         ),
+        renderMobile: (item) => (
+          <div className="flex flex-col gap-2 w-full">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="w-full justify-center"
+              onClick={() => onStatusChange(item)}
+            >
+              تغییر وضعیت
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="w-full justify-center"
+              onClick={() => onDelete(item)}
+            >
+              حذف
+            </Button>
+          </div>
+        ),
       },
     ],
     [formatCurrency, formatDateTime, formatNumber, onStatusChange, onDelete]

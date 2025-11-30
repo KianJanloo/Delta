@@ -85,7 +85,6 @@ export function useCommentsTableColumns({
         key: "actions",
         header: "عملیات",
         className: "w-[190px]",
-        hideOnMobile: true,
         cell: (item) => (
           <div className="flex items-center justify-end gap-2">
             <Button
@@ -98,6 +97,26 @@ export function useCommentsTableColumns({
             <Button
               size="sm"
               variant="destructive"
+              onClick={() => onDelete(item)}
+            >
+              حذف
+            </Button>
+          </div>
+        ),
+        renderMobile: (item) => (
+          <div className="flex flex-col gap-2 w-full">
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full justify-center"
+              onClick={() => onEdit(item)}
+            >
+              جزئیات
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="w-full justify-center"
               onClick={() => onDelete(item)}
             >
               حذف

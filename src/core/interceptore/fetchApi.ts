@@ -32,42 +32,52 @@ const buildHeaders = async (options: RequestInit = {}) => {
 };
 
 const performRequest = async (url: string, options: RequestInit, attempt = 0): Promise<any> => {
-    const headers = await buildHeaders(options);
+    try {
+        const headers = await buildHeaders(options);
 
-    const response = await fetch(`${API_BASE_URL}${url}`, {
-        ...options,
-        headers,
-    });
+        const response = await fetch(`${API_BASE_URL}${url}`, {
+            ...options,
+            headers,
+        });
 
-    if ((response.status === 401 || response.status === 403) && attempt < 1) {
-        const refreshed = await refreshSession();
+        if ((response.status === 401 || response.status === 403) && attempt < 1) {
+            const refreshed = await refreshSession();
 
-        if (refreshed?.accessToken) {
-            const retryHeaders = new Headers(options.headers || {});
+            if (refreshed?.accessToken) {
+                const retryHeaders = new Headers(options.headers || {});
 
-            if (!retryHeaders.has('Content-Type') && !(options.body instanceof FormData)) {
-                retryHeaders.set('Content-Type', 'application/json');
+                if (!retryHeaders.has('Content-Type') && !(options.body instanceof FormData)) {
+                    retryHeaders.set('Content-Type', 'application/json');
+                }
+
+                retryHeaders.set('Authorization', `Bearer ${refreshed.accessToken}`);
+
+                return performRequest(url, { ...options, headers: retryHeaders }, attempt + 1);
             }
 
-            retryHeaders.set('Authorization', `Bearer ${refreshed.accessToken}`);
-
-            return performRequest(url, { ...options, headers: retryHeaders }, attempt + 1);
+            throw new Error('Unauthorized');
         }
 
-        throw new Error('Unauthorized');
+        const data = await parseJson(response);
+
+        if (!response.ok) {
+            const message = (data && typeof data === 'object' && 'message' in data)
+                ? (data as Record<string, string>).message
+                : `HTTP error! status: ${response.status}`;
+
+            throw new Error(message);
+        }
+
+        return data;
+    } catch (error) {
+        if (error instanceof TypeError && error.message.includes('fetch')) {
+            throw new Error('Network error: Please check your internet connection');
+        }
+        if (error instanceof Error) {
+            throw error;
+        }
+        throw new Error('An unexpected error occurred');
     }
-
-    const data = await parseJson(response);
-
-    if (!response.ok) {
-        const message = (data && typeof data === 'object' && 'message' in data)
-            ? (data as Record<string, string>).message
-            : `HTTP error! status: ${response.status}`;
-
-        throw new Error(message);
-    }
-
-    return data;
 };
 
 export const fetchApi = {

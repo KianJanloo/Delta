@@ -101,6 +101,26 @@ export function useUsersTableColumns({
             </Button>
           </div>
         ),
+        renderMobile: (user) => (
+          <div className="flex flex-col gap-2 w-full">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="w-full justify-center"
+              onClick={() => onRoleChange(user)}
+            >
+              تغییر نقش
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="w-full justify-center"
+              onClick={() => onDelete(user)}
+            >
+              حذف
+            </Button>
+          </div>
+        ),
       },
     ],
     [formatDateTime, formatNumber, onRoleChange, onDelete]

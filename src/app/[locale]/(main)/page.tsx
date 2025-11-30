@@ -11,13 +11,13 @@ import Categories from "@/components/Landing/categories/Categories";
 export default async function Home() {
 
   return (
-    <div className="w-full flex flex-col gap-16 overflow-x-hidden">
+    <div className="w-full flex flex-col gap-8 sm:gap-12 md:gap-16 overflow-x-hidden">
       <HeroSection />
 
       <div className="relative">
         <Categories />
       </div>
-      <div className="relative px-8">
+      <div className="relative px-4 sm:px-6 md:px-8">
         <DivBlur className="bg-blur-blue right-[-150px]" />
         <SpecialOffer />
       </div>
@@ -30,7 +30,7 @@ export default async function Home() {
         <DivBlur className="bg-blur-blue right-[-150px]" />
         <AboutUs />
       </div>
-      <div className="relative bg-secondary-light flex flex-col gap-32 py-[40px] rounded-[64px] px-8">
+      <div className="relative bg-secondary-light flex flex-col gap-16 sm:gap-24 md:gap-32 py-6 sm:py-8 md:py-[40px] rounded-[24px] sm:rounded-[40px] md:rounded-[64px] px-4 sm:px-6 md:px-8">
         <DivBlur className="bg-blur-blue right-[-150px] bottom-[500px]" />
         <RealStateTraveling />
         <NewPlaces />

@@ -71,6 +71,29 @@ export function useDocumentsTableColumns({
             </Button>
           </div>
         ),
+        renderMobile: (item) => (
+          <div className="flex flex-col gap-2 w-full">
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full justify-center"
+              asChild
+            >
+              <a href={item.filePath} target="_blank" rel="noopener noreferrer">
+                مشاهده فایل
+              </a>
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="gap-2 w-full justify-center"
+              onClick={() => onDelete(item)}
+            >
+              <Trash2 className="size-4" />
+              حذف
+            </Button>
+          </div>
+        ),
       },
     ],
     [formatDateTime, formatNumber, onDelete]

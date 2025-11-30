@@ -108,6 +108,28 @@ export function useDiscountCodesTableColumns({
             </Button>
           </div>
         ),
+        renderMobile: (item) => (
+          <div className="flex flex-col gap-2 w-full">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 w-full justify-center"
+              onClick={() => onEdit(item)}
+            >
+              <Pencil className="size-4" />
+              ویرایش
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2 w-full justify-center text-destructive hover:bg-destructive/10"
+              onClick={() => onDelete(item)}
+            >
+              <Trash2 className="size-4" />
+              حذف
+            </Button>
+          </div>
+        ),
       },
     ],
     [formatDateTime, formatDecimal, houseLookup, onEdit, onDelete]
