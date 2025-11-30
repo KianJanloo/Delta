@@ -7,6 +7,7 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { ToastContainer } from 'react-toastify';
+import ChatButtonWrapper from "@/components/chat/ChatButtonWrapper";
 
 export const metadata: Metadata = {
   title: { template: "%s | دلتا", default: "دلتا" },
@@ -43,6 +44,7 @@ export default async function RootLayout({
               <div className="xl:px-8 px-0">
                 <Footer />
               </div>
+              <ChatButtonWrapper />
             </NextIntlClientProvider>
           </Providers>
           <ToastContainer />

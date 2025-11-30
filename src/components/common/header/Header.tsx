@@ -51,7 +51,7 @@ const Header = () => {
 
   if (pathname.includes("/dashboard")) return null;
 
-  return <div className="w-full flex justify-center items-center relative">
+  return <div className="w-full mx-auto justify-center items-center relative">
     {isDrawerOpen && (
       <div
         className="relative inset-0 bg-black/50 z-60 animate-overlayShow"
@@ -94,7 +94,7 @@ const Header = () => {
       </div>
     </div>
 
-    <div dir={dir} className="w-[100%] flex items-center justify-between py-1 absolute top-[24px] bg-subBg text-subText rounded-[16px]  z-50">
+    <div dir={dir} className="flex items-center justify-between py-1 absolute md:top-[24px] top-[16px] bg-subBg text-subText rounded-[16px] z-50 w-full">
       <div className="hidden lg:flex items-center h-full gap-5 ">
         <LogoSection />
         <NavbarSection />

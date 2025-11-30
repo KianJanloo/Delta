@@ -50,18 +50,18 @@ const TabletSidebar = ({
 
     return (
         <div
-            className={`bg-subBg md:flex hidden transition-all duration-300 ease-in-out px-4 border py-8 gap-8 rounded-xl w-fit flex-col shadow-md ${view === 2
+            className={`bg-subBg md:flex hidden transition-all duration-300 ease-in-out px-4 border py-8 gap-8 rounded-xl w-fit flex-col shadow-md max-h-[calc(100vh-2rem)] overflow-hidden ${view === 2
                 ? "opacity-100 scale-100 pointer-events-auto"
                 : "opacity-0 scale-95 pointer-events-none absolute"
                 }`}
         >
-            <div className="flex justify-center items-center mb-6">
+            <div className="flex justify-center items-center mb-6 shrink-0">
                 <LogOut
                     onClick={() => setView(1)}
                     className={`cursor-pointer rotate-180 hover:text-accent transition-colors ${dir === 'rtl' ? "rotate-180" : "rotate-0"} `}
                 />
             </div>
-            <div className="flex flex-col justify-between h-full items-center">
+            <div className="flex flex-col h-full items-center overflow-y-auto pr-1">
                 <div className="flex flex-col gap-2">
                     {routeSelect.map(({ label, href, icon: Icon, children }) => {
                         const isActive = pathname === href;

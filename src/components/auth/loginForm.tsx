@@ -121,16 +121,18 @@ const LoginForm = () => {
   };
 
   return (
-    <div dir={dir}>
+    <div dir={dir} className="overflow-x-hidden">
       <form
         className="mt-8 space-y-6 text-foreground"
         onSubmit={handleSubmit(handleLogin)}
       >
-        <ReCAPTCHA
-          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-          size="invisible"
-          ref={recaptchaRef}
-        />
+        <div className="fixed -left-[9999px] opacity-0 pointer-events-none">
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+            size="invisible"
+            ref={recaptchaRef}
+          />
+        </div>
         <div className="rounded-md -space-y-px flex md:flex-nowrap flex-wrap gap-4">
           <div className="md:w-1/2 w-full flex gap-1 flex-col text-card-foreground">
             <Label htmlFor="email" className={`text-[13px] flex gap-0.5`}>
